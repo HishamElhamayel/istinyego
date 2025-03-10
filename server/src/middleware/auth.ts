@@ -4,7 +4,11 @@ import { JWT_SECRET } from "#/utils/variables";
 import { RequestHandler } from "express";
 import { JwtPayload, verify } from "jsonwebtoken";
 
-export const isValidPassResetToken: RequestHandler = async (req, res, next) => {
+export const isValidPassResetToken: RequestHandler = async (
+  req,
+  res,
+  next
+): Promise<any> => {
   const { token, userId } = req.body;
 
   const resetToken = await passwordResetToken.findOne({ owner: userId });
@@ -22,7 +26,11 @@ export const isValidPassResetToken: RequestHandler = async (req, res, next) => {
   next();
 };
 
-export const mustAuth: RequestHandler = async (req, res, next) => {
+export const mustAuth: RequestHandler = async (
+  req,
+  res,
+  next
+): Promise<any> => {
   const { authorization } = req.headers;
   const token = authorization?.split("Bearer ")[1];
   if (!token) return res.status(403).json({ error: "Unauthorized request" });

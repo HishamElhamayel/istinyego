@@ -16,38 +16,44 @@ import { isValidObjectId } from "mongoose";
 
 // CREATE USER
 export const createUser: RequestHandler = async (req: CreateUser, res) => {
-  const { firstName, lastName, email, password, studentId } = req.body;
+  try {
+    const { firstName, lastName, email, password, studentId } = req.body;
 
-  const user = await User.create({
-    firstName,
-    lastName,
-    email,
-    password,
-    studentId,
-  });
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      studentId,
+    });
 
-  const token = generateToken(6);
+    const token = generateToken(6);
 
-  await EmailVerificationToken.create({
-    owner: user._id,
-    token,
-  });
+    await EmailVerificationToken.create({
+      owner: user._id,
+      token,
+    });
 
-  sendVerificationMail(token, {
-    firstName,
-    lastName,
-    email,
-    userId: user._id.toString(),
-  });
+    sendVerificationMail(token, {
+      firstName,
+      lastName,
+      email,
+      userId: user._id.toString(),
+    });
 
-  res.status(201).json({ user: { id: user._id, firstName, lastName, email } });
+    res
+      .status(201)
+      .json({ user: { id: user._id, firstName, lastName, email } });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 // VERIFY EMAIL
 export const verifyEmail: RequestHandler = async (
   req: VerifyEmailRequest,
   res
-) => {
+): Promise<any> => {
   const { token, userId } = req.body;
 
   const verificationToken = await EmailVerificationToken.findOne({
@@ -69,7 +75,10 @@ export const verifyEmail: RequestHandler = async (
 };
 
 // RESEND VERIFICATION TOKEN
-export const sendReVerificationToken: RequestHandler = async (req, res) => {
+export const sendReVerificationToken: RequestHandler = async (
+  req,
+  res
+): Promise<any> => {
   const { userId } = req.body;
 
   if (!isValidObjectId(userId))
@@ -78,7 +87,7 @@ export const sendReVerificationToken: RequestHandler = async (req, res) => {
   const user = await User.findById(userId);
   if (!user) return res.status(403).json({ error: "Invalid request!" });
 
-  await emailVerificationToken.findOneAndDelete({ owner: userId });
+  await EmailVerificationToken.findOneAndDelete({ owner: userId });
 
   const token = generateToken(6);
 
@@ -98,7 +107,10 @@ export const sendReVerificationToken: RequestHandler = async (req, res) => {
 };
 
 // GENERATE PASSWORD LINK
-export const generateForgetPasswordLink: RequestHandler = async (req, res) => {
+export const generateForgetPasswordLink: RequestHandler = async (
+  req,
+  res
+): Promise<any> => {
   const { email } = req.body;
 
   const user = await User.findOne({ email });
@@ -123,12 +135,15 @@ export const generateForgetPasswordLink: RequestHandler = async (req, res) => {
 };
 
 // DON'T KNOW
-export const grantValid: RequestHandler = async (req, res) => {
+export const grantValid: RequestHandler = async (req, res): Promise<any> => {
   res.json({ valid: true });
 };
 
 // UPDATE PASSWORD
-export const updatePassword: RequestHandler = async (req, res) => {
+export const updatePassword: RequestHandler = async (
+  req,
+  res
+): Promise<any> => {
   const { password, userId } = req.body;
 
   const user = await User.findById(userId);
@@ -143,7 +158,7 @@ export const updatePassword: RequestHandler = async (req, res) => {
 
   await PasswordResetToken.findOneAndDelete({ owner: user._id });
 
-  //send Success Email
+  // Send Success Email
   sendPassResetSuccessEmail(user.firstName, user.lastName, user.email);
 
   res.status(200).json({
@@ -151,7 +166,7 @@ export const updatePassword: RequestHandler = async (req, res) => {
   });
 };
 
-export const signIn: RequestHandler = async (req, res) => {
+export const signIn: RequestHandler = async (req, res): Promise<any> => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
@@ -162,7 +177,7 @@ export const signIn: RequestHandler = async (req, res) => {
   if (!matched)
     return res.status(403).json({ error: "Email or password is incorrect" });
 
-  //Generate Token
+  // Generate Token
   console.log(JWT_SECRET);
   const token = jwt.sign({ userId: user._id }, JWT_SECRET);
   user.tokens = [token];

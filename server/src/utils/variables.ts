@@ -9,5 +9,3 @@ export const {
   SIGN_IN_URL,
   JWT_SECRET,
 } = env;
-
-// console.log(process.env.MONGO_URI);
