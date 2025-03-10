@@ -1,16 +1,16 @@
 interface Options {
-  title: string;
-  message: string;
-  link: string;
-  logo: string;
-  banner: string;
-  btnTitle: string;
+    title: string;
+    message: string;
+    link: string;
+    logo: string;
+    banner: string;
+    btnTitle: string;
 }
 
 export const generateTemplate = (options: Options) => {
-  const { title, message, link, logo, banner, btnTitle } = options;
+    const { title, message, link, logo, banner, btnTitle } = options;
 
-  return `
+    return `
         <!DOCTYPE html>
       
       <html

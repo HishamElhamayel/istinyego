@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import "./db";
-import authRouter from "./routers/auth";
+import authRouter from "./routers/auth.route";
 
 const app = express();
 
@@ -14,5 +14,5 @@ app.use("/auth", authRouter);
 const PORT = process.env.PORT || 8989;
 
 app.listen(PORT, () => {
-  console.log("Listening on port" + PORT);
+    console.log("Listening on port" + PORT);
 });
