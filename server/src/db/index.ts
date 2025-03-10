@@ -4,8 +4,8 @@ import mongoose from "mongoose";
 mongoose
     .connect(MONGO_URI, { dbName: "IstinyeGo" })
     .then(() => {
-        console.log("db is connected");
+        console.log("Database is connected");
     })
     .catch((err) => {
-        console.log("db connection failed", err);
+        console.log("Database connection failed", err);
     });

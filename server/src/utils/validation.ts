@@ -1,7 +1,7 @@
 import { isValidObjectId } from "mongoose";
 import * as yup from "yup";
 
-export const CreateUserSchema = yup.object().shape({
+export const CreateUserSchema = yup.object({
     firstName: yup
         .string()
         .required("First name is missing")
@@ -24,7 +24,7 @@ export const CreateUserSchema = yup.object().shape({
     studentId: yup.number().required("Student ID is missing"),
 });
 
-export const TokenAndIdValidation = yup.object().shape({
+export const TokenAndIdValidationSchema = yup.object({
     token: yup.string().trim().required("Token is missing"),
     userId: yup
         .string()
@@ -37,7 +37,7 @@ export const TokenAndIdValidation = yup.object().shape({
         .required("Invalid User ID"),
 });
 
-export const UpdatePasswordSchema = yup.object().shape({
+export const UpdatePasswordSchema = yup.object({
     token: yup.string().trim().required("Token is missing"),
     userId: yup
         .string()
@@ -58,7 +58,7 @@ export const UpdatePasswordSchema = yup.object().shape({
         ),
 });
 
-export const SignInValidationSchema = yup.object().shape({
+export const SignInValidationSchema = yup.object({
     email: yup.string().email("Invalid Email").required("Email is missing"),
     password: yup
         .string()
