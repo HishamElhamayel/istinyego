@@ -1,6 +1,6 @@
-import { CreateUser, VerifyEmailRequest } from "#/types/user.types";
 import Token from "#/models/token.model";
 import User from "#/models/user.model";
+import { CreateUser, VerifyEmailRequest } from "#/types/user.types";
 import { generateToken } from "#/utils/helper";
 import {
     sendForgetPasswordLink,
@@ -207,7 +207,7 @@ export const signIn: RequestHandler = async (req, res): Promise<any> => {
 
         // Generate Token
         const token = jwt.sign({ userId: user._id }, JWT_SECRET);
-        user.tokens = [token];
+        user.tokens.push(token);
 
         await user.save();
 
@@ -224,6 +224,31 @@ export const signIn: RequestHandler = async (req, res): Promise<any> => {
             },
             token,
         });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const sendProfile: RequestHandler = (req, res) => {
+    res.json({ profile: req.user });
+};
+
+export const logout: RequestHandler = async (req, res) => {
+    //Logout and Logout from all
+    try {
+        const { fromAll } = req.query;
+
+        const token = req.token;
+        const user = await User.findById(req.user.id);
+        if (!user) throw new Error("Something went wrong, user not found!");
+
+        if (fromAll === "yes") user.tokens = [];
+        else user.tokens = user.tokens.filter((t) => t !== token);
+
+        await user.save();
+
+        res.json({ message: "Successfully logged out" });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });

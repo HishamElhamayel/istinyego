@@ -51,5 +51,7 @@ export const mustAuth: RequestHandler = async (
         favoriteRoutes: user.favoriteRoutes,
         wallet: user.wallet,
     };
+
+    req.token = token;
     next();
 };

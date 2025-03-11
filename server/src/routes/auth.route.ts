@@ -2,11 +2,13 @@ import {
     createUser,
     generateForgetPasswordLink,
     grantValid,
+    logout,
+    sendProfile,
     sendReVerificationToken,
     signIn,
     updatePassword,
     verifyEmail,
-} from "#/controller/user.controller";
+} from "#/controller/auth.controller";
 import { isValidPassResetToken, mustAuth } from "#/middleware/auth.middleware";
 import { validate } from "#/middleware/validator.middleware";
 import {
@@ -37,11 +39,8 @@ router.post(
 );
 
 router.post("/sign-in", validate(SignInValidationSchema), signIn);
+router.get("/is-auth", mustAuth, sendProfile);
 
-router.get("/is-auth", mustAuth, (req, res) => {
-    res.json({
-        profile: req.user,
-    });
-});
+router.post("/log-out", mustAuth, logout);
 
 export default router;

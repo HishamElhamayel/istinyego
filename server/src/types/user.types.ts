@@ -31,6 +31,7 @@ declare global {
                 favoriteRoutes: ObjectId[];
                 wallet: any;
             };
+            token: string;
         }
     }
 }
