@@ -1,6 +1,5 @@
 import { CreateUser, VerifyEmailRequest } from "#/types/user.types";
-import EmailVerificationToken from "#/models/emailVerificationToken";
-import PasswordResetToken from "#/models/passwordResetToken";
+import Token from "#/models/token.model";
 import User from "#/models/user.model";
 import { generateToken } from "#/utils/helper";
 import {
@@ -29,7 +28,7 @@ export const createUser: RequestHandler = async (req: CreateUser, res) => {
 
         const token = generateToken(6);
 
-        await EmailVerificationToken.create({
+        await Token.create({
             owner: user._id,
             token,
         });
@@ -58,7 +57,7 @@ export const verifyEmail: RequestHandler = async (
     try {
         const { token, userId } = req.body;
 
-        const verificationToken = await EmailVerificationToken.findOne({
+        const verificationToken = await Token.findOne({
             owner: userId,
         });
 
@@ -71,7 +70,7 @@ export const verifyEmail: RequestHandler = async (
 
         await User.findByIdAndUpdate(userId, { verified: true });
 
-        await EmailVerificationToken.findByIdAndDelete(verificationToken._id);
+        await Token.findByIdAndDelete(verificationToken._id);
 
         res.status(200).json({ message: "Email verified" });
     } catch (err) {
@@ -94,11 +93,11 @@ export const sendReVerificationToken: RequestHandler = async (
         const user = await User.findById(userId);
         if (!user) return res.status(403).json({ error: "Invalid request!" });
 
-        await EmailVerificationToken.findOneAndDelete({ owner: userId });
+        await Token.findOneAndDelete({ owner: userId });
 
         const token = generateToken(6);
 
-        await EmailVerificationToken.create({
+        await Token.create({
             owner: userId,
             token,
         });
@@ -133,8 +132,8 @@ export const generateForgetPasswordLink: RequestHandler = async (
         // Generate link to reset the password
 
         const token = crypto.randomBytes(36).toString("hex");
-        await PasswordResetToken.findOneAndDelete({ owner: user._id });
-        await PasswordResetToken.create({
+        await Token.findOneAndDelete({ owner: user._id });
+        await Token.create({
             owner: user._id,
             token,
         });
@@ -176,7 +175,7 @@ export const updatePassword: RequestHandler = async (
         user.password = password;
         await user.save();
 
-        await PasswordResetToken.findOneAndDelete({ owner: user._id });
+        await Token.findOneAndDelete({ owner: user._id });
 
         // Send Success Email
         sendPassResetSuccessEmail(user.firstName, user.lastName, user.email);
@@ -207,7 +206,6 @@ export const signIn: RequestHandler = async (req, res): Promise<any> => {
                 .json({ error: "Email or password is incorrect" });
 
         // Generate Token
-        console.log(JWT_SECRET);
         const token = jwt.sign({ userId: user._id }, JWT_SECRET);
         user.tokens = [token];
 

@@ -1,4 +1,4 @@
-import passwordResetToken from "#/models/passwordResetToken";
+import Token from "#/models/token.model";
 import User from "#/models/user.model";
 import { JWT_SECRET } from "#/utils/variables";
 import { RequestHandler } from "express";
@@ -11,7 +11,7 @@ export const isValidPassResetToken: RequestHandler = async (
 ): Promise<any> => {
     const { token, userId } = req.body;
 
-    const resetToken = await passwordResetToken.findOne({ owner: userId });
+    const resetToken = await Token.findOne({ owner: userId });
     if (!resetToken)
         return res
             .status(403)
