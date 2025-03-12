@@ -74,13 +74,13 @@ export const mustAuth: RequestHandler = (req, res, next) => {
     }
 };
 
-export const mustRole = (role: string): RequestHandler => {
+export const mustRoles = (roles: [string]): RequestHandler => {
     return (req, res, next) => {
-        if (req.user?.role === role) {
-            next();
+        if (!roles.includes(req.user?.role)) {
+            res.status(403).json({ error: "Unauthorized access!" });
             return;
         }
 
-        res.status(403).json({ error: "Unauthorized access!" });
+        next();
     };
 };
