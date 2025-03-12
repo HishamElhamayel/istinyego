@@ -1,6 +1,7 @@
-import { Model, Schema, model, Document } from "mongoose";
+import { Document, Model, ObjectId, Schema, model } from "mongoose";
 
 interface WalletDocument extends Document {
+    // _id: ObjectId;
     balance: number;
 }
 

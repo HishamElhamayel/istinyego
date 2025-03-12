@@ -1,5 +1,6 @@
 import Token from "#/models/token.model";
 import User from "#/models/user.model";
+import Wallet from "#/models/wallet.model";
 import { CreateUser, VerifyEmailRequest } from "#/types/user.types";
 import { generateToken } from "#/utils/helper";
 import {
@@ -18,12 +19,15 @@ export const createUser: RequestHandler = async (req: CreateUser, res) => {
     try {
         const { firstName, lastName, email, password, studentId } = req.body;
 
+        const wallet = await Wallet.create({});
+
         const user = await User.create({
             firstName,
             lastName,
             email,
             password,
             studentId,
+            wallet: wallet._id,
         });
 
         const token = generateToken(6);
