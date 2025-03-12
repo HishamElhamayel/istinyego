@@ -39,7 +39,7 @@ export const mustAuth: RequestHandler = (req, res, next) => {
         }
 
         // verify token
-        verify(token, process.env.SECRET!, async (err, decoded) => {
+        verify(token, JWT_SECRET!, async (err, decoded) => {
             if (!err && decoded) {
                 const userId = (decoded as JwtPayload).userId;
                 const user = await User.findOne({ _id: userId, tokens: token });
