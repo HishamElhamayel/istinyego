@@ -1,4 +1,4 @@
-import { Model, Schema, model, Document, ObjectId } from "mongoose";
+import { Schema, model, Document, ObjectId } from "mongoose";
 
 interface WalletDocument extends Document {
     _id: ObjectId;
@@ -12,4 +12,4 @@ const walletSchema = new Schema<WalletDocument>({
     },
 });
 
-export default model("Wallet", walletSchema) as Model<WalletDocument>;
+export default model<WalletDocument>("Wallet", walletSchema);
