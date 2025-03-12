@@ -1,17 +1,14 @@
 import { compare, hash } from "bcryptjs";
-import { Model, model, ObjectId, Schema } from "mongoose";
+import { model, ObjectId, Schema } from "mongoose";
 
 interface TokenDocument {
     owner: ObjectId;
     token: string;
     createdAt: Date;
-}
-
-interface Methods {
     compareToken(token: string): Promise<boolean>;
 }
 
-const tokenSchema = new Schema<TokenDocument, {}, Methods>({
+const tokenSchema = new Schema<TokenDocument>({
     owner: {
         type: Schema.Types.ObjectId,
         required: true,
@@ -35,9 +32,9 @@ tokenSchema.pre("save", async function (next) {
     next();
 });
 
-tokenSchema.methods.compareToken = async function (token) {
+tokenSchema.methods.compareToken = async function (token: string) {
     const result = await compare(token, this.token);
     return result;
 };
 
-export default model("Token", tokenSchema) as Model<TokenDocument, {}, Methods>;
+export default model<TokenDocument>("Token", tokenSchema);

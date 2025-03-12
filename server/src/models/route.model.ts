@@ -1,4 +1,4 @@
-import { Model, ObjectId, Schema, model } from "mongoose";
+import { ObjectId, Schema, model } from "mongoose";
 
 interface RouteDocument extends Document {
     _id: ObjectId;
@@ -24,4 +24,4 @@ const routeSchema = new Schema<RouteDocument>({
     },
 });
 
-export default model("Route", routeSchema) as Model<RouteDocument>;
+export default model<RouteDocument>("Route", routeSchema);

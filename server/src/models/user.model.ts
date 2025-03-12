@@ -1,5 +1,5 @@
 import { compare, hash } from "bcryptjs";
-import { Model, model, ObjectId, Schema } from "mongoose";
+import { model, ObjectId, Schema, Document } from "mongoose";
 
 export interface UserDocument extends Document {
     _id: ObjectId;
@@ -15,13 +15,10 @@ export interface UserDocument extends Document {
     wallet: ObjectId;
     favoriteRoutes: ObjectId[];
     licenseNumber?: number;
-}
-
-interface Methods {
     comparePassword(password: string): Promise<boolean>;
 }
 
-const userSchema = new Schema<UserDocument, {}, Methods>(
+const userSchema = new Schema<UserDocument>(
     {
         firstName: {
             type: String,
@@ -90,9 +87,9 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
-userSchema.methods.comparePassword = async function (password) {
+userSchema.methods.comparePassword = async function (password: string) {
     const result = await compare(password, this.password);
     return result;
 };
 
-export default model("User", userSchema) as Model<UserDocument, {}, Methods>;
+export default model<UserDocument>("User", userSchema);
