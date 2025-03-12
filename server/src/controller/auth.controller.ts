@@ -53,7 +53,7 @@ export const createUser: RequestHandler = async (req: CreateUser, res) => {
 export const verifyEmail: RequestHandler = async (
     req: VerifyEmailRequest,
     res
-): Promise<any> => {
+) => {
     try {
         const { token, userId } = req.body;
 
@@ -61,12 +61,17 @@ export const verifyEmail: RequestHandler = async (
             owner: userId,
         });
 
-        if (!verificationToken)
-            return res.status(403).json({ error: "Invalid token" });
+        if (!verificationToken) {
+            res.status(403).json({ error: "Invalid token" });
+            return;
+        }
 
         const matched = await verificationToken.compareToken(token);
 
-        if (!matched) return res.status(403).json({ error: "Invalid token" });
+        if (!matched) {
+            res.status(403).json({ error: "Invalid token" });
+            return;
+        }
 
         await User.findByIdAndUpdate(userId, { verified: true });
 
@@ -80,18 +85,20 @@ export const verifyEmail: RequestHandler = async (
 };
 
 // RESEND VERIFICATION TOKEN
-export const sendReVerificationToken: RequestHandler = async (
-    req,
-    res
-): Promise<any> => {
+export const sendReVerificationToken: RequestHandler = async (req, res) => {
     try {
         const { userId } = req.body;
 
-        if (!isValidObjectId(userId))
-            return res.status(403).json({ error: "Invalid request!" });
+        if (!isValidObjectId(userId)) {
+            res.status(403).json({ error: "Invalid request!" });
+            return;
+        }
 
         const user = await User.findById(userId);
-        if (!user) return res.status(403).json({ error: "Invalid request!" });
+        if (!user) {
+            res.status(403).json({ error: "Invalid request!" });
+            return;
+        }
 
         await Token.findOneAndDelete({ owner: userId });
 
@@ -117,16 +124,16 @@ export const sendReVerificationToken: RequestHandler = async (
 };
 
 // GENERATE PASSWORD LINK
-export const generateForgetPasswordLink: RequestHandler = async (
-    req,
-    res
-): Promise<any> => {
+export const generateForgetPasswordLink: RequestHandler = async (req, res) => {
     try {
         const { email } = req.body;
 
         const user = await User.findOne({ email });
 
-        if (!user) return res.status(404).json({ error: "Account not found" });
+        if (!user) {
+            res.status(404).json({ error: "Account not found" });
+            return;
+        }
 
         // User exists
         // Generate link to reset the password
@@ -150,27 +157,26 @@ export const generateForgetPasswordLink: RequestHandler = async (
 };
 
 // DON'T KNOW
-export const grantValid: RequestHandler = async (req, res): Promise<any> => {
+export const grantValid: RequestHandler = async (req, res) => {
     res.json({ valid: true });
 };
 
 // UPDATE PASSWORD
-export const updatePassword: RequestHandler = async (
-    req,
-    res
-): Promise<any> => {
+export const updatePassword: RequestHandler = async (req, res) => {
     try {
         const { password, userId } = req.body;
 
         const user = await User.findById(userId);
-        if (!user)
-            return res.status(403).json({ error: "Unauthorized access!" });
+        if (!user) {
+            res.status(403).json({ error: "Unauthorized access!" });
+            return;
+        }
 
         const matched = await user.comparePassword(password);
-        if (matched)
-            return res
-                .status(422)
-                .json({ error: "Can't use the same password!" });
+        if (matched) {
+            res.status(422).json({ error: "Can't use the same password!" });
+            return;
+        }
 
         user.password = password;
         await user.save();
@@ -189,21 +195,21 @@ export const updatePassword: RequestHandler = async (
     }
 };
 
-export const signIn: RequestHandler = async (req, res): Promise<any> => {
+export const signIn: RequestHandler = async (req, res) => {
     try {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
-        if (!user)
-            return res
-                .status(403)
-                .json({ error: "Email or password is incorrect" });
+        if (!user) {
+            res.status(403).json({ error: "Email or password is incorrect" });
+            return;
+        }
 
         const matched = await user.comparePassword(password);
-        if (!matched)
-            return res
-                .status(403)
-                .json({ error: "Email or password is incorrect" });
+        if (!matched) {
+            res.status(403).json({ error: "Email or password is incorrect" });
+            return;
+        }
 
         // Generate Token
         const token = jwt.sign({ userId: user._id }, JWT_SECRET);

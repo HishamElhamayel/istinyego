@@ -4,54 +4,83 @@ import { JWT_SECRET } from "#/utils/variables";
 import { RequestHandler } from "express";
 import { JwtPayload, verify } from "jsonwebtoken";
 
-export const isValidPassResetToken: RequestHandler = async (
-    req,
-    res,
-    next
-): Promise<any> => {
+export const isValidPassResetToken: RequestHandler = async (req, res, next) => {
     const { token, userId } = req.body;
 
     const resetToken = await Token.findOne({ owner: userId });
-    if (!resetToken)
-        return res
-            .status(403)
-            .json({ error: "Unauthorized access, invalid token" });
+    if (!resetToken) {
+        res.status(403).json({ error: "Unauthorized access, invalid token" });
+        return;
+    }
 
     const matched = await resetToken.compareToken(token);
-    if (!matched)
-        return res
-            .status(403)
-            .json({ error: "Unauthorized access, invalid token" });
+    if (!matched) {
+        res.status(403).json({ error: "Unauthorized access, invalid token" });
+        return;
+    }
 
     next();
 };
 
-export const mustAuth: RequestHandler = async (
-    req,
-    res,
-    next
-): Promise<any> => {
-    const { authorization } = req.headers;
-    const token = authorization?.split("Bearer ")[1];
-    if (!token) return res.status(403).json({ error: "Unauthorized request" });
+export const mustAuth: RequestHandler = (req, res, next) => {
+    try {
+        // get header
+        const header = req.header("Authorization");
+        if (!header) {
+            next();
+            return;
+        }
 
-    const payload = verify(token, JWT_SECRET) as JwtPayload;
+        // get token
+        const [bearer, token] = header.split(" ");
+        if (!token || !bearer || bearer !== "Bearer") {
+            next();
+            return;
+        }
 
-    const id = payload.userId;
+        // verify token
+        verify(token, process.env.SECRET!, async (err, decoded) => {
+            if (!err && decoded) {
+                const userId = (decoded as JwtPayload).userId;
+                const user = await User.findOne({ _id: userId, tokens: token });
 
-    const user = await User.findOne({ _id: id, tokens: token });
-    if (!user) return res.status(403).json({ error: "Unauthorized request" });
-    req.user = {
-        id: user._id,
-        studentId: user.studentId,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        verified: user.verified,
-        favoriteRoutes: user.favoriteRoutes,
-        wallet: user.wallet,
+                if (!user) {
+                    res.status(403).json({ error: "Unauthorized request" });
+                    return;
+                }
+
+                req.user = {
+                    id: user._id,
+                    studentId: user.studentId,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    role: user.role,
+                    verified: user.verified,
+                    favoriteRoutes: user.favoriteRoutes,
+                    wallet: user.wallet,
+                };
+
+                req.token = token;
+            }
+
+            next();
+        });
+    } catch (err: any) {
+        console.error(err);
+        res.status(401).json({
+            error: err.message,
+        });
+        return;
+    }
+};
+
+export const mustRole = (role: string): RequestHandler => {
+    return (req, res, next) => {
+        if (req.user?.role === role) {
+            next();
+            return;
+        }
+
+        res.status(403).json({ error: "Unauthorized access!" });
     };
-
-    req.token = token;
-    next();
 };
