@@ -13,3 +13,4 @@ const walletSchema = new Schema<WalletDocument>({
 });
 
 export default model("Wallet", walletSchema) as Model<WalletDocument>;
+console.log("");
