@@ -42,25 +42,17 @@ export const mustAuth: RequestHandler = (req, res, next) => {
         verify(token, JWT_SECRET!, async (err, decoded) => {
             if (!err && decoded) {
                 const userId = (decoded as JwtPayload).userId;
-                const user = await User.findOne({ _id: userId, tokens: token });
+                const user = await User.findOne({
+                    _id: userId,
+                    tokens: token,
+                }).select("-password -email -phoneNumber -tokens");
 
                 if (!user) {
                     res.status(403).json({ error: "Unauthorized request" });
                     return;
                 }
 
-                req.user = {
-                    id: user._id,
-                    studentId: user.studentId,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    role: user.role,
-                    verified: user.verified,
-                    favoriteRoutes: user.favoriteRoutes,
-                    wallet: user.wallet,
-                };
-
-                req.token = token;
+                req.user = user;
             }
 
             next();

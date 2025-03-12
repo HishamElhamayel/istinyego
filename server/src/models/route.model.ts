@@ -1,7 +1,6 @@
-import { ObjectId, Schema, model } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 
 interface RouteDocument extends Document {
-    _id: ObjectId;
     startLocation: string;
     endLocation: string;
     fare: number;

@@ -1,14 +1,13 @@
 import Transaction from "#/models/transaction.model";
-import Wallet from "#/models/wallet.model";
+import { WalletDocument } from "#/models/wallet.model";
 import { RequestHandler } from "express";
 
 export const createTransaction: RequestHandler = async (req, res) => {
     try {
         const { amount, type } = req.body;
 
-        const user = req.user;
-        const walletId = user.wallet;
-        const wallet = await Wallet.findOne({ _id: walletId });
+        await req.user.populate("wallet");
+        const wallet = req.user.wallet as WalletDocument;
 
         if (!wallet) {
             res.status(404).json({ error: "Wallet not found" });
@@ -32,7 +31,7 @@ export const createTransaction: RequestHandler = async (req, res) => {
         }
 
         const transaction = await Transaction.create({
-            walletId,
+            walletId: wallet._id,
             type,
             amount,
             balanceAfterTransaction,

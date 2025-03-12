@@ -1,8 +1,8 @@
 import { compare, hash } from "bcryptjs";
 import { model, ObjectId, Schema, Document } from "mongoose";
+import { WalletDocument } from "./wallet.model";
 
 export interface UserDocument extends Document {
-    _id: ObjectId;
     firstName: string;
     lastName: string;
     studentId: number;
@@ -12,7 +12,7 @@ export interface UserDocument extends Document {
     phoneNumber?: number;
     verified: boolean;
     tokens: string[];
-    wallet: ObjectId;
+    wallet: ObjectId | WalletDocument;
     favoriteRoutes: ObjectId[];
     licenseNumber?: number;
     comparePassword(password: string): Promise<boolean>;
@@ -75,9 +75,7 @@ const userSchema = new Schema<UserDocument>(
         ],
         licenseNumber: { type: Number },
     },
-    {
-        timestamps: true,
-    }
+    { timestamps: true }
 );
 
 userSchema.pre("save", async function (next) {

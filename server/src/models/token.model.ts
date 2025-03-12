@@ -1,7 +1,7 @@
 import { compare, hash } from "bcryptjs";
-import { model, ObjectId, Schema } from "mongoose";
+import { Document, model, ObjectId, Schema } from "mongoose";
 
-interface TokenDocument {
+export interface TokenDocument extends Document {
     owner: ObjectId;
     token: string;
     createdAt: Date;

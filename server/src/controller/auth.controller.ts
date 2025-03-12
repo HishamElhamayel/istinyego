@@ -41,7 +41,6 @@ export const createUser: RequestHandler = async (req: CreateUser, res) => {
             firstName,
             lastName,
             email,
-            userId: user._id.toString(),
         });
 
         res.status(201).json({
@@ -117,7 +116,6 @@ export const sendReVerificationToken: RequestHandler = async (req, res) => {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            userId: user._id.toString(),
         });
 
         res.json({ message: "OTP Sent" });
@@ -245,16 +243,16 @@ export const sendProfile: RequestHandler = (req, res) => {
 };
 
 export const logout: RequestHandler = async (req, res) => {
-    //Logout and Logout from all
+    // Logout and Logout from all
     try {
         const { fromAll } = req.query;
 
-        const token = req.token;
-        const user = await User.findById(req.user.id);
+        const token = req.headers.authorization?.split(" ")[1];
+        const user = await User.findById(req.user._id);
         if (!user) throw new Error("Something went wrong, user not found!");
 
-        if (fromAll === "yes") user.tokens = [];
-        else user.tokens = user.tokens.filter((t) => t !== token);
+        user.tokens =
+            fromAll === "yes" ? [] : user.tokens.filter((t) => t !== token);
 
         await user.save();
 

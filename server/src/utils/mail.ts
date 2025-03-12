@@ -24,7 +24,6 @@ interface Profile {
     firstName: string;
     lastName: string;
     email: string;
-    userId: string;
 }
 
 export const sendVerificationMail = async (token: string, profile: Profile) => {

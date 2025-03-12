@@ -1,5 +1,5 @@
+import { UserDocument } from "#/models/user.model";
 import { Request } from "express";
-import { ObjectId } from "mongoose";
 
 export interface CreateUser extends Request {
     body: {
@@ -21,17 +21,7 @@ export interface VerifyEmailRequest extends Request {
 declare global {
     namespace Express {
         interface Request {
-            user: {
-                id: any;
-                studentId: number;
-                firstName: string;
-                lastName: string;
-                role: string;
-                verified: boolean;
-                favoriteRoutes: ObjectId[];
-                wallet: any;
-            };
-            token: string;
+            user: UserDocument;
         }
     }
 }

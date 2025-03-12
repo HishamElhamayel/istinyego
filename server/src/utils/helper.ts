@@ -1,5 +1,4 @@
 import { UserDocument } from "#/models/user.model";
-import { format } from "path";
 
 export const generateToken = (length: number) => {
     let opt = "";

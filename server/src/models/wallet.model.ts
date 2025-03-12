@@ -1,6 +1,6 @@
-import { Document, ObjectId, Schema, model } from "mongoose";
-interface WalletDocument extends Document {
-    _id: ObjectId;
+import { Document, Schema, model } from "mongoose";
+
+export interface WalletDocument extends Document {
     balance: number;
     addFunds(amount: number): Promise<number>;
     deductFunds(amount: number): Promise<number>;
