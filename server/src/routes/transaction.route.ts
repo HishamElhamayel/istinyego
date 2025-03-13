@@ -17,11 +17,6 @@ router.post(
     createTransaction
 );
 router.get("/myTransactions", mustAuth, getTransactionsByWalletId);
-router.get(
-    "/getAllTransactions",
-    mustAuth,
-    mustRoles(["admin"]),
-    getAllTransactions
-);
+router.get("/", mustAuth, mustRoles(["admin"]), getAllTransactions);
 
 export default router;

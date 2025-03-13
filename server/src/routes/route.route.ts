@@ -1,4 +1,9 @@
-import { createRoute } from "#/controller/route.controller";
+import {
+    createRoute,
+    deleteRoute,
+    getAllRoutes,
+    updateRoute,
+} from "#/controller/route.controller";
 import { mustAuth, mustRoles } from "#/middleware/auth.middleware";
 import { validate } from "#/middleware/validator.middleware";
 import { CreateRouteSchema } from "#/utils/validation";
@@ -13,5 +18,9 @@ router.post(
     validate(CreateRouteSchema),
     createRoute
 );
+
+router.get("/", getAllRoutes);
+router.patch("/:id", mustAuth, mustRoles(["admin"]), updateRoute);
+router.delete("/:id", mustAuth, mustRoles(["admin"]), deleteRoute);
 
 export default router;

@@ -80,7 +80,7 @@ export const verifyEmail: RequestHandler = async (
 
         await Token.findByIdAndDelete(verificationToken._id);
 
-        res.status(200).json({ message: "Email verified" });
+        res.json({ message: "Email verified" });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });
