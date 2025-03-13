@@ -1,4 +1,5 @@
 import Shuttle from "#/models/shuttle.model";
+import User from "#/models/user.model";
 import { RequestHandler } from "express";
 
 export const createShuttle: RequestHandler = async (req, res) => {
@@ -6,6 +7,14 @@ export const createShuttle: RequestHandler = async (req, res) => {
         const { capacity, currentLocation, driver } = req.body;
 
         // console.log(Shuttle);
+        const user = await User.findById(driver);
+        if (!user) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        } else if (user.role !== "driver") {
+            res.status(403).json({ error: "User is not a driver" });
+            return;
+        }
 
         const shuttle = await Shuttle.create({
             capacity,
