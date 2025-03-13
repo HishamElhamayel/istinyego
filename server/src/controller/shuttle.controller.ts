@@ -5,20 +5,16 @@ export const createShuttle: RequestHandler = async (req, res) => {
     try {
         const { capacity, currentLocation, driver } = req.body;
 
-        console.log(Shuttle);
+        // console.log(Shuttle);
 
-        await Shuttle.create({
+        const shuttle = await Shuttle.create({
             capacity,
             currentLocation,
             driver,
         });
 
         res.status(201).json({
-            shuttle: {
-                capacity,
-                currentLocation,
-                driver: driver.populate("driver"),
-            },
+            shuttle: await shuttle.populate("driver"),
         });
     } catch (err) {
         console.error(err);

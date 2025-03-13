@@ -28,3 +28,5 @@ const shuttleSchema = new Schema<ShuttleDocument>({
         ref: "User",
     },
 });
+
+export default model<ShuttleDocument>("Shuttle", shuttleSchema);
