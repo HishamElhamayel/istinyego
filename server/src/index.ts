@@ -3,6 +3,7 @@ import express from "express";
 import "./db";
 import authRouter from "./routes/auth.route";
 import routeRouter from "./routes/route.route";
+import shuttleRouter from "./routes/shuttle.route";
 import transactionRouter from "./routes/transaction.route";
 import walletRouter from "./routes/wallet.route";
 
@@ -16,6 +17,7 @@ app.use("/auth", authRouter);
 app.use("/wallet", walletRouter);
 app.use("/transaction", transactionRouter);
 app.use("/route", routeRouter);
+app.use("/shuttle", shuttleRouter);
 
 const PORT = parseInt(process.env.PORT || "8989");
 

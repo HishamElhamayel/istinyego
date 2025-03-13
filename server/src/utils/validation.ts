@@ -13,10 +13,8 @@ export const CreateUserSchema = yup.object({
         .min(3, "Name is too short")
         .max(30, "Name is too long"),
     email: yup.string().email("Invalid Email").required("Email is missing"),
-    role: yup
-        .string()
-        .required("User role is missing")
-        .oneOf(["user", "driver", "admin"], "Invalid user role"),
+    // role: yup.string().required("User role is missing"),
+    // .oneOf(["user", "driver", "admin"], "Invalid user role"),
     password: yup
         .string()
         .required("Password is missing")
@@ -108,4 +106,28 @@ export const CreateRouteSchema = yup.object({
         .number()
         .required("Amount is missing")
         .min(1, "Amount cant be negative"),
+});
+
+export const CreateShuttleSchema = yup.object({
+    capacity: yup
+        .number()
+        .required("Capacity is missing")
+        .min(1, "Capacity cant be negative")
+        .max(30, "Capacity cant be more than 30"),
+    currentLocation: yup.object({
+        coordinates: yup
+            .array()
+            .of(yup.number().required("Coordinates can only be numbers"))
+            .length(2, "2 coordinates are required")
+            .required("Coordinates are missing"),
+    }),
+    driver: yup
+        .string()
+        .transform(function (value) {
+            if (this.isType(value) && isValidObjectId(value)) {
+                return value;
+            }
+            return "";
+        })
+        .required("Invalid User ID"),
 });

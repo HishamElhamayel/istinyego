@@ -14,11 +14,6 @@ export const createTransaction: RequestHandler = async (req, res) => {
             return;
         }
 
-        // if (isNaN(amount) || amount <= 0) {
-        //     res.status(400).json({ error: "Invalid amount" });
-        //     return;
-        // }
-
         let balanceAfterTransaction: number = 0;
 
         if (type === "add") {
