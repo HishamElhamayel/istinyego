@@ -24,6 +24,7 @@ export const isValidPassResetToken: RequestHandler = async (req, res, next) => {
 
 export const mustAuth: RequestHandler = (req, res, next) => {
     try {
+        console.log("Must Auth");
         // get header
         const header = req.header("Authorization");
         if (!header) {

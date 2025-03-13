@@ -13,6 +13,10 @@ export const CreateUserSchema = yup.object({
         .min(3, "Name is too short")
         .max(30, "Name is too long"),
     email: yup.string().email("Invalid Email").required("Email is missing"),
+    role: yup
+        .string()
+        .required("User role is missing")
+        .oneOf(["user", "driver", "admin"], "Invalid user role"),
     password: yup
         .string()
         .required("Password is missing")
@@ -70,12 +74,37 @@ export const SignInValidationSchema = yup.object({
         ),
 });
 
-export const TransactionSchema = yup.object({
+export const CreateTransactionSchema = yup.object({
     type: yup
         .string()
         .required("Transaction type is missing")
         .oneOf(["add", "deduct"], "Invalid transaction type"),
     amount: yup
+        .number()
+        .required("Amount is missing")
+        .min(1, "Amount cant be negative"),
+});
+
+export const CreateRouteSchema = yup.object({
+    startLocation: yup.object({
+        coordinates: yup
+            .array()
+            .of(yup.number().required("Coordinates can only be numbers"))
+            .length(2, "2 coordinates are required")
+            .required("Coordinates are missing"),
+        address: yup.string().trim().required("Address is required"),
+        description: yup.string().trim().required("Description is required"),
+    }),
+    endLocation: yup.object({
+        coordinates: yup
+            .array()
+            .of(yup.number().required("Coordinates can only be numbers"))
+            .length(2, "2 coordinates are required")
+            .required("Coordinates are missing"),
+        address: yup.string().trim().required("Address is required"),
+        description: yup.string().trim().required("Description is required"),
+    }),
+    fare: yup
         .number()
         .required("Amount is missing")
         .min(1, "Amount cant be negative"),

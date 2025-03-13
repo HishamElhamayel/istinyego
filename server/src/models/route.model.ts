@@ -12,7 +12,7 @@ interface RouteDocument extends Document {
         coordinates: [number];
         address: string;
         description: string;
-    };;
+    };
     fare: number;
 }
 
