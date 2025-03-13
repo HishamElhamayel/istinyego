@@ -1,21 +1,41 @@
 import { Document, Schema, model } from "mongoose";
 
 interface RouteDocument extends Document {
-    startLocation: string;
-    endLocation: string;
+    startLocation: {
+        type: string;
+        coordinates: [number];
+        address: string;
+        description: string;
+    };
+    endLocation: {
+        type: string;
+        coordinates: [number];
+        address: string;
+        description: string;
+    };;
     fare: number;
 }
 
 const routeSchema = new Schema<RouteDocument>({
     startLocation: {
-        type: String,
-        required: true,
-        trim: true,
+        type: {
+            type: String,
+            default: "Point",
+            enum: ["Point"],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
     },
     endLocation: {
-        type: String,
-        required: true,
-        trim: true,
+        type: {
+            type: String,
+            default: "Point",
+            enum: ["Point"],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
     },
     fare: {
         type: Number,
