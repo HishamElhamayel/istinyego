@@ -14,20 +14,17 @@ export const createTransaction: RequestHandler = async (req, res) => {
             return;
         }
 
-        if (isNaN(amount) || amount <= 0) {
-            res.status(400).json({ error: "Invalid amount" });
-            return;
-        }
+        // if (isNaN(amount) || amount <= 0) {
+        //     res.status(400).json({ error: "Invalid amount" });
+        //     return;
+        // }
 
-        let balanceAfterTransaction: number;
+        let balanceAfterTransaction: number = 0;
 
         if (type === "add") {
             balanceAfterTransaction = await wallet.addFunds(amount);
         } else if (type === "deduct") {
             balanceAfterTransaction = await wallet.deductFunds(amount);
-        } else {
-            res.status(400).json({ error: "Invalid transaction type" });
-            return;
         }
 
         const transaction = await Transaction.create({

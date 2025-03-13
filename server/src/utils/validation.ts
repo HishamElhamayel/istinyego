@@ -69,3 +69,14 @@ export const SignInValidationSchema = yup.object({
             "Password must contain at least one letter, one number and one special character"
         ),
 });
+
+export const TransactionSchema = yup.object({
+    type: yup
+        .string()
+        .required("Transaction type is missing")
+        .oneOf(["add", "deduct"], "Invalid transaction type"),
+    amount: yup
+        .number()
+        .required("Amount is missing")
+        .min(1, "Amount cant be negative"),
+});

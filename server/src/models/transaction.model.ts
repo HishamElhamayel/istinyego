@@ -17,6 +17,7 @@ const transactionSchema = new Schema<TransactionDocument>(
         type: {
             type: String,
             required: true,
+            enum: ["add", "deduct"],
         },
         amount: {
             type: Number,
