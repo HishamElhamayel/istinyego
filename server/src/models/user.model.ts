@@ -58,7 +58,15 @@ const userSchema = new Schema(
         ],
         licenseNumber: { type: Number },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+        methods: {
+            comparePassword: async function (password: string) {
+                const result = await compare(password, this.password);
+                return result;
+            },
+        },
+    }
 );
 
 userSchema.pre("save", async function (next) {
@@ -67,10 +75,5 @@ userSchema.pre("save", async function (next) {
     }
     next();
 });
-
-userSchema.methods.comparePassword = async function (password: string) {
-    const result = await compare(password, this.password);
-    return result;
-};
 
 export default model("User", userSchema);

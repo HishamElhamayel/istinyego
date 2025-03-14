@@ -98,6 +98,7 @@ export const sendReVerificationToken: RequestHandler = async (req, res) => {
         }
 
         const user = await User.findById(userId);
+
         if (!user) {
             res.status(403).json({ error: "Invalid request!" });
             return;
