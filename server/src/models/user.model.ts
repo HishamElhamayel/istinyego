@@ -1,24 +1,7 @@
 import { compare, hash } from "bcryptjs";
-import { model, ObjectId, Schema, Document } from "mongoose";
-import { WalletDocument } from "./wallet.model";
+import { model, Schema } from "mongoose";
 
-export interface UserDocument extends Document {
-    firstName: string;
-    lastName: string;
-    studentId: number;
-    email: string;
-    password: string;
-    role: string;
-    phoneNumber?: number;
-    verified: boolean;
-    tokens: string[];
-    wallet: ObjectId | WalletDocument;
-    favoriteRoutes: ObjectId[];
-    licenseNumber?: number;
-    comparePassword(password: string): Promise<boolean>;
-}
-
-const userSchema = new Schema<UserDocument>(
+const userSchema = new Schema(
     {
         firstName: {
             type: String,
@@ -90,4 +73,4 @@ userSchema.methods.comparePassword = async function (password: string) {
     return result;
 };
 
-export default model<UserDocument>("User", userSchema);
+export default model("User", userSchema);

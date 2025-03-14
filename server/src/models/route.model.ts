@@ -1,22 +1,6 @@
-import { Document, Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
-interface RouteDocument extends Document {
-    startLocation: {
-        type: string;
-        coordinates: [number];
-        address: string;
-        description: string;
-    };
-    endLocation: {
-        type: string;
-        coordinates: [number];
-        address: string;
-        description: string;
-    };
-    fare: number;
-}
-
-const routeSchema = new Schema<RouteDocument>({
+const routeSchema = new Schema({
     startLocation: {
         type: {
             type: String,
@@ -43,4 +27,4 @@ const routeSchema = new Schema<RouteDocument>({
     },
 });
 
-export default model<RouteDocument>("Route", routeSchema);
+export default model("Route", routeSchema);

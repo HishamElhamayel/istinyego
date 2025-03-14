@@ -1,13 +1,6 @@
-import { Document, model, ObjectId, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
-export interface TransactionDocument extends Document {
-    walletId: ObjectId;
-    type: string;
-    amount: number;
-    balanceAfterTransaction: number;
-}
-
-const transactionSchema = new Schema<TransactionDocument>(
+const transactionSchema = new Schema(
     {
         walletId: {
             type: Schema.Types.ObjectId,
@@ -31,4 +24,4 @@ const transactionSchema = new Schema<TransactionDocument>(
     { timestamps: true }
 );
 
-export default model<TransactionDocument>("Transaction", transactionSchema);
+export default model("Transaction", transactionSchema);

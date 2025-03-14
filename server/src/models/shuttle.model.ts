@@ -1,15 +1,6 @@
-import { Document, model, ObjectId, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
-export interface ShuttleDocument extends Document {
-    capacity: number;
-    currentLocation: {
-        type: string;
-        coordinates: [number];
-    };
-    driver: ObjectId;
-}
-
-const shuttleSchema = new Schema<ShuttleDocument>({
+const shuttleSchema = new Schema({
     capacity: {
         type: Number,
         required: true,
@@ -29,4 +20,4 @@ const shuttleSchema = new Schema<ShuttleDocument>({
     },
 });
 
-export default model<ShuttleDocument>("Shuttle", shuttleSchema);
+export default model("Shuttle", shuttleSchema);

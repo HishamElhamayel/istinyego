@@ -1,14 +1,7 @@
 import { compare, hash } from "bcryptjs";
-import { Document, model, ObjectId, Schema } from "mongoose";
+import { model, Schema } from "mongoose";
 
-export interface TokenDocument extends Document {
-    owner: ObjectId;
-    token: string;
-    createdAt: Date;
-    compareToken(token: string): Promise<boolean>;
-}
-
-const tokenSchema = new Schema<TokenDocument>({
+const tokenSchema = new Schema({
     owner: {
         type: Schema.Types.ObjectId,
         required: true,
@@ -37,4 +30,4 @@ tokenSchema.methods.compareToken = async function (token: string) {
     return result;
 };
 
-export default model<TokenDocument>("Token", tokenSchema);
+export default model("Token", tokenSchema);

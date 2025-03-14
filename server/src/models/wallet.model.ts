@@ -1,12 +1,6 @@
-import { Document, Schema, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
-export interface WalletDocument extends Document {
-    balance: number;
-    addFunds(amount: number): Promise<number>;
-    deductFunds(amount: number): Promise<number>;
-}
-
-const walletSchema = new Schema<WalletDocument>({
+const walletSchema = new Schema({
     balance: {
         type: Number,
         default: 0,
@@ -25,4 +19,4 @@ walletSchema.methods.deductFunds = async function (amount: number) {
     return this.balance;
 };
 
-export default model<WalletDocument>("Wallet", walletSchema);
+export default model("Wallet", walletSchema);
