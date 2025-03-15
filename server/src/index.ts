@@ -5,6 +5,7 @@ import authRouter from "./routes/auth.route";
 import routeRouter from "./routes/route.route";
 import shuttleRouter from "./routes/shuttle.route";
 import transactionRouter from "./routes/transaction.route";
+import tripRouter from "./routes/trip.route";
 import walletRouter from "./routes/wallet.route";
 
 const app = express();
@@ -18,6 +19,7 @@ app.use("/wallet", walletRouter);
 app.use("/transaction", transactionRouter);
 app.use("/route", routeRouter);
 app.use("/shuttle", shuttleRouter);
+app.use("/trip", tripRouter);
 
 const PORT = parseInt(process.env.PORT || "8989");
 

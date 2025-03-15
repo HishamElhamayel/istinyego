@@ -131,3 +131,50 @@ export const CreateShuttleSchema = yup.object({
         })
         .required("Invalid User ID"),
 });
+
+export const CreateTripSchema = yup.object({
+    shuttleId: yup
+        .string()
+        .transform(function (value) {
+            if (this.isType(value) && isValidObjectId(value)) {
+                return value;
+            }
+            return "";
+        })
+        .required("Invalid shuttle ID"),
+    routeId: yup
+        .string()
+        .transform(function (value) {
+            if (this.isType(value) && isValidObjectId(value)) {
+                return value;
+            }
+            return "";
+        })
+        .required("Invalid User ID"),
+    startTime: yup
+        .date()
+        .min(new Date(), "Start time cant be in the past")
+        .required("Start time is missing"),
+    endTime: yup
+        .date()
+        .min(new Date(), "End time cant be in the past")
+        .required("End time is missing"),
+    date: yup
+        .string()
+        .transform(function (value) {
+            const date = new Date(value).setHours(0, 0, 0, 0);
+            const todaysDate = new Date().setHours(0, 0, 0, 0);
+
+            if (date.toString() !== "Invalid Date" && date >= todaysDate) {
+                return value;
+            }
+
+            return "";
+        })
+        .required("Invalid date"),
+    availableSeats: yup
+        .number()
+        .required("Available seats is missing")
+        .min(1, "Available seats cant be 0 or negative")
+        .max(30, "Available seats cant be more than 30"),
+});
