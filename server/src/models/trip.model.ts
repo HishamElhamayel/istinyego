@@ -2,12 +2,12 @@ import { model, Schema } from "mongoose";
 
 const tripSchema = new Schema(
     {
-        shuttleId: {
+        shuttle: {
             type: Schema.Types.ObjectId,
             required: true,
             ref: "Shuttle",
         },
-        routeId: {
+        route: {
             type: Schema.Types.ObjectId,
             required: true,
             ref: "Route",

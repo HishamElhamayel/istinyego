@@ -23,7 +23,7 @@ export const CreateUserSchema = yup.object({
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
             "Password must contain at least one letter, one number and one special character"
         ),
-    studentId: yup.number().required("Student ID is missing"),
+    // studentId: yup.number().required("Student ID is missing"),
 });
 
 export const TokenAndIdValidationSchema = yup.object({

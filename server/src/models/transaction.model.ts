@@ -2,7 +2,7 @@ import { model, Schema } from "mongoose";
 
 const transactionSchema = new Schema(
     {
-        walletId: {
+        wallet: {
             type: Schema.Types.ObjectId,
             required: true,
             ref: "Wallet",

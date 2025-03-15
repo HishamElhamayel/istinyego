@@ -9,7 +9,7 @@ const router = Router();
 router.post(
     "/create",
     mustAuth,
-    mustRoles(["admin"]),
+    mustRoles("admin"),
     validate(CreateTripSchema),
     createTrip
 );

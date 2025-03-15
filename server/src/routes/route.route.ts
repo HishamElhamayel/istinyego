@@ -14,13 +14,13 @@ const router = Router();
 router.post(
     "/create",
     mustAuth,
-    mustRoles(["admin"]),
+    mustRoles("admin"),
     validate(CreateRouteSchema),
     createRoute
 );
 
 router.get("/", getAllRoutes);
-router.patch("/:id", mustAuth, mustRoles(["admin"]), updateRoute);
-router.delete("/:id", mustAuth, mustRoles(["admin"]), deleteRoute);
+router.patch("/:id", mustAuth, mustRoles("admin"), updateRoute);
+router.delete("/:id", mustAuth, mustRoles("admin"), deleteRoute);
 
 export default router;

@@ -22,7 +22,7 @@ export const createTransaction: RequestHandler = async (req, res) => {
         }
 
         const transaction = await Transaction.create({
-            walletId: wallet._id,
+            wallet: wallet._id,
             type,
             amount,
             balanceAfterTransaction,
@@ -32,7 +32,7 @@ export const createTransaction: RequestHandler = async (req, res) => {
         res.status(201).json({
             transaction: {
                 id: transaction._id,
-                // walletId: transaction.walletId,
+                // wallet: transaction.wallet,
                 type: transaction.type,
                 amount: transaction.amount,
                 balanceAfterTransaction: transaction.balanceAfterTransaction,
@@ -46,10 +46,9 @@ export const createTransaction: RequestHandler = async (req, res) => {
 
 export const getTransactionsByWalletId: RequestHandler = async (req, res) => {
     try {
-        const user = req.user;
-        const walletId = user.wallet;
-
-        const transactions = await Transaction.find({ walletId });
+        const transactions = await Transaction.find({
+            wallet: req.user.wallet,
+        });
 
         res.json({ transactions });
     } catch (err) {

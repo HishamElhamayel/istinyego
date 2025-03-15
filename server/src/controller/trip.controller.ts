@@ -7,8 +7,8 @@ export const createTrip: RequestHandler = async (req, res) => {
             req.body;
 
         const trip = await Trip.create({
-            shuttleId,
-            routeId,
+            shuttle: shuttleId,
+            route: routeId,
             startTime,
             endTime,
             date,

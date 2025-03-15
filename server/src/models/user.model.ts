@@ -21,7 +21,7 @@ const userSchema = new Schema(
         },
         studentId: {
             type: Number,
-            required: true,
+            // required: true,
             trim: true,
             unique: true,
         },
