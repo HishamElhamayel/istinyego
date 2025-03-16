@@ -1,5 +1,4 @@
 import {
-    createTransaction,
     getAllTransactions,
     getTransactionsByWalletId,
 } from "#/controller/transaction.controller";
@@ -10,12 +9,12 @@ import { Router } from "express";
 
 const router = Router();
 
-router.post(
-    "/create",
-    mustAuth,
-    validate(CreateTransactionSchema),
-    createTransaction
-);
+// router.post(
+//     "/create",
+//     mustAuth,
+//     validate(CreateTransactionSchema),
+//     createTransaction
+// );
 router.get("/myTransactions", mustAuth, getTransactionsByWalletId);
 router.get("/", mustAuth, mustRoles("admin"), getAllTransactions);
 

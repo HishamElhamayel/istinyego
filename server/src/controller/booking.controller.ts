@@ -1,10 +1,10 @@
-import { RequestHandler } from "express";
-import { startSession } from "mongoose";
 import Booking from "#/models/booking.model";
+import { RouteDocument } from "#/models/route.model";
 import Transaction from "#/models/transaction.model";
 import Trip from "#/models/trip.model";
-import { RouteDocument } from "#/models/route.model";
 import { WalletDocument } from "#/models/wallet.model";
+import { RequestHandler } from "express";
+import { startSession } from "mongoose";
 
 export const createBooking: RequestHandler = async (req, res) => {
     const session = await startSession();
@@ -46,7 +46,7 @@ export const createBooking: RequestHandler = async (req, res) => {
         const transaction = await Transaction.create(
             [
                 {
-                    wallet: req.user.wallet,
+                    wallet: req.user.wallet?._id,
                     type: "deduct",
                     amount: route.fare,
                     balanceAfterTransaction: wallet.balance - route.fare,
@@ -74,6 +74,7 @@ export const createBooking: RequestHandler = async (req, res) => {
 
         res.status(201).json({
             booking: booking[0],
+            transaction: transaction[0],
         });
     } catch (err) {
         await session.abortTransaction();
