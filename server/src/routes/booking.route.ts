@@ -4,6 +4,6 @@ import { Router } from "express";
 
 const router = Router();
 
-router.get("/create", mustAuth, createBooking);
+router.post("/create", mustAuth, createBooking);
 
 export default router;
