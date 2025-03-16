@@ -77,7 +77,6 @@ export const verifyEmail: RequestHandler = async (
         }
 
         await User.findByIdAndUpdate(userId, { verified: true });
-
         await Token.findByIdAndDelete(verificationToken._id);
 
         res.json({ message: "Email verified" });
@@ -140,7 +139,6 @@ export const generateForgetPasswordLink: RequestHandler = async (req, res) => {
 
         // User exists
         // Generate link to reset the password
-
         const token = crypto.randomBytes(36).toString("hex");
         await Token.findOneAndDelete({ owner: user._id });
         await Token.create({
@@ -181,9 +179,7 @@ export const updatePassword: RequestHandler = async (req, res) => {
             return;
         }
 
-        user.password = password;
-        await user.save();
-
+        await User.findByIdAndUpdate(userId, { password });
         await Token.findOneAndDelete({ owner: user._id });
 
         // Send Success Email
@@ -216,9 +212,7 @@ export const signIn: RequestHandler = async (req, res) => {
 
         // Generate Token
         const token = jwt.sign({ userId: user._id }, JWT_SECRET);
-        user.tokens.push(token);
-
-        await user.save();
+        await User.findByIdAndUpdate(user._id, { $push: { tokens: token } });
 
         res.json({
             profile: {
@@ -247,15 +241,11 @@ export const logout: RequestHandler = async (req, res) => {
     // Logout and Logout from all
     try {
         const { fromAll } = req.query;
-
         const token = req.headers.authorization?.split(" ")[1];
-        const user = await User.findById(req.user._id);
-        if (!user) throw new Error("Something went wrong, user not found!");
 
-        user.tokens =
-            fromAll === "yes" ? [] : user.tokens.filter((t) => t !== token);
-
-        await user.save();
+        const updateQuery =
+            fromAll === "yes" ? { tokens: [] } : { $pull: { tokens: token } };
+        await User.findByIdAndUpdate(req.user._id, updateQuery);
 
         res.json({ message: "Successfully logged out" });
     } catch (err) {
