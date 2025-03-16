@@ -1,3 +1,4 @@
+import Transaction from "#/models/transaction.model";
 import Wallet from "#/models/wallet.model";
 import { RequestHandler } from "express";
 
@@ -32,7 +33,22 @@ export const chargeWallet: RequestHandler = async (req, res) => {
         const amount = req.body.amount;
         wallet.addFunds(amount);
 
-        res.json({ balance: wallet?.balance });
+        const transaction = await Transaction.create({
+            wallet: wallet._id,
+            type: "add",
+            amount,
+            balanceAfterTransaction: wallet.balance,
+        });
+
+        res.json({
+            transaction: {
+                id: transaction._id,
+                // wallet: transaction.wallet,
+                type: transaction.type,
+                amount: transaction.amount,
+                balanceAfterTransaction: transaction.balanceAfterTransaction,
+            },
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });

@@ -48,7 +48,7 @@ export const createBooking: RequestHandler = async (req, res) => {
         const transaction = await Transaction.create(
             [
                 {
-                    wallet: req.user.wallet,
+                    wallet: req.user.wallet?._id,
                     type: "deduct",
                     amount: route.fare,
                     balanceAfterTransaction: wallet.balance - route.fare,
@@ -76,6 +76,7 @@ export const createBooking: RequestHandler = async (req, res) => {
 
         res.status(201).json({
             booking: booking[0],
+            transaction: transaction[0],
         });
     } catch (err) {
         await session.abortTransaction();
