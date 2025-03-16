@@ -1,5 +1,5 @@
 import { compare, hash } from "bcryptjs";
-import { model, Schema } from "mongoose";
+import { HydratedDocumentFromSchema, model, Schema } from "mongoose";
 
 const userSchema = new Schema(
     {
@@ -28,6 +28,7 @@ const userSchema = new Schema(
         password: {
             type: String,
             required: true,
+            select: false,
         },
         role: {
             type: String,
@@ -44,6 +45,7 @@ const userSchema = new Schema(
         tokens: [
             {
                 type: String,
+                select: false,
             },
         ],
         wallet: {
@@ -60,14 +62,13 @@ const userSchema = new Schema(
     },
     {
         timestamps: true,
-        methods: {
-            comparePassword: async function (password: string) {
-                const result = await compare(password, this.password);
-                return result;
-            },
-        },
     }
 );
+
+userSchema.methods.comparePassword = async function (password: string) {
+    const result = await compare(password, this.password);
+    return result;
+};
 
 userSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
@@ -76,4 +77,9 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
-export default model("User", userSchema);
+export type UserDocument = HydratedDocumentFromSchema<typeof userSchema> & {
+    comparePassword: (password: string) => Promise<boolean>;
+};
+
+const User = model<UserDocument>("User", userSchema);
+export default User;

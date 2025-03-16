@@ -23,8 +23,11 @@ app.use("/shuttle", shuttleRouter);
 app.use("/trip", tripRouter);
 app.use("/booking", bookingRouter);
 
-const PORT = parseInt(process.env.PORT || "8989");
+app.use((req, res) => {
+    res.status(404).json({ message: "Not found" });
+});
 
+const PORT = parseInt(process.env.PORT || "8989");
 app.listen(PORT, () => {
     console.log("Listening on port " + PORT);
 });

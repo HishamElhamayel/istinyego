@@ -1,4 +1,10 @@
-import { model, Schema } from "mongoose";
+import {
+    HydratedDocument,
+    HydratedDocumentFromSchema,
+    InferSchemaType,
+    model,
+    Schema,
+} from "mongoose";
 
 const transactionSchema = new Schema(
     {
@@ -24,4 +30,12 @@ const transactionSchema = new Schema(
     { timestamps: true }
 );
 
-export default model("Transaction", transactionSchema);
+export type TransactionDocument = HydratedDocumentFromSchema<
+    typeof transactionSchema
+>;
+
+const Transaction = model<TransactionDocument>(
+    "Transaction",
+    transactionSchema
+);
+export default Transaction;

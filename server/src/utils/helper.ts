@@ -1,4 +1,4 @@
-import { UserDocument } from "#/types/user.types";
+import { UserDocument } from "#/models/user.model";
 
 export const generateToken = (length: number) => {
     let opt = "";

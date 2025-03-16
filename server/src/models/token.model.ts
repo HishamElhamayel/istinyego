@@ -1,32 +1,27 @@
 import { compare, hash } from "bcryptjs";
-import { model, Schema } from "mongoose";
+import { HydratedDocumentFromSchema, model, Schema } from "mongoose";
 
-const tokenSchema = new Schema(
-    {
-        owner: {
-            type: Schema.Types.ObjectId,
-            required: true,
-            ref: "User",
-        },
-        token: {
-            type: String,
-            required: true,
-        },
-        createdAt: {
-            type: Date,
-            default: Date.now,
-            expires: 3600,
-        },
+const tokenSchema = new Schema({
+    owner: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "User",
     },
-    {
-        methods: {
-            compareToken: async function (token: string) {
-                const result = await compare(token, this.token);
-                return result;
-            },
-        },
-    }
-);
+    token: {
+        type: String,
+        required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        expires: 3600,
+    },
+});
+
+tokenSchema.methods.compareToken = async function (token: string) {
+    const result = await compare(token, this.token);
+    return result;
+};
 
 tokenSchema.pre("save", async function (next) {
     if (this.isModified("token")) {
@@ -35,4 +30,8 @@ tokenSchema.pre("save", async function (next) {
     next();
 });
 
-export default model("Token", tokenSchema);
+export type TokenDocument = HydratedDocumentFromSchema<typeof tokenSchema> & {
+    compareToken: (token: string) => Promise<boolean>;
+};
+
+export default model<TokenDocument>("Token", tokenSchema);

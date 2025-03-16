@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { HydratedDocumentFromSchema, Schema, model } from "mongoose";
 
 const routeSchema = new Schema({
     startLocation: {
@@ -27,4 +27,7 @@ const routeSchema = new Schema({
     },
 });
 
-export default model("Route", routeSchema);
+export type RouteDocument = HydratedDocumentFromSchema<typeof routeSchema>;
+
+const Route = model<RouteDocument>("Route", routeSchema);
+export default Route;

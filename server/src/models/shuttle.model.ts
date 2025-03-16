@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { HydratedDocumentFromSchema, model, Schema } from "mongoose";
 
 const shuttleSchema = new Schema({
     capacity: {
@@ -20,4 +20,7 @@ const shuttleSchema = new Schema({
     },
 });
 
-export default model("Shuttle", shuttleSchema);
+export type ShuttleDocument = HydratedDocumentFromSchema<typeof shuttleSchema>;
+
+const Shuttle = model<ShuttleDocument>("Shuttle", shuttleSchema);
+export default Shuttle;

@@ -1,12 +1,13 @@
 import { RequestHandler } from "express";
-import mongoose from "mongoose";
+import { startSession } from "mongoose";
 import Booking from "#/models/booking.model";
 import Transaction from "#/models/transaction.model";
 import Trip from "#/models/trip.model";
-import { RouteDocument, WalletDocument } from "#/types/user.types";
+import { RouteDocument } from "#/models/route.model";
+import { WalletDocument } from "#/models/wallet.model";
 
 export const createBooking: RequestHandler = async (req, res) => {
-    const session = await mongoose.startSession();
+    const session = await startSession();
     session.startTransaction();
 
     try {
@@ -18,14 +19,14 @@ export const createBooking: RequestHandler = async (req, res) => {
 
         // get trip and route
         const trip = await Trip.findById(tripId)
-            .populate("route")
+            .populate<{ route: RouteDocument }>("route")
             .session(session);
         if (!trip) {
             await session.abortTransaction();
             res.status(404).json({ error: "Trip not found" });
             return;
         }
-        const route = trip.route as unknown as RouteDocument;
+        const route = trip.route;
 
         // ensure that the trip has available seats
         if (trip.availableSeats === 0) {
@@ -66,13 +67,8 @@ export const createBooking: RequestHandler = async (req, res) => {
             { session }
         );
 
-        // update trip
-        trip.availableSeats -= 1;
-        await trip.save({ session });
-
-        // update wallet
-        wallet.balance -= route.fare;
-        await wallet.save({ session });
+        trip.bookSeat();
+        wallet.deductFunds(route.fare);
 
         await session.commitTransaction();
 

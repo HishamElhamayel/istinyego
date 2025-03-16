@@ -45,7 +45,7 @@ export const mustAuth: RequestHandler = (req, res, next) => {
                 const user = await User.findOne({
                     _id: userId,
                     tokens: token,
-                }).select("-password -email -phoneNumber -tokens");
+                }).select("-email -phoneNumber");
 
                 if (!user) {
                     res.status(403).json({ error: "Unauthorized request" });

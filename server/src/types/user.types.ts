@@ -1,9 +1,7 @@
-import User from "#/models/user.model";
-import Wallet from "#/models/wallet.model";
-import Route from "#/models/route.model";
+import { UserDocument } from "#/models/user.model";
 import { Request } from "express";
-import { Document, InferSchemaType } from "mongoose";
 
+// request types
 export interface CreateUser extends Request {
     body: {
         firstName: string;
@@ -21,10 +19,7 @@ export interface VerifyEmailRequest extends Request {
     };
 }
 
-export type UserDocument = InferSchemaType<typeof User.schema> & Document;
-export type WalletDocument = InferSchemaType<typeof Wallet.schema> & Document;
-export type RouteDocument = InferSchemaType<typeof Route.schema> & Document;
-
+// global types
 declare global {
     namespace Express {
         interface Request {

@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { HydratedDocumentFromSchema, Schema, model } from "mongoose";
 
 const bookingSchema = new Schema(
     {
@@ -20,4 +20,7 @@ const bookingSchema = new Schema(
     }
 );
 
-export default model("Booking", bookingSchema);
+export type BookingDocument = HydratedDocumentFromSchema<typeof bookingSchema>;
+
+const Booking = model<BookingDocument>("Booking", bookingSchema);
+export default Booking;
