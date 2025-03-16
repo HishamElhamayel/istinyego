@@ -2,6 +2,7 @@ import {
     createRoute,
     deleteRoute,
     getAllRoutes,
+    toggleFavRoute,
     updateRoute,
 } from "#/controller/route.controller";
 import { mustAuth, mustRoles } from "#/middleware/auth.middleware";
@@ -22,5 +23,7 @@ router.post(
 router.get("/", getAllRoutes);
 router.patch("/:id", mustAuth, mustRoles("admin"), updateRoute);
 router.delete("/:id", mustAuth, mustRoles("admin"), deleteRoute);
+
+router.patch("/toggleFavRoute/:id", mustAuth, toggleFavRoute);
 
 export default router;

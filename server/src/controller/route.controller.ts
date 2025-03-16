@@ -1,5 +1,6 @@
 import Route from "#/models/route.model";
 import { RequestHandler } from "express";
+import mongoose from "mongoose";
 
 export const createRoute: RequestHandler = async (req, res) => {
     try {
@@ -66,6 +67,30 @@ export const deleteRoute: RequestHandler = async (req, res) => {
         // }
 
         res.status(204).json({});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const toggleFavRoute: RequestHandler = async (req, res) => {
+    try {
+        const routeId = new mongoose.Types.ObjectId(req.params.id);
+        const { user } = req;
+
+        if (user.favoriteRoutes.includes(routeId)) {
+            user.favoriteRoutes = user.favoriteRoutes.filter(
+                (id) => !id.equals(routeId)
+            );
+        } else {
+            user.favoriteRoutes.push(routeId);
+        }
+
+        await user.save();
+
+        res.status(201).json({
+            favoriteRoutes: user.favoriteRoutes,
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });
