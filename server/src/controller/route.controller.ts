@@ -78,6 +78,11 @@ export const toggleFavRoute: RequestHandler = async (req, res) => {
         const routeId = new mongoose.Types.ObjectId(req.params.id);
         const { user } = req;
 
+        if (!(await Route.exists({ _id: routeId }))) {
+            res.status(404).json({ error: "Route not found" });
+            return;
+        }
+
         if (user.favoriteRoutes.includes(routeId)) {
             user.favoriteRoutes = user.favoriteRoutes.filter(
                 (id) => !id.equals(routeId)

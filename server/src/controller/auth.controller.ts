@@ -203,7 +203,7 @@ export const signIn: RequestHandler = async (req, res) => {
             res.status(403).json({ error: "Email or password is incorrect" });
             return;
         }
-
+        // console.log(password);
         const matched = await user.comparePassword(password);
         if (!matched) {
             res.status(403).json({ error: "Email or password is incorrect" });
