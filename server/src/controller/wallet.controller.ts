@@ -40,7 +40,7 @@ export const chargeWallet: RequestHandler = async (req, res) => {
             balanceAfterTransaction: wallet.balance,
         });
 
-        res.json({
+        res.status(201).json({
             transaction: {
                 id: transaction._id,
                 // wallet: transaction.wallet,

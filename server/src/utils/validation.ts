@@ -178,3 +178,15 @@ export const CreateTripSchema = yup.object({
         .min(1, "Available seats cant be 0 or negative")
         .max(30, "Available seats cant be more than 30"),
 });
+
+export const CreateBookingSchema = yup.object({
+    tripId: yup
+        .string()
+        .transform(function (value) {
+            if (this.isType(value) && isValidObjectId(value)) {
+                return value;
+            }
+            return "";
+        })
+        .required("Invalid User ID"),
+});

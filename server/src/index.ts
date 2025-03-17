@@ -2,12 +2,13 @@ import "dotenv/config";
 import express from "express";
 import "./db";
 import authRouter from "./routes/auth.route";
+import bookingRouter from "./routes/booking.route";
+import profileRouter from "./routes/profile.route";
 import routeRouter from "./routes/route.route";
 import shuttleRouter from "./routes/shuttle.route";
 import transactionRouter from "./routes/transaction.route";
 import tripRouter from "./routes/trip.route";
 import walletRouter from "./routes/wallet.route";
-import bookingRouter from "./routes/booking.route";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/route", routeRouter);
 app.use("/shuttle", shuttleRouter);
 app.use("/trip", tripRouter);
 app.use("/booking", bookingRouter);
+app.use("/profile", profileRouter);
 
 app.use((req, res) => {
     res.status(404).json({ message: "Not found" });

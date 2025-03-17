@@ -93,7 +93,7 @@ export const toggleFavRoute: RequestHandler = async (req, res) => {
 
         await user.save();
 
-        res.status(201).json({
+        res.status(200).json({
             favoriteRoutes: user.favoriteRoutes,
         });
     } catch (err) {
