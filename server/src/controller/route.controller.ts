@@ -36,11 +36,11 @@ export const getAllRoutes: RequestHandler = async (req, res) => {
 
 export const updateRoute: RequestHandler = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { routeId } = req.params;
         const { startLocation, endLocation, fare } = req.body;
-        console.log(id);
+        // console.log(id);
 
-        const route = await Route.findByIdAndUpdate(id, {
+        const route = await Route.findByIdAndUpdate(routeId, {
             startLocation,
             endLocation,
             fare,
@@ -57,9 +57,9 @@ export const updateRoute: RequestHandler = async (req, res) => {
 
 export const deleteRoute: RequestHandler = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { routeId } = req.params;
 
-        await Route.findByIdAndDelete(id);
+        await Route.findByIdAndDelete(routeId);
 
         // if (!route) {
         //     res.status(404).json({ error: "Route not found" });
