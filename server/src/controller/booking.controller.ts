@@ -69,6 +69,9 @@ export const createBooking: RequestHandler = async (req, res) => {
             { session }
         );
 
+        transaction[0].booking = booking[0]._id;
+        await transaction[0].save({ session });
+
         trip.bookSeat();
         wallet.deductFunds(route.fare);
 

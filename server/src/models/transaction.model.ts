@@ -16,7 +16,7 @@ const transactionSchema = new Schema(
         type: {
             type: String,
             required: true,
-            enum: ["add", "deduct"],
+            enum: ["add", "deduct", "refund"], //Refund occurs when a a tip is canceled
         },
         amount: {
             type: Number,
@@ -25,6 +25,10 @@ const transactionSchema = new Schema(
         balanceAfterTransaction: {
             type: Number,
             required: true,
+        },
+        booking: {
+            type: Schema.Types.ObjectId,
+            ref: "Transaction",
         },
     },
     { timestamps: true }

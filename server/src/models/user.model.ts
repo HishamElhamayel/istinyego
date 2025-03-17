@@ -55,7 +55,7 @@ const userSchema = new Schema(
         favoriteRoutes: [
             {
                 type: Schema.Types.ObjectId,
-                ref: "Routes",
+                ref: "Route",
             },
         ],
         licenseNumber: { type: Number },
