@@ -188,5 +188,5 @@ export const CreateBookingSchema = yup.object({
             }
             return "";
         })
-        .required("Invalid User ID"),
+        .required("Invalid Trip ID"),
 });

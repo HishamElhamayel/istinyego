@@ -72,8 +72,8 @@ export const createBooking: RequestHandler = async (req, res) => {
         transaction[0].booking = booking[0]._id;
         await transaction[0].save({ session });
 
-        trip.bookSeat();
-        wallet.deductFunds(route.fare);
+        await trip.bookSeat();
+        await wallet.deductFunds(route.fare);
 
         await session.commitTransaction();
 
@@ -86,6 +86,6 @@ export const createBooking: RequestHandler = async (req, res) => {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });
     } finally {
-        session.endSession();
+        await session.endSession();
     }
 };

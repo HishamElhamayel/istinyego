@@ -19,11 +19,9 @@ router.post(
     validate(CreateRouteSchema),
     createRoute
 );
-
 router.get("/", getAllRoutes);
 router.patch("/:id", mustAuth, mustRoles("admin"), updateRoute);
 router.delete("/:id", mustAuth, mustRoles("admin"), deleteRoute);
-
-router.patch("/toggleFavRoute/:id", mustAuth, toggleFavRoute);
+router.patch("/toggle-fav-route/:id", mustAuth, toggleFavRoute);
 
 export default router;

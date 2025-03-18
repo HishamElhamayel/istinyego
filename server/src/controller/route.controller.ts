@@ -1,6 +1,6 @@
 import Route from "#/models/route.model";
 import { RequestHandler } from "express";
-import mongoose from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 
 export const createRoute: RequestHandler = async (req, res) => {
     try {
@@ -46,6 +46,11 @@ export const updateRoute: RequestHandler = async (req, res) => {
             fare,
         });
 
+        if (!route) {
+            res.status(404).json({ error: "Route not found" });
+            return;
+        }
+
         res.json({
             route: route,
         });
@@ -75,7 +80,13 @@ export const deleteRoute: RequestHandler = async (req, res) => {
 
 export const toggleFavRoute: RequestHandler = async (req, res) => {
     try {
+        if (!isValidObjectId(req.params.id)) {
+            res.status(400).json({ error: "Invalid route ID" });
+            return;
+        }
+
         const routeId = new mongoose.Types.ObjectId(req.params.id);
+
         const { user } = req;
 
         if (!(await Route.exists({ _id: routeId }))) {

@@ -5,6 +5,6 @@ import { Router } from "express";
 const router = Router();
 
 router.get("/getBalance", mustAuth, getWalletBalance);
-router.post("/chargeWallet", mustAuth, chargeWallet);
+router.post("/charge-wallet", mustAuth, chargeWallet);
 
 export default router;
