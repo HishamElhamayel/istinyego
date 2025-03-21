@@ -89,3 +89,46 @@ export const createBooking: RequestHandler = async (req, res) => {
         await session.endSession();
     }
 };
+
+export const getBookingsByUserId: RequestHandler = async (req, res) => {
+    try {
+        const bookings = await Booking.aggregate([
+            { $match: { user: req.user._id } },
+            {
+                $lookup: {
+                    from: "trips",
+                    localField: "trip",
+                    foreignField: "_id",
+                    as: "trip",
+                },
+            },
+            { $match: { "trip.endTime": { $gte: new Date() } } },
+            { $unwind: "$trip" },
+            {
+                $lookup: {
+                    from: "routes",
+                    localField: "trip.route",
+                    foreignField: "_id",
+                    as: "trip.route",
+                },
+            },
+            {
+                $unwind: "$trip.route",
+            },
+            {
+                $project: {
+                    tripId: "$trip._id",
+                    startTime: "$trip.startTime",
+                    endTime: "$trip.endTime",
+                    startLocation: "$trip.route.startLocation.description",
+                    endLocation: "$trip.route.endLocation.description",
+                },
+            },
+        ]);
+
+        res.json({ bookings });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};

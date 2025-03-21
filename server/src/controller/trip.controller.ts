@@ -57,3 +57,36 @@ export const getTripsByRouteId: RequestHandler = async (req, res) => {
         res.status(500).json({ error: "Something went wrong" });
     }
 };
+
+export const getTripsByShuttleId: RequestHandler = async (req, res) => {
+    const {
+        shuttleId,
+        date,
+        time = date, //if no date is provided, use start of the day
+    } = req.query as {
+        shuttleId: string;
+        date: string;
+        time: string;
+    };
+
+    if (
+        !isValidObjectId(shuttleId) ||
+        !shuttleId ||
+        !date ||
+        !Date.parse(date) ||
+        !Date.parse(time)
+    ) {
+        res.status(400).json({ error: "Invalid query parameters" });
+        return;
+    }
+
+    const trips = await Trip.find({
+        shuttle: shuttleId,
+        date,
+        endTime: { $gte: time },
+    });
+
+    res.json({
+        trips,
+    });
+};

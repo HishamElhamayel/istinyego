@@ -23,10 +23,43 @@ export const createShuttle: RequestHandler = async (req, res) => {
         });
 
         res.status(201).json({
-            shuttle: await shuttle.populate("driver"),
+            // shuttle: await shuttle.populate("driver"),
+            shuttle: await shuttle,
         });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const getAllShuttles: RequestHandler = async (req, res) => {
+    try {
+        const shuttles = await Shuttle.find({});
+
+        res.json({
+            shuttles,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const getShuttleById: RequestHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const shuttle = await Shuttle.findById(id);
+
+        if (!shuttle) {
+            res.status(404).json({ error: "Shuttle not found" });
+            return;
+        }
+
+        res.json({
+            shuttle,
+        });
+    } catch (err) {
+        console.log(err);
         res.status(500).json({ error: "Something went wrong" });
     }
 };

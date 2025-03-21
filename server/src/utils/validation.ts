@@ -13,8 +13,10 @@ export const CreateUserSchema = yup.object({
         .min(3, "Name is too short")
         .max(30, "Name is too long"),
     email: yup.string().email("Invalid Email").required("Email is missing"),
-    // role: yup.string().required("User role is missing"),
-    // .oneOf(["user", "driver", "admin"], "Invalid user role"),
+    role: yup
+        .string()
+        .required("User role is missing")
+        .oneOf(["user", "driver", "admin"], "Invalid user role"),
     password: yup
         .string()
         .required("Password is missing")
@@ -23,7 +25,25 @@ export const CreateUserSchema = yup.object({
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
             "Password must contain at least one letter, one number and one special character"
         ),
-    // studentId: yup.number().required("Student ID is missing"),
+    studentId: yup.number().required("ID is missing"),
+});
+
+export const UpdateUserSchema = yup.object({
+    firstName: yup
+        .string()
+        .min(3, "Name is too short")
+        .max(30, "Name is too long")
+        .required("First name is missing"),
+    lastName: yup
+        .string()
+        .min(3, "Name is too short")
+        .max(30, "Name is too long")
+        .required("Last name is missing"),
+    email: yup.string().email("Invalid Email").required("Email is missing"),
+    role: yup.string().oneOf(["user", "driver", "admin"], "Invalid user role"),
+    studentId: yup.number().required("ID is missing"),
+    phoneNumber: yup.number(),
+    licenseNumber: yup.number(),
 });
 
 export const TokenAndIdValidationSchema = yup.object({
@@ -118,8 +138,7 @@ export const CreateShuttleSchema = yup.object({
         coordinates: yup
             .array()
             .of(yup.number().required("Coordinates can only be numbers"))
-            .length(2, "2 coordinates are required")
-            .required("Coordinates are missing"),
+            .length(2, "2 coordinates are required"),
     }),
     driver: yup
         .string()

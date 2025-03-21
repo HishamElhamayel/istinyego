@@ -80,3 +80,18 @@ export const getAllProfileData: RequestHandler = async (req, res) => {
         res.status(500).json({ error: "Something went wrong" });
     }
 };
+
+export const updateProfile: RequestHandler = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { ...body } = req.body;
+
+        console.log(body);
+        const user = await User.findByIdAndUpdate(userId, body, { new: true });
+
+        res.json({ user });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
