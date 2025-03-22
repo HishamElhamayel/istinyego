@@ -173,7 +173,7 @@ export const CreateTripSchema = yup.object({
             }
             return "";
         })
-        .required("Invalid User ID"),
+        .required("Invalid Route ID"),
     startTime: yup
         .date()
         .min(new Date(), "Start time cant be in the past")

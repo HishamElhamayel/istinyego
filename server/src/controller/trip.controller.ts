@@ -1,14 +1,25 @@
 import Booking from "#/models/booking.model";
+import Route from "#/models/route.model";
+import Shuttle from "#/models/shuttle.model";
 import Trip from "#/models/trip.model";
-import { error } from "console";
 import { RequestHandler } from "express";
 import { DateTime } from "luxon";
 import mongoose, { isValidObjectId } from "mongoose";
 
 export const createTrip: RequestHandler = async (req, res) => {
     try {
-        const { shuttleId, routeId, startTime, endTime, date, availableSeats } =
-            req.body;
+        const { startTime, endTime, date, availableSeats } = req.body;
+
+        const shuttleId = new mongoose.Types.ObjectId(req.body.shuttleId);
+        const routeId = new mongoose.Types.ObjectId(req.body.routeId);
+
+        if (
+            !(await Shuttle.exists({ _id: shuttleId })) ||
+            !(await Route.exists({ _id: routeId }))
+        ) {
+            res.status(404).json({ error: "Shuttle or route not found" });
+            return;
+        }
 
         const duplicates = req.body.duplicates ?? 1;
         const tripsArray = [];
@@ -101,8 +112,6 @@ export const getTripsByShuttleId: RequestHandler = async (req, res) => {
         date: string;
         time: string;
     };
-
-    console.log("hi");
 
     if (
         !isValidObjectId(shuttleId) ||

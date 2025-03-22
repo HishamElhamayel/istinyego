@@ -23,6 +23,8 @@ export const getWalletBalance: RequestHandler = async (req, res) => {
 export const chargeWallet: RequestHandler = async (req, res) => {
     try {
         const user = req.user;
+        const amount = req.body.amount;
+
         const wallet = await Wallet.findOne({ _id: user.wallet });
 
         if (!wallet) {
@@ -30,7 +32,6 @@ export const chargeWallet: RequestHandler = async (req, res) => {
             return;
         }
 
-        const amount = req.body.amount;
         wallet.addFunds(amount);
 
         const transaction = await Transaction.create({
@@ -43,7 +44,6 @@ export const chargeWallet: RequestHandler = async (req, res) => {
         res.status(201).json({
             transaction: {
                 id: transaction._id,
-                // wallet: transaction.wallet,
                 type: transaction.type,
                 amount: transaction.amount,
                 balanceAfterTransaction: transaction.balanceAfterTransaction,

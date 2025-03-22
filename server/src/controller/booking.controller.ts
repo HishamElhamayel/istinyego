@@ -78,8 +78,7 @@ export const createBooking: RequestHandler = async (req, res) => {
         await session.commitTransaction();
 
         res.status(201).json({
-            booking: booking[0],
-            transaction: transaction[0],
+            booking: booking[0]._id,
         });
     } catch (err) {
         await session.abortTransaction();

@@ -86,7 +86,6 @@ export const updateProfile: RequestHandler = async (req, res) => {
         const userId = req.user._id;
         const { ...body } = req.body;
 
-        console.log(body);
         const user = await User.findByIdAndUpdate(userId, body, { new: true });
 
         res.json({ user });

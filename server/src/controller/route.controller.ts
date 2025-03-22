@@ -69,7 +69,6 @@ export const deleteRoute: RequestHandler = async (req, res) => {
         }
 
         const route = await Route.findByIdAndDelete(id);
-
         if (!route) {
             res.status(404).json({ error: "Route not found" });
             return;
@@ -90,7 +89,6 @@ export const toggleFavRoute: RequestHandler = async (req, res) => {
         }
 
         const routeId = new mongoose.Types.ObjectId(req.params.id);
-
         const { user } = req;
 
         if (!(await Route.exists({ _id: routeId }))) {
