@@ -134,6 +134,10 @@ export const CreateShuttleSchema = yup.object({
         .required("Capacity is missing")
         .min(1, "Capacity cant be negative")
         .max(30, "Capacity cant be more than 30"),
+    number: yup
+        .number()
+        .required("Shuttle number is missing")
+        .min(1, "Shuttle number cant be negative"),
     currentLocation: yup.object({
         coordinates: yup
             .array()

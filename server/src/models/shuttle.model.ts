@@ -18,6 +18,11 @@ const shuttleSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
+    number: {
+        type: Number,
+        required: true,
+        unique: true,
+    },
 });
 
 export type ShuttleDocument = HydratedDocumentFromSchema<typeof shuttleSchema>;

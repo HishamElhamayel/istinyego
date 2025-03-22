@@ -1,7 +1,9 @@
+import Booking from "#/models/booking.model";
 import Trip from "#/models/trip.model";
+import { error } from "console";
 import { RequestHandler } from "express";
-import { isValidObjectId } from "mongoose";
 import { DateTime } from "luxon";
+import mongoose, { isValidObjectId } from "mongoose";
 
 export const createTrip: RequestHandler = async (req, res) => {
     try {
@@ -79,6 +81,8 @@ export const getTripsByShuttleId: RequestHandler = async (req, res) => {
         time: string;
     };
 
+    console.log("hi");
+
     if (
         !isValidObjectId(shuttleId) ||
         !shuttleId ||
@@ -98,5 +102,127 @@ export const getTripsByShuttleId: RequestHandler = async (req, res) => {
 
     res.json({
         trips,
+    });
+};
+
+export const getTripById: RequestHandler = async (req, res) => {
+    if (!isValidObjectId(req.params.tripId)) {
+        res.status(400).json({ error: "Invalid trip ID" });
+        return;
+    }
+
+    const tripId = new mongoose.Types.ObjectId(req.params.tripId);
+    const user = req.user;
+
+    if (user.role === "user") {
+        if (await Booking.exists({ trip: tripId, user: user._id })) {
+            // console.log("hi");
+
+            const trip = await Trip.aggregate([
+                { $match: { _id: tripId } },
+                {
+                    $unset: "__v",
+                },
+                {
+                    $lookup: {
+                        from: "bookings",
+                        localField: "_id",
+                        foreignField: "trip",
+                        as: "booking",
+                    },
+                },
+                { $match: { "booking.user": user._id } },
+                {
+                    $addFields: {
+                        booking: {
+                            $filter: {
+                                input: "$booking",
+                                as: "b",
+                                cond: { $eq: ["$$b.user", user._id] }, // Keeps only bookings made by this user
+                            },
+                        },
+                    },
+                },
+                { $unwind: "$booking" },
+                {
+                    $addFields: {
+                        booking: "$booking._id", // Extract only the `_id` from the booking object
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "shuttles",
+                        localField: "shuttle",
+                        foreignField: "_id",
+                        as: "shuttle",
+                    },
+                },
+                {
+                    $unwind: "$shuttle",
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        shuttle: {
+                            _id: "$shuttle._id",
+                            number: "$shuttle.number",
+                        },
+                        route: 1,
+                        startTime: 1,
+                        endTime: 1,
+                        date: 1,
+                        availableSeats: 1,
+                        state: 1,
+                        booking: 1,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "routes",
+                        localField: "route",
+                        foreignField: "_id",
+                        as: "route",
+                    },
+                },
+                { $unwind: "$route" },
+                {
+                    $project: {
+                        _id: 1,
+                        shuttle: 1,
+                        startLocation: "$route.startLocation.description",
+                        endLocation: "$route.endLocation.description",
+                        fare: "$route.fare",
+                        startTime: 1,
+                        endTime: 1,
+                        date: 1,
+                        availableSeats: 1,
+                        state: 1,
+                        booking: 1,
+                    },
+                },
+            ]);
+
+            // const trip = await Trip.findById(tripId);
+            if (!trip) {
+                res.status(404).json({ error: "Trip not found" });
+                return;
+            }
+
+            res.json({
+                trip: trip[0],
+            });
+            return;
+        }
+    }
+
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+        res.status(404).json({ error: "Trip not found" });
+        return;
+    }
+
+    res.json({
+        trip,
     });
 };

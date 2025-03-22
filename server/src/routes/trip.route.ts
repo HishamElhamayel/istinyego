@@ -1,5 +1,6 @@
 import {
     createTrip,
+    getTripById,
     getTripsByRouteId,
     getTripsByShuttleId,
 } from "#/controller/trip.controller";
@@ -19,5 +20,6 @@ router.post(
 );
 router.get("/trips-by-route", getTripsByRouteId);
 router.get("/trips-by-shuttleId", getTripsByShuttleId);
+router.get("/:tripId", mustAuth, getTripById);
 
 export default router;

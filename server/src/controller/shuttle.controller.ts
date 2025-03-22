@@ -4,7 +4,7 @@ import { RequestHandler } from "express";
 
 export const createShuttle: RequestHandler = async (req, res) => {
     try {
-        const { capacity, currentLocation, driver } = req.body;
+        const { capacity, currentLocation, driver, number } = req.body;
 
         // console.log(Shuttle);
         const user = await User.findById(driver);
@@ -20,6 +20,7 @@ export const createShuttle: RequestHandler = async (req, res) => {
             capacity,
             currentLocation,
             driver,
+            number,
         });
 
         res.status(201).json({
