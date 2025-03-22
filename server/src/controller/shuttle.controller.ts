@@ -86,3 +86,62 @@ export const deleteShuttle: RequestHandler = async (req, res) => {
         res.status(500).json({ error: "Something went wrong" });
     }
 };
+
+export const updateShuttleLocation: RequestHandler = async (req, res) => {
+    try {
+        const { shuttleId, location } = req.body;
+        const shuttle = await Shuttle.findByIdAndUpdate(
+            shuttleId,
+            {
+                $set: { "currentLocation.coordinates": location },
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!shuttle) {
+            res.status(404).json({ error: "Shuttle not found" });
+            return;
+        }
+
+        res.json({
+            shuttle,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const updateShuttle: RequestHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { capacity, driver, number } = req.body;
+
+        if (!isValidObjectId(id)) {
+            res.status(400).json({ error: "Invalid shuttle ID" });
+            return;
+        }
+
+        const shuttle = await Shuttle.findByIdAndUpdate(
+            id,
+            {
+                capacity,
+                driver,
+                number,
+            },
+            { new: true }
+        );
+
+        if (!shuttle) {
+            res.status(404).json({ error: "Shuttle not found" });
+            return;
+        }
+
+        res.json({
+            shuttle,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};

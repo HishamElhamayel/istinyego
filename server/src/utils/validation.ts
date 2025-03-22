@@ -152,7 +152,7 @@ export const CreateShuttleSchema = yup.object({
             }
             return "";
         })
-        .required("Invalid User ID"),
+        .required("Invalid Driver ID"),
 });
 
 export const CreateTripSchema = yup.object({
@@ -212,4 +212,22 @@ export const CreateBookingSchema = yup.object({
             return "";
         })
         .required("Invalid Trip ID"),
+});
+
+export const UpdateShuttleLocationSchema = yup.object({
+    shuttleId: yup
+        .string()
+        .transform(function (value) {
+            if (this.isType(value) && isValidObjectId(value)) {
+                return value;
+            }
+            return "";
+        })
+        .required("Invalid shuttle ID"),
+
+    location: yup
+        .array()
+        .of(yup.number().required("Coordinates can only"))
+        .length(2, "2 coordinates are required")
+        .required("Coordinates are missing"),
 });
