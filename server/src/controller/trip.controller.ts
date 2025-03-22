@@ -37,6 +37,27 @@ export const createTrip: RequestHandler = async (req, res) => {
     }
 };
 
+export const deleteTrip: RequestHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!isValidObjectId(id)) {
+            res.status(400).json({ error: "Invalid trip ID" });
+            return;
+        }
+
+        const trip = await Trip.findOneAndDelete({ _id: id });
+        if (!trip) {
+            res.status(404).json({ error: "Trip not found" });
+            return;
+        }
+
+        res.json({});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
 export const getTripsByRouteId: RequestHandler = async (req, res) => {
     try {
         const { routeId, date } = req.query as {
@@ -106,12 +127,13 @@ export const getTripsByShuttleId: RequestHandler = async (req, res) => {
 };
 
 export const getTripById: RequestHandler = async (req, res) => {
-    if (!isValidObjectId(req.params.tripId)) {
+    if (!isValidObjectId(req.params.id)) {
+        // console.log(req.params);
         res.status(400).json({ error: "Invalid trip ID" });
         return;
     }
 
-    const tripId = new mongoose.Types.ObjectId(req.params.tripId);
+    const tripId = new mongoose.Types.ObjectId(req.params.id);
     const user = req.user;
 
     if (user.role === "user") {

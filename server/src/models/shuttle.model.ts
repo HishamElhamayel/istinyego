@@ -1,4 +1,5 @@
 import { HydratedDocumentFromSchema, model, Schema } from "mongoose";
+import Trip from "./trip.model";
 
 const shuttleSchema = new Schema({
     capacity: {
@@ -23,6 +24,15 @@ const shuttleSchema = new Schema({
         required: true,
         unique: true,
     },
+});
+
+shuttleSchema.pre("findOneAndDelete", async function (next) {
+    const shuttle = await this.model.findOne(this.getQuery());
+    if (!shuttle) return;
+
+    await Trip.deleteMany({ shuttle: shuttle._id });
+
+    next();
 });
 
 export type ShuttleDocument = HydratedDocumentFromSchema<typeof shuttleSchema>;

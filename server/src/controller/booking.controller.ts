@@ -4,7 +4,7 @@ import Transaction from "#/models/transaction.model";
 import Trip from "#/models/trip.model";
 import { WalletDocument } from "#/models/wallet.model";
 import { RequestHandler } from "express";
-import { startSession } from "mongoose";
+import { isValidObjectId, startSession } from "mongoose";
 
 export const createBooking: RequestHandler = async (req, res) => {
     const session = await startSession();
@@ -127,6 +127,27 @@ export const getBookingsByUserId: RequestHandler = async (req, res) => {
         ]);
 
         res.json({ bookings });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const deleteBooking: RequestHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!isValidObjectId(id)) {
+            res.status(400).json({ error: "Invalid trip ID" });
+            return;
+        }
+
+        const booking = await Booking.findOneAndDelete({ _id: id });
+        if (!booking) {
+            res.status(404).json({ error: "Booking not found" });
+            return;
+        }
+
+        res.status(204).json({});
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });

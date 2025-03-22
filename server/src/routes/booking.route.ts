@@ -1,5 +1,6 @@
 import {
     createBooking,
+    deleteBooking,
     getBookingsByUserId,
 } from "#/controller/booking.controller";
 import { mustAuth } from "#/middleware/auth.middleware";
@@ -11,5 +12,6 @@ const router = Router();
 
 router.post("/create", mustAuth, validate(CreateBookingSchema), createBooking);
 router.get("/bookings-by-userId", mustAuth, getBookingsByUserId);
+router.delete("/:id", mustAuth, deleteBooking);
 
 export default router;

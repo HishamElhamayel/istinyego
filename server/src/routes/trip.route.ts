@@ -1,5 +1,6 @@
 import {
     createTrip,
+    deleteTrip,
     getTripById,
     getTripsByRouteId,
     getTripsByShuttleId,
@@ -20,6 +21,7 @@ router.post(
 );
 router.get("/trips-by-route", getTripsByRouteId);
 router.get("/trips-by-shuttleId", getTripsByShuttleId);
-router.get("/:tripId", mustAuth, getTripById);
+router.get("/:id", mustAuth, getTripById);
+router.delete("/:id", mustAuth, deleteTrip);
 
 export default router;

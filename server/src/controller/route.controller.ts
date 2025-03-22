@@ -62,14 +62,18 @@ export const updateRoute: RequestHandler = async (req, res) => {
 
 export const deleteRoute: RequestHandler = async (req, res) => {
     try {
-        const { routeId } = req.params;
+        const { id } = req.params;
+        if (!isValidObjectId(id)) {
+            res.status(400).json({ error: "Invalid shuttle ID" });
+            return;
+        }
 
-        await Route.findByIdAndDelete(routeId);
+        const route = await Route.findByIdAndDelete(id);
 
-        // if (!route) {
-        //     res.status(404).json({ error: "Route not found" });
-        //     return;
-        // }
+        if (!route) {
+            res.status(404).json({ error: "Route not found" });
+            return;
+        }
 
         res.status(204).json({});
     } catch (err) {

@@ -1,6 +1,7 @@
 import Shuttle from "#/models/shuttle.model";
 import User from "#/models/user.model";
 import { RequestHandler } from "express";
+import { isValidObjectId } from "mongoose";
 
 export const createShuttle: RequestHandler = async (req, res) => {
     try {
@@ -59,6 +60,27 @@ export const getShuttleById: RequestHandler = async (req, res) => {
         res.json({
             shuttle,
         });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const deleteShuttle: RequestHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!isValidObjectId(id)) {
+            res.status(400).json({ error: "Invalid shuttle ID" });
+            return;
+        }
+
+        const shuttle = await Shuttle.findOneAndDelete({ _id: id });
+        if (!shuttle) {
+            res.status(404).json({ error: "Shuttle not found" });
+            return;
+        }
+
+        res.status(204).json({});
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: "Something went wrong" });

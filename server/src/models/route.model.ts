@@ -1,4 +1,5 @@
 import { HydratedDocumentFromSchema, Schema, model } from "mongoose";
+import Trip from "./trip.model";
 
 const routeSchema = new Schema({
     startLocation: {
@@ -25,6 +26,15 @@ const routeSchema = new Schema({
         type: Number,
         default: 60,
     },
+});
+
+routeSchema.pre("findOneAndDelete", async function (next) {
+    const route = await this.model.findOne(this.getQuery());
+    if (!route) return;
+
+    await Trip.deleteMany({ route: route._id });
+
+    next();
 });
 
 export type RouteDocument = HydratedDocumentFromSchema<typeof routeSchema>;

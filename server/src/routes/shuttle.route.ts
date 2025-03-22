@@ -1,5 +1,6 @@
 import {
     createShuttle,
+    deleteShuttle,
     getAllShuttles,
     getShuttleById,
 } from "#/controller/shuttle.controller";
@@ -19,5 +20,6 @@ router.post(
 );
 router.get("/", mustAuth, mustRoles("admin"), getAllShuttles);
 router.get("/:id", mustAuth, getShuttleById);
+router.delete("/:id", mustAuth, deleteShuttle);
 
 export default router;
