@@ -19,6 +19,12 @@ export const createUser: RequestHandler = async (req: CreateUser, res) => {
     try {
         const { firstName, lastName, email, password, studentId } = req.body;
 
+        const oldUser = await User.findOne({ email });
+        if (oldUser) {
+            res.status(403).json({ error: "Email already exists" });
+            return;
+        }
+
         const wallet = await Wallet.create({});
 
         const user = await User.create({
@@ -100,6 +106,11 @@ export const sendReVerificationToken: RequestHandler = async (req, res) => {
 
         if (!user) {
             res.status(403).json({ error: "Invalid request!" });
+            return;
+        }
+
+        if (user.verified) {
+            res.status(422).json({ error: "Email is already verified!" });
             return;
         }
 
