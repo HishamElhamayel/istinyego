@@ -6,7 +6,6 @@ import {
     View,
 } from "react-native";
 
-import colors from "@utils/colors";
 import { FC } from "react";
 
 interface Props extends PressableProps {

@@ -1,19 +1,14 @@
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ForgotPassword from "@views/forgotPassword";
+import Navigator from "app/navigator";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import Login from "./app/views/Login";
-
-const Stack = createNativeStackNavigator();
 
 export default function App() {
     return (
         <>
             <StatusBar style="auto" />
             <SafeAreaProvider style={styles.container}>
-                <ForgotPassword />
-                {/* <Login /> */}
+                <Navigator />
             </SafeAreaProvider>
         </>
     );

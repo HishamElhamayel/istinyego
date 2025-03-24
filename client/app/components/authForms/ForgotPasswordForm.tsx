@@ -1,12 +1,13 @@
 import FormInput from "@components/form/FormInput";
 import Button from "@components/UI/Button";
 import Card from "@components/UI/Card";
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 const LoginForm = () => {
     const [emailInput, setEmailInput] = React.useState("");
-    const [passwordInput, setPasswordInput] = React.useState("");
+    const navigation = useNavigation();
 
     return (
         <Card>
@@ -14,7 +15,7 @@ const LoginForm = () => {
                 <Text style={styles.header}>Forgot Password</Text>
                 <FormInput
                     label="Enter your email"
-                    onChangeHandler={(value) => setEmailInput(value)}
+                    onChangeText={(value) => setEmailInput(value)}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     collapsable
@@ -30,7 +31,7 @@ const LoginForm = () => {
                     </Button>
                     <Button
                         size="medium"
-                        onPress={() => console.log("create account")}
+                        onPress={() => navigation.goBack()}
                         style={styles.button}
                     >
                         Cancel

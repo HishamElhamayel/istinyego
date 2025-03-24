@@ -1,40 +1,25 @@
 import ForgotPasswordForm from "@components/authForms/ForgotPasswordForm";
+import KeyboardView from "@components/UI/KeyboardView";
 import React from "react";
-import {
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    View,
-} from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Login = () => {
     return (
         <SafeAreaView style={styles.container}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={{ flex: 1 }}
-                keyboardVerticalOffset={50}
-            >
-                <ScrollView
-                    style={styles.innerContainer}
-                    keyboardShouldPersistTaps="never"
-                >
-                    <View style={styles.logoContainer}>
-                        <Image
-                            style={styles.logo}
-                            source={require("../../assets/icon.png")}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </View>
-                    <View style={styles.formContainer}>
-                        <ForgotPasswordForm />
-                    </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
+            <KeyboardView>
+                <View style={styles.logoContainer}>
+                    <Image
+                        style={styles.logo}
+                        source={require("../../assets/icon.png")}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                    />
+                </View>
+                <View style={styles.formContainer}>
+                    <ForgotPasswordForm />
+                </View>
+            </KeyboardView>
         </SafeAreaView>
     );
 };

@@ -9,7 +9,6 @@ import {
 
 interface props extends TextInputProps {
     label: string;
-    onChangeHandler: (value: string) => void;
 }
 const FormInput: FC<props> = (props) => {
     const [isFocused, setIsFocused] = React.useState(false);
@@ -18,7 +17,6 @@ const FormInput: FC<props> = (props) => {
         <View style={styles.container}>
             <Text style={styles.label}>{props.label}</Text>
             <TextInput
-                onChangeText={(value) => props.onChangeHandler(value)}
                 style={[
                     styles.input,
                     isFocused ? styles.borderActive : styles.borderDeActive,

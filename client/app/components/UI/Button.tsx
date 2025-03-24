@@ -1,10 +1,4 @@
-import {
-    Pressable,
-    PressableProps,
-    StyleSheet,
-    Text,
-    View,
-} from "react-native";
+import { Pressable, PressableProps, StyleSheet, Text } from "react-native";
 
 import colors from "@utils/colors";
 import { FC } from "react";
@@ -21,20 +15,18 @@ const Button: FC<Props> = ({ children, onPress, size }) => {
             style={({ pressed }) => [styles.button, pressed && styles.pressed]}
             onPress={onPress}
         >
-            <View>
-                <Text
-                    style={[
-                        size === "small"
-                            ? styles.small
-                            : size === "medium"
-                            ? styles.medium
-                            : styles.large,
-                        styles.buttonText,
-                    ]}
-                >
-                    {children}
-                </Text>
-            </View>
+            <Text
+                style={[
+                    size === "small"
+                        ? styles.small
+                        : size === "medium"
+                        ? styles.medium
+                        : styles.large,
+                    styles.buttonText,
+                ]}
+            >
+                {children}
+            </Text>
         </Pressable>
     );
 };

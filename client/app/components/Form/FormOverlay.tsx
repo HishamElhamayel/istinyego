@@ -23,11 +23,11 @@ export default FormOverlay;
 
 const styles = StyleSheet.create({
     formContainer: {
-        borderTopRightRadius: 60,
-        borderTopLeftRadius: 60,
-        // alignItems: "center",
+        // borderTopRightRadius: 60,
+        // borderTopLeftRadius: 60,
         paddingTop: 45,
         paddingHorizontal: 25,
         width: "100%",
+        height: "100%",
     },
 });
