@@ -1,46 +1,25 @@
 import FormInput from "@components/form/FormInput";
 import Button from "@components/UI/Button";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import validate, { CreateUserSchema } from "@utils/validator";
+import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-
-import * as yup from "yup";
-
-const CreateUserSchema = yup.object({
-    firstName: yup
-        .string()
-        .required("First name is missing")
-        .min(3, "First name is too short")
-        .max(30, "First name is too long"),
-    lastName: yup
-        .string()
-        .required("Last name is missing")
-        .min(3, "Last name is too short")
-        .max(30, "Last name is too long"),
-    email: yup.string().email("Invalid Email").required("Email is missing"),
-    password: yup
-        .string()
-        .required("Password is missing")
-        .min(8, "Password is too short")
-        .matches(
-            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
-            "Password must contain at least one letter, one number and one special character"
-        ),
-    studentId: yup.number().required("ID is missing"),
-});
+import { showMessage } from "react-native-flash-message";
 
 const SignUpForm = () => {
     const [userInfo, setUserInfo] = React.useState({
         firstName: "",
         lastName: "",
         email: "",
-        studentId: "",
+        studentId: 0,
         password: "",
         confirmPassword: "",
     });
 
+    const [busy, setBusy] = useState(false);
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
     const handleChange = (key: string) => (text: string) => {
@@ -48,26 +27,20 @@ const SignUpForm = () => {
     };
 
     const handleSubmit = async () => {
-        try {
-            const info = await CreateUserSchema.validate(userInfo);
-            const { data } = await axios.post(
-                "http://localhost:8989/auth/register",
-                info
-            );
-            console.log(data);
-        } catch (error) {
-            if (error instanceof yup.ValidationError) {
-                console.log("invalid Form:", error.message);
-            } else if (error instanceof axios.AxiosError) {
-                const response = error.response;
-                console.log(error);
-                if (response) {
-                    console.log("Axios Error:", response.data);
-                }
-            } else {
-                console.log((error as any).message);
-            }
+        const { values, error } = await validate(CreateUserSchema, userInfo);
+        if (error) return showMessage({ message: error, type: "danger" });
+
+        setBusy(true);
+        const res = await runAxiosAsync<{ message: string }>(
+            axios.post("http://localhost:8989/auth/register", values)
+        );
+
+        if (res?.message) {
+            // console.log(res.message);
+            showMessage({ message: res.message, type: "success" });
+            navigation.navigate("Login");
         }
+        setBusy(false);
     };
 
     return (
@@ -109,7 +82,9 @@ const SignUpForm = () => {
                 secureTextEntry
             />
 
-            <Button onPress={handleSubmit}>Create Account</Button>
+            <Button active={!busy} onPress={handleSubmit}>
+                Create Account
+            </Button>
 
             <View style={styles.bottomContainer}>
                 <Text style={styles.bottomText}>Already have an account?</Text>

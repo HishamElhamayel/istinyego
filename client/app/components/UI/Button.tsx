@@ -7,13 +7,17 @@ interface Props extends PressableProps {
     children?: any;
     onPress: () => void;
     size?: "small" | "medium" | "large";
+    active?: boolean;
 }
 
-const Button: FC<Props> = ({ children, onPress, size }) => {
+const Button: FC<Props> = ({ children, onPress, size, active = true }) => {
     return (
         <Pressable
-            style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-            onPress={onPress}
+            style={({ pressed }) => [
+                styles.button,
+                (pressed || !active) && styles.pressed,
+            ]}
+            onPress={active ? onPress : null}
         >
             <Text
                 style={[

@@ -1,6 +1,8 @@
 import Navigator from "app/navigator";
+import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
+import FlashMessage from "react-native-flash-message";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
@@ -10,6 +12,10 @@ export default function App() {
             <SafeAreaProvider style={styles.container}>
                 <Navigator />
             </SafeAreaProvider>
+            <FlashMessage
+                position="top"
+                statusBarHeight={Constants.statusBarHeight}
+            />
         </>
     );
 }

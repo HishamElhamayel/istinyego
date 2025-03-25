@@ -25,10 +25,17 @@ const AuthNavigator: FC<Props> = () => {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen
                 name="SignUp"
-                options={{ presentation: "fullScreenModal" }}
+                options={{
+                    presentation: "card",
+                    animation: "slide_from_bottom",
+                }}
                 component={SignUp}
             />
-            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+            <Stack.Screen
+                name="ForgotPassword"
+                // options={{ animation: "fade" }}
+                component={ForgotPassword}
+            />
         </Stack.Navigator>
     );
 };

@@ -25,15 +25,16 @@ export default Card;
 
 const styles = StyleSheet.create({
     root: {
-        elevation: 20,
+        elevation: 65,
         shadowColor: "black",
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.5,
-        shadowRadius: 4,
-        borderRadius: 60,
+        shadowRadius: 15,
+        borderRadius: 15,
+        margin: 0,
     },
     container: {
-        borderRadius: 60,
+        borderRadius: 15,
         margin: 15,
         paddingVertical: 25,
         paddingHorizontal: 25,
