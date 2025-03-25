@@ -9,8 +9,8 @@ import nodemailer from "nodemailer";
 import path from "path";
 
 const transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 25,
+    host: "smtp.gmail.com",
+    // port: 25,
     auth: {
         user: MAILTRAP_USER,
         pass: MAILTRAP_PASS,
@@ -30,7 +30,6 @@ export const sendVerificationMail = async (token: string, profile: Profile) => {
     const { firstName, lastName, email } = profile;
 
     const welcomeMessage = `Hi ${firstName} ${lastName}, Welcome to IstinyeGo! Please verify your account using the given OTP.`;
-
     await transport.sendMail({
         to: email,
         from: VERIFICATION_EMAIL,

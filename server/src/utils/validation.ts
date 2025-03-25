@@ -5,18 +5,18 @@ export const CreateUserSchema = yup.object({
     firstName: yup
         .string()
         .required("First name is missing")
-        .min(3, "Name is too short")
-        .max(30, "Name is too long"),
+        .min(3, "First name is too short")
+        .max(30, "First name is too long"),
     lastName: yup
         .string()
         .required("Last name is missing")
-        .min(3, "Name is too short")
-        .max(30, "Name is too long"),
+        .min(3, "Last name is too short")
+        .max(30, "Last name is too long"),
     email: yup.string().email("Invalid Email").required("Email is missing"),
-    role: yup
-        .string()
-        .required("User role is missing")
-        .oneOf(["user", "driver", "admin"], "Invalid user role"),
+    // role: yup
+    //     .string()
+    //     .required("User role is missing")
+    //     .oneOf(["user", "driver", "admin"], "Invalid user role"),
     password: yup
         .string()
         .required("Password is missing")
@@ -31,13 +31,13 @@ export const CreateUserSchema = yup.object({
 export const UpdateUserSchema = yup.object({
     firstName: yup
         .string()
-        .min(3, "Name is too short")
-        .max(30, "Name is too long")
+        .min(3, "First name is too short")
+        .max(30, "First name is too long")
         .required("First name is missing"),
     lastName: yup
         .string()
-        .min(3, "Name is too short")
-        .max(30, "Name is too long")
+        .min(3, "Last name is too short")
+        .max(30, "Last name is too long")
         .required("Last name is missing"),
     email: yup.string().email("Invalid Email").required("Email is missing"),
     role: yup.string().oneOf(["user", "driver", "admin"], "Invalid user role"),
