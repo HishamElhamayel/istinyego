@@ -15,7 +15,6 @@ const runAxiosAsync = async <T>(
 ): Promise<T | null> => {
     try {
         const response = await promise;
-        console.log(response.data);
         return response.data;
     } catch (error) {
         let message = (error as any).message;
@@ -23,8 +22,6 @@ const runAxiosAsync = async <T>(
             const response = error.response;
             if (response) {
                 message = response.data.error;
-
-                // console.log(message);
             }
         }
         showMessage({ message, type: "danger" });

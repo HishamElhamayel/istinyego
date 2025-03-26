@@ -43,5 +43,29 @@ export const CreateUserSchema = yup.object({
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
             "Password must contain at least one letter, one number and one special character"
         ),
+    confirmPassword: yup
+        .string()
+        .required("Password is missing")
+        .min(8, "Password is too short")
+        .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
+            "Password must contain at least one letter, one number and one special character"
+        ),
     studentId: yup.number().required("ID is missing"),
+});
+
+export const UserLoginSchema = yup.object({
+    email: yup.string().required("Email is missing").email("Invalid Email"),
+    password: yup
+        .string()
+        .required("Password is missing")
+        .min(8, "Password is too short")
+        .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
+            "Password must contain at least one letter, one number and one special character"
+        ),
+});
+
+export const ForgotPasswordSchema = yup.object({
+    email: yup.string().required("Email is missing").email("Invalid Email"),
 });

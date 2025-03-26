@@ -1,13 +1,42 @@
 import FormInput from "@components/form/FormInput";
 import Button from "@components/UI/Button";
 import Card from "@components/UI/Card";
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import validate, { ForgotPasswordSchema } from "@utils/validator";
+import runAxiosAsync from "app/API/runAxiosAsync";
+import { AuthStackParamList } from "app/navigator/AuthNavigator";
+import axios from "axios";
+import React, { useState } from "react";
+import { Platform, StyleSheet, Text, View } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 const LoginForm = () => {
-    const [emailInput, setEmailInput] = React.useState("");
-    const navigation = useNavigation();
+    const [emailInput, setEmailInput] = useState("");
+    const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+    const [busy, setBusy] = useState(false);
+
+    const handleSubmit = async () => {
+        const { values, error } = await validate(ForgotPasswordSchema, {
+            email: emailInput,
+        });
+        if (error) return showMessage({ message: error, type: "danger" });
+
+        setBusy(true);
+        const res = await runAxiosAsync<{ message: string }>(
+            axios.post(
+                `http://${
+                    Platform.OS === "ios" ? "localhost" : "10.0.2.2"
+                }:8989/auth/forget-password`,
+                values
+            )
+        );
+
+        if (res?.message) {
+            showMessage({ message: res.message, type: "success" });
+            navigation.navigate("Login");
+        }
+        setBusy(false);
+    };
 
     return (
         <Card>
@@ -24,7 +53,8 @@ const LoginForm = () => {
                 <View style={styles.bottomContainer}>
                     <Button
                         size="medium"
-                        onPress={() => console.log(emailInput)}
+                        active={!busy}
+                        onPress={handleSubmit}
                         style={styles.button}
                     >
                         Confirm

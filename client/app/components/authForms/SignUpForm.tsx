@@ -6,7 +6,7 @@ import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
 import axios from "axios";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 const SignUpForm = () => {
@@ -14,12 +14,16 @@ const SignUpForm = () => {
         firstName: "",
         lastName: "",
         email: "",
-        studentId: 0,
+        studentId: "",
         password: "",
         confirmPassword: "",
     });
 
+    const { firstName, lastName, email, studentId, password, confirmPassword } =
+        userInfo;
+
     const [busy, setBusy] = useState(false);
+
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
     const handleChange = (key: string) => (text: string) => {
@@ -30,13 +34,24 @@ const SignUpForm = () => {
         const { values, error } = await validate(CreateUserSchema, userInfo);
         if (error) return showMessage({ message: error, type: "danger" });
 
+        if (userInfo.password !== userInfo.confirmPassword) {
+            return showMessage({
+                message: "Passwords do not match",
+                type: "danger",
+            });
+        }
+
         setBusy(true);
         const res = await runAxiosAsync<{ message: string }>(
-            axios.post("http://localhost:8989/auth/register", values)
+            axios.post(
+                `http://${
+                    Platform.OS === "ios" ? "localhost" : "10.0.2.2"
+                }:8989/auth/register`,
+                values
+            )
         );
 
         if (res?.message) {
-            // console.log(res.message);
             showMessage({ message: res.message, type: "success" });
             navigation.navigate("Login");
         }
@@ -49,16 +64,19 @@ const SignUpForm = () => {
             <FormInput
                 label="First Name"
                 onChangeText={handleChange("firstName")}
+                value={firstName}
                 collapsable
             />
             <FormInput
                 label="Last Name"
                 onChangeText={handleChange("lastName")}
+                value={lastName}
                 collapsable
             />
             <FormInput
                 label="Student ID"
                 onChangeText={handleChange("studentId")}
+                value={studentId.toString()}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 collapsable
@@ -66,6 +84,7 @@ const SignUpForm = () => {
             <FormInput
                 label="Email"
                 onChangeText={handleChange("email")}
+                value={email}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 collapsable
@@ -73,11 +92,13 @@ const SignUpForm = () => {
 
             <FormInput
                 label="Password"
+                value={password}
                 onChangeText={handleChange("password")}
                 secureTextEntry
             />
             <FormInput
                 label="Confirm Password"
+                value={confirmPassword}
                 onChangeText={handleChange("confirmPassword")}
                 secureTextEntry
             />

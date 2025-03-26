@@ -3,19 +3,45 @@ import Button from "@components/UI/Button";
 import Card from "@components/UI/Card";
 import FlatButton from "@components/UI/FlatButton";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import validate, { UserLoginSchema } from "@utils/validator";
+import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import axios from "axios";
+import React, { useState } from "react";
+import { Platform, StyleSheet, Text, View } from "react-native";
+import { showMessage } from "react-native-flash-message";
 
 const LoginForm = () => {
     const [userInfo, setUserInfo] = React.useState({ email: "", password: "" });
 
     const { email, password } = userInfo;
+    const [busy, setBusy] = useState(false);
 
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
     const handleChange = (key: string) => (text: string) => {
         setUserInfo({ ...userInfo, [key]: text });
+    };
+
+    const handleSubmit = async () => {
+        const { values, error } = await validate(UserLoginSchema, userInfo);
+        if (error) return showMessage({ message: error, type: "danger" });
+
+        setBusy(true);
+        const res = await runAxiosAsync<{ profile: object }>(
+            axios.post(
+                `http://${
+                    Platform.OS === "ios" ? "localhost" : "10.0.2.2"
+                }:8989/auth/sign-in`,
+                values
+            )
+        );
+
+        if (res?.profile) {
+            showMessage({ message: "Signed in ", type: "success" });
+            navigation.navigate("Login");
+        }
+        setBusy(false);
     };
 
     return (
@@ -38,11 +64,7 @@ const LoginForm = () => {
                     secureTextEntry
                 />
 
-                <Button
-                    onPress={() =>
-                        console.log(userInfo.email, userInfo.password)
-                    }
-                >
+                <Button active={!busy} onPress={handleSubmit}>
                     Login
                 </Button>
 

@@ -31,11 +31,7 @@ const AuthNavigator: FC<Props> = () => {
                 }}
                 component={SignUp}
             />
-            <Stack.Screen
-                name="ForgotPassword"
-                // options={{ animation: "fade" }}
-                component={ForgotPassword}
-            />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         </Stack.Navigator>
     );
 };
