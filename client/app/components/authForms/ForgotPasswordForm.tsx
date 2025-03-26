@@ -6,11 +6,12 @@ import validate, { ForgotPasswordSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
-const LoginForm = () => {
+interface Props {}
+const LoginForm: FC<Props> = () => {
     const [emailInput, setEmailInput] = useState("");
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
     const [busy, setBusy] = useState(false);
@@ -51,19 +52,10 @@ const LoginForm = () => {
                 />
 
                 <View style={styles.bottomContainer}>
-                    <Button
-                        size="medium"
-                        active={!busy}
-                        onPress={handleSubmit}
-                        style={styles.button}
-                    >
+                    <Button size="medium" active={!busy} onPress={handleSubmit}>
                         Confirm
                     </Button>
-                    <Button
-                        size="medium"
-                        onPress={() => navigation.goBack()}
-                        style={styles.button}
-                    >
+                    <Button size="medium" onPress={() => navigation.goBack()}>
                         Cancel
                     </Button>
                 </View>
@@ -87,8 +79,5 @@ const styles = StyleSheet.create({
         gap: 5, // Optional: Add spacing between buttons
         justifyContent: "space-between", // Add spacing between buttons
         width: "100%", // Ensure full width
-    },
-    button: {
-        flex: 1, // Make each button take equal space
     },
 });

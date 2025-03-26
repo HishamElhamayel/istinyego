@@ -11,6 +11,20 @@ import React, { useState } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
+interface signInRes {
+    profile: {
+        id: string;
+        studentId: number;
+        firstName: string;
+        lastName: string;
+        role: string;
+        verified: boolean;
+        favoriteRoutes: string[];
+        wallet: string;
+    };
+    tokens: object;
+}
+
 const LoginForm = () => {
     const [userInfo, setUserInfo] = React.useState({ email: "", password: "" });
 
@@ -28,7 +42,7 @@ const LoginForm = () => {
         if (error) return showMessage({ message: error, type: "danger" });
 
         setBusy(true);
-        const res = await runAxiosAsync<{ profile: object }>(
+        const res = await runAxiosAsync<signInRes>(
             axios.post(
                 `http://${
                     Platform.OS === "ios" ? "localhost" : "10.0.2.2"

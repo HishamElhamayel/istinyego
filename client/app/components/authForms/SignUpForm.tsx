@@ -5,11 +5,17 @@ import validate, { CreateUserSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
-const SignUpForm = () => {
+interface Props {}
+
+interface signUpRes {
+    userId: string;
+    message: string;
+}
+const SignUpForm: FC<Props> = () => {
     const [userInfo, setUserInfo] = React.useState({
         firstName: "",
         lastName: "",
@@ -42,7 +48,7 @@ const SignUpForm = () => {
         }
 
         setBusy(true);
-        const res = await runAxiosAsync<{ message: string }>(
+        const res = await runAxiosAsync<signUpRes>(
             axios.post(
                 `http://${
                     Platform.OS === "ios" ? "localhost" : "10.0.2.2"
@@ -53,7 +59,7 @@ const SignUpForm = () => {
 
         if (res?.message) {
             showMessage({ message: res.message, type: "success" });
-            navigation.navigate("Login");
+            navigation.navigate("VerifyEmail", { userId: res.userId });
         }
         setBusy(false);
     };

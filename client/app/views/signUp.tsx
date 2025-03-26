@@ -1,11 +1,11 @@
 import SignUpForm from "@components/authForms/SignUpForm";
 import FormOverlay from "@components/form/FormOverlay";
 import KeyboardView from "@components/UI/KeyboardView";
-import React from "react";
+import React, { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const SignUp = () => {
+const SignUp: FC = () => {
     return (
         <FormOverlay>
             <SafeAreaView style={styles.container}>

@@ -1,10 +1,11 @@
 import LoginForm from "@components/authForms/LoginForm";
 import KeyboardView from "@components/UI/KeyboardView";
-import React from "react";
+import React, { FC } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Login = () => {
+interface Props {}
+const Login: FC<Props> = () => {
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardView>

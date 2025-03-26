@@ -1,7 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ForgotPassword from "@views/forgotPassword";
+import ForgotPassword from "@views/ForgotPassword";
 import Login from "@views/Login";
 import SignUp from "@views/SignUp";
+import VerifyEmail from "@views/VerifyEmail";
 import React, { FC } from "react";
 import { StyleSheet } from "react-native";
 
@@ -9,6 +10,7 @@ export type AuthStackParamList = {
     Login: undefined;
     ForgotPassword: undefined;
     SignUp: undefined;
+    VerifyEmail: { userId: string };
 };
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
@@ -32,6 +34,7 @@ const AuthNavigator: FC<Props> = () => {
                 component={SignUp}
             />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+            <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
         </Stack.Navigator>
     );
 };
