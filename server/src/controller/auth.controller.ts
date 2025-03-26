@@ -50,7 +50,8 @@ export const createUser: RequestHandler = async (req: CreateUser, res) => {
         });
 
         res.status(201).json({
-            user: { id: user._id, firstName, lastName, email },
+            // user: { id: user._id, firstName, lastName, email },
+            message: "Please check your email",
         });
     } catch (err) {
         console.error(err);
@@ -190,7 +191,8 @@ export const updatePassword: RequestHandler = async (req, res) => {
             return;
         }
 
-        await User.findByIdAndUpdate(userId, { password });
+        user.password = password;
+        await user.save();
         await Token.findOneAndDelete({ owner: user._id });
 
         // Send Success Email
