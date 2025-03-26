@@ -50,7 +50,7 @@ export const createUser: RequestHandler = async (req: CreateUser, res) => {
         });
 
         res.status(201).json({
-            // user: { id: user._id, firstName, lastName, email },
+            userId: user._id,
             message: "Please check your email",
         });
     } catch (err) {
@@ -83,10 +83,26 @@ export const verifyEmail: RequestHandler = async (
             return;
         }
 
-        await User.findByIdAndUpdate(userId, { verified: true });
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { verified: true },
+            { new: true }
+        );
         await Token.findByIdAndDelete(verificationToken._id);
 
-        res.json({ message: "Email verified" });
+        res.json({
+            message: "Email verified",
+            profile: {
+                id: user._id,
+                studentId: user.studentId,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role,
+                verified: user.verified,
+                favoriteRoutes: user.favoriteRoutes,
+                wallet: user.wallet,
+            },
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });
