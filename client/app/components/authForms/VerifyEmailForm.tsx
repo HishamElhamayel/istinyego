@@ -52,7 +52,7 @@ const LoginForm = () => {
         }, 1000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [canResend]);
 
     const handleResend = async () => {
         const res = await runAxiosAsync<{ message: string }>(
@@ -121,7 +121,7 @@ const LoginForm = () => {
                     <Button
                         size="small"
                         onPress={handleResend}
-                        disabled={!canResend} // Disable button if timer is running
+                        active={canResend} // Disable button if timer is running
                     >
                         {canResend ? "Send Again" : `Wait ${timer}s`}
                     </Button>

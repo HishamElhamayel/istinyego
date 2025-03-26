@@ -17,12 +17,12 @@ interface signUpRes {
 }
 const SignUpForm: FC<Props> = () => {
     const [userInfo, setUserInfo] = React.useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        studentId: "",
-        password: "",
-        confirmPassword: "",
+        firstName: "hisham",
+        lastName: "Elhamayel",
+        email: "elhamayelh@gmail.com",
+        studentId: "220911888",
+        password: "h!234567",
+        confirmPassword: "h!234567",
     });
 
     const { firstName, lastName, email, studentId, password, confirmPassword } =
