@@ -4,6 +4,7 @@ import Card from "@components/UI/Card";
 import FlatButton from "@components/UI/FlatButton";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import validate, { UserLoginSchema } from "@utils/validator";
+import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
 import axios from "axios";
@@ -44,12 +45,7 @@ const LoginForm = () => {
 
         setBusy(true);
         const res = await runAxiosAsync<signInRes>(
-            axios.post(
-                `http://${
-                    Platform.OS === "ios" ? "localhost" : "10.0.2.2"
-                }:8989/auth/sign-in`,
-                values
-            )
+            client.post("/auth/sign-in", values)
         );
 
         if (res?.userId) {
@@ -63,8 +59,8 @@ const LoginForm = () => {
         }
 
         if (res?.profile) {
-            console.log(res.profile);
-            showMessage({ message: "Signed in ", type: "success" });
+            // console.log(res.profile);
+            showMessage({ message: "Signed in successful ", type: "success" });
             navigation.navigate("Login");
         }
         setBusy(false);

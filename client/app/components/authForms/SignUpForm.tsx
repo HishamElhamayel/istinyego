@@ -49,12 +49,7 @@ const SignUpForm: FC<Props> = () => {
 
         setBusy(true);
         const res = await runAxiosAsync<signUpRes>(
-            axios.post(
-                `http://${
-                    Platform.OS === "ios" ? "localhost" : "10.0.2.2"
-                }:8989/auth/register`,
-                values
-            )
+            axios.post("/auth/register", values)
         );
 
         if (res?.message) {

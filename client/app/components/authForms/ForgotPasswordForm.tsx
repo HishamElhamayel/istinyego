@@ -3,6 +3,7 @@ import Button from "@components/UI/Button";
 import Card from "@components/UI/Card";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import validate, { ForgotPasswordSchema } from "@utils/validator";
+import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
 import axios from "axios";
@@ -24,12 +25,7 @@ const LoginForm: FC<Props> = () => {
 
         setBusy(true);
         const res = await runAxiosAsync<{ message: string }>(
-            axios.post(
-                `http://${
-                    Platform.OS === "ios" ? "localhost" : "10.0.2.2"
-                }:8989/auth/forget-password`,
-                values
-            )
+            client.post("/auth/forget-password", values)
         );
 
         if (res?.message) {

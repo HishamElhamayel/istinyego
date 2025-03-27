@@ -268,8 +268,8 @@ export const signIn: RequestHandler = async (req, res) => {
         }
 
         // Generate Token
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET);
-        await User.findByIdAndUpdate(user._id, { $push: { tokens: token } });
+        const token = jwt.sign({ userId }, JWT_SECRET);
+        await User.findByIdAndUpdate(userId, { $push: { tokens: token } });
 
         res.json({
             profile: {

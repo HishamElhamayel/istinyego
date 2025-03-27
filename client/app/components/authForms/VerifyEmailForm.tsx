@@ -7,6 +7,7 @@ import {
     useNavigation,
     useRoute,
 } from "@react-navigation/native";
+import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
 import axios from "axios";
@@ -56,12 +57,9 @@ const LoginForm = () => {
 
     const handleResend = async () => {
         const res = await runAxiosAsync<{ message: string }>(
-            axios.post(
-                `http://${
-                    Platform.OS === "ios" ? "localhost" : "10.0.2.2"
-                }:8989/auth/reverify-email`,
-                { userId }
-            )
+            client.post("/auth/reverify-email", {
+                userId,
+            })
         );
 
         if (res?.message) {
