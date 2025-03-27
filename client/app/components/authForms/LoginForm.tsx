@@ -12,7 +12,7 @@ import { Platform, StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 interface signInRes {
-    profile: {
+    profile?: {
         id: string;
         studentId: number;
         firstName: string;
@@ -22,7 +22,8 @@ interface signInRes {
         favoriteRoutes: string[];
         wallet: string;
     };
-    tokens: object;
+    tokens?: object;
+    userId?: string;
 }
 
 const LoginForm = () => {
@@ -51,7 +52,18 @@ const LoginForm = () => {
             )
         );
 
+        if (res?.userId) {
+            showMessage({
+                message:
+                    "To access your account, please verify your email, email sent",
+                type: "warning",
+            });
+            navigation.navigate("VerifyEmail", { userId: res?.userId });
+            setBusy(false);
+        }
+
         if (res?.profile) {
+            console.log(res.profile);
             showMessage({ message: "Signed in ", type: "success" });
             navigation.navigate("Login");
         }

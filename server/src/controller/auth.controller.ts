@@ -88,6 +88,10 @@ export const verifyEmail: RequestHandler = async (
             { verified: true },
             { new: true }
         );
+        if (!user) {
+            res.status(403).json({ error: "Invalid token" });
+            return;
+        }
         await Token.findByIdAndDelete(verificationToken._id);
 
         res.json({
@@ -227,11 +231,35 @@ export const signIn: RequestHandler = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email }).populate("favoriteRoutes");
+        const user = await User.findOne({ email });
         if (!user) {
             res.status(403).json({ error: "Email or password is incorrect" });
             return;
         }
+
+        const userId = user._id;
+
+        if (!user.verified) {
+            await Token.findOneAndDelete({ owner: userId });
+
+            const token = generateToken(6);
+
+            await Token.create({
+                owner: userId,
+                token,
+            });
+
+            sendVerificationMail(token, {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+            });
+
+            res.json({ userId });
+            return;
+        }
+
+        user.populate("favoriteRoutes");
         // console.log(password);
         const matched = await user.comparePassword(password);
         if (!matched) {
