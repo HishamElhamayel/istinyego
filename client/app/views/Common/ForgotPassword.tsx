@@ -1,34 +1,36 @@
-import LoginForm from "@components/authForms/LoginForm";
+import ForgotPasswordForm from "@components/authForms/ForgotPasswordForm";
 import KeyboardView from "@components/UI/KeyboardView";
 import React, { FC } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-interface Props {}
-const Login: FC<Props> = () => {
+const ForgotPassword: FC = () => {
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardView>
                 <View style={styles.logoContainer}>
                     <Image
                         style={styles.logo}
-                        source={require("../../assets/icon.png")}
+                        source={require("../../../assets/icon.png")}
                         resizeMode="contain"
                         resizeMethod="resize"
                     />
                 </View>
                 <View style={styles.formContainer}>
-                    <LoginForm />
+                    <ForgotPasswordForm />
                 </View>
             </KeyboardView>
         </SafeAreaView>
     );
 };
 
-export default Login;
+export default ForgotPassword;
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
+    innerContainer: {
+        flex: 1,
+    },
     logoContainer: {
         flex: 1,
         justifyContent: "center",

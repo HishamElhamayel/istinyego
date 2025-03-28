@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ForgotPassword from "@views/ForgotPassword";
-import Login from "@views/Login";
-import SignUp from "@views/SignUp";
-import VerifyEmail from "@views/VerifyEmail";
+import ForgotPassword from "@views/Common/ForgotPassword";
+import Login from "@views/Common/Login";
+import SignUp from "@views/Common/SignUp";
+import VerifyEmail from "@views/Common/VerifyEmail";
 import React, { FC } from "react";
 import { StyleSheet } from "react-native";
 

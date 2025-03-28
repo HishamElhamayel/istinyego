@@ -2,15 +2,17 @@ import FormInput from "@components/form/FormInput";
 import Button from "@components/UI/Button";
 import Card from "@components/UI/Card";
 import FlatButton from "@components/UI/FlatButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import validate, { UserLoginSchema } from "@utils/validator";
 import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
-import axios from "axios";
+import { updateAuthState } from "app/store/auth";
 import React, { useState } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
+import { useDispatch } from "react-redux";
 
 interface signInRes {
     profile?: {
@@ -18,22 +20,25 @@ interface signInRes {
         studentId: number;
         firstName: string;
         lastName: string;
+        email: string;
         role: string;
         verified: boolean;
         favoriteRoutes: string[];
         wallet: string;
     };
-    tokens?: object;
+    token?: string;
     userId?: string;
 }
 
 const LoginForm = () => {
-    const [userInfo, setUserInfo] = React.useState({ email: "", password: "" });
-
+    const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+    const dispatch = useDispatch();
+    const [userInfo, setUserInfo] = React.useState({
+        email: "elhamayelh@gmail.com",
+        password: "h!234567",
+    });
     const { email, password } = userInfo;
     const [busy, setBusy] = useState(false);
-
-    const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
     const handleChange = (key: string) => (text: string) => {
         setUserInfo({ ...userInfo, [key]: text });
@@ -59,9 +64,13 @@ const LoginForm = () => {
         }
 
         if (res?.profile) {
-            // console.log(res.profile);
             showMessage({ message: "Signed in successful ", type: "success" });
-            navigation.navigate("Login");
+            if (res?.token) {
+                console.log(res);
+                await AsyncStorage.setItem("access-token", res.token);
+                // console.log(await AsyncStorage.getItem("access-token"));
+            }
+            dispatch(updateAuthState({ profile: res.profile, pending: false }));
         }
         setBusy(false);
     };

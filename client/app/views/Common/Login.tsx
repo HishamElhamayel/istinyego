@@ -1,31 +1,31 @@
-import VerifyEmailForm from "@components/authForms/VerifyEmailForm";
+import LoginForm from "@components/authForms/LoginForm";
 import KeyboardView from "@components/UI/KeyboardView";
 import React, { FC } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Props {}
-const VerifyEmail: FC<Props> = () => {
+const Login: FC<Props> = () => {
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardView>
                 <View style={styles.logoContainer}>
                     <Image
                         style={styles.logo}
-                        source={require("../../assets/icon.png")}
+                        source={require("../../../assets/icon.png")}
                         resizeMode="contain"
                         resizeMethod="resize"
                     />
                 </View>
                 <View style={styles.formContainer}>
-                    <VerifyEmailForm />
+                    <LoginForm />
                 </View>
             </KeyboardView>
         </SafeAreaView>
     );
 };
 
-export default VerifyEmail;
+export default Login;
 
 const styles = StyleSheet.create({
     container: { flex: 1 },

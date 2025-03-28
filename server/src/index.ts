@@ -26,7 +26,7 @@ app.use("/booking", bookingRouter);
 app.use("/profile", profileRouter);
 
 app.use((req, res) => {
-    res.status(404).json({ message: "Not found" });
+    res.status(404).json({ error: "Not found" });
 });
 
 const PORT = parseInt(process.env.PORT || "8989");
