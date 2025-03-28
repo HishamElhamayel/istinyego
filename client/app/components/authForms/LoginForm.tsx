@@ -14,7 +14,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import { useDispatch } from "react-redux";
 
-interface signInRes {
+export interface SignInRes {
     profile?: {
         id: string;
         studentId: number;
@@ -49,7 +49,7 @@ const LoginForm = () => {
         if (error) return showMessage({ message: error, type: "danger" });
 
         setBusy(true);
-        const res = await runAxiosAsync<signInRes>(
+        const res = await runAxiosAsync<SignInRes>(
             client.post("/auth/sign-in", values)
         );
 
@@ -66,7 +66,7 @@ const LoginForm = () => {
         if (res?.profile) {
             showMessage({ message: "Signed in successful ", type: "success" });
             if (res?.token) {
-                console.log(res);
+                // console.log(res);
                 await AsyncStorage.setItem("access-token", res.token);
                 // console.log(await AsyncStorage.getItem("access-token"));
             }

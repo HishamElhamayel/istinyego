@@ -4,12 +4,13 @@ import LoadingAnimation from "@components/UI/LoadingAnimation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
-import { getAuthState, Profile, updateAuthState } from "app/store/auth";
+import useAuth from "app/hooks/useAuth";
+import { Profile, updateAuthState } from "app/store/auth";
 import { FC, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import AuthNavigator from "./AuthNavigator";
-import UserNavigation from "./UserNavigation";
+import TabNavigator from "./TabNavigator";
 
 const myTheme = {
     ...DefaultTheme,
@@ -22,10 +23,8 @@ const myTheme = {
 interface Props {}
 
 const Navigator: FC<Props> = () => {
-    const authState = useSelector(getAuthState);
+    const { authState, loggedIn } = useAuth();
     const dispatch = useDispatch();
-
-    const loggedIn = authState.profile ? true : false;
 
     const fetchAuthState = async () => {
         // await AsyncStorage.removeItem("access-token");
@@ -58,7 +57,7 @@ const Navigator: FC<Props> = () => {
         <NavigationContainer theme={myTheme}>
             <LoadingAnimation visible={authState.pending} />
             {!loggedIn ? <AuthNavigator /> : null}
-            {loggedIn ? <UserNavigation /> : null}
+            {loggedIn ? <TabNavigator /> : null}
         </NavigationContainer>
     );
 };

@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "@views/User/Home";
-import React, { FC } from "react";
-import { StyleSheet } from "react-native";
+import { FC } from "react";
 
 export type AuthStackParamList = {
     Home: undefined;
@@ -11,7 +10,7 @@ const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 interface Props {}
 
-const AuthNavigator: FC<Props> = () => {
+export const DriverHomeNavigator: FC<Props> = () => {
     return (
         <Stack.Navigator
             screenOptions={{
@@ -22,7 +21,3 @@ const AuthNavigator: FC<Props> = () => {
         </Stack.Navigator>
     );
 };
-
-export default AuthNavigator;
-
-const styles = StyleSheet.create({});
