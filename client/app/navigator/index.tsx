@@ -7,8 +7,7 @@ import runAxiosAsync from "app/API/runAxiosAsync";
 import useAuth from "app/hooks/useAuth";
 import { Profile, updateAuthState } from "app/store/auth";
 import { FC, useEffect } from "react";
-import { StyleSheet } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import AuthNavigator from "./AuthNavigator";
 import TabNavigator from "./TabNavigator";
 
@@ -22,7 +21,7 @@ const myTheme = {
 
 interface Props {}
 
-const Navigator: FC<Props> = () => {
+const Navigator: FC = () => {
     const { authState, loggedIn } = useAuth();
     const dispatch = useDispatch();
 
@@ -63,5 +62,3 @@ const Navigator: FC<Props> = () => {
 };
 
 export default Navigator;
-
-const styles = StyleSheet.create({});

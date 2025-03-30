@@ -1,22 +1,26 @@
 import colors from "@utils/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-interface props {
+interface Props {
     children?: React.ReactNode;
     style?: object;
+    title?: string;
 }
 
-const Card: FC<props> = ({ children, style }) => {
+const Card: FC<Props> = ({ children, style, title }) => {
     return (
         <View style={styles.root}>
-            <LinearGradient
-                colors={[colors.primary100, colors.primary50]}
-                style={[styles.container, style]}
-            >
-                {children}
-            </LinearGradient>
+            {title && <Text style={styles.title}>{title}</Text>}
+            <View style={styles.container}>
+                <LinearGradient
+                    colors={[colors.primary100, colors.primary50]}
+                    style={[styles.innerContainer, style]}
+                >
+                    {children}
+                </LinearGradient>
+            </View>
         </View>
     );
 };
@@ -25,18 +29,23 @@ export default Card;
 
 const styles = StyleSheet.create({
     root: {
+        margin: 10,
+        gap: 10,
+    },
+    title: {
+        fontSize: 24,
+    },
+    container: {
         elevation: 65,
         shadowColor: "black",
-        shadowOffset: { width: 1, height: 1 },
+        shadowOffset: { width: 1, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 15,
         borderRadius: 15,
-        margin: 0,
     },
-    container: {
+    innerContainer: {
         borderRadius: 15,
-        margin: 15,
         paddingVertical: 25,
-        paddingHorizontal: 25,
+        paddingHorizontal: 15,
     },
 });
