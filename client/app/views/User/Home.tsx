@@ -1,17 +1,37 @@
-import Card from "@components/UI/Card";
-import Header from "@components/UI/Header";
-import LightCard from "@components/UI/LightCard";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import Card from "@UI/cards/Card";
+import LightCard from "@UI/cards/LightCard";
+import RoutLocations from "@UI/RoutLocations";
+import client from "app/API/client";
+import runAxiosAsync from "app/API/runAxiosAsync";
 import useAuth from "app/hooks/useAuth";
-import { FC } from "react";
+import Header from "app/UI/Header";
+import { FC, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+interface GetBookingsRes {
+    bookings: object[];
+}
 
 interface Props {}
 const Home: FC<Props> = () => {
     const { authState } = useAuth();
-
     const firstName = authState.profile?.firstName;
+
+    const [bookings, setBookings] = useState<object[]>([]);
+
+    useEffect(() => {
+        const fetchBookings = async () => {
+            const res = await runAxiosAsync<GetBookingsRes>(
+                client.get("/bookings")
+            );
+            if (res?.bookings) {
+                setBookings(res.bookings);
+            }
+        };
+        fetchBookings();
+    }, []);
+
     const onPress = () => {
         console.log("onPress");
     };
@@ -28,89 +48,30 @@ const Home: FC<Props> = () => {
                 </Header>
                 <Card title="Bookings" style={styles.bookings}>
                     <LightCard onPressHandler={onPress}>
-                        <View style={styles.locationsContainer}>
-                            <Text style={styles.locationText}>ISU ANK</Text>
-                            <Ionicons
-                                name="arrow-forward-sharp"
-                                color={"Black"}
-                                size={24}
-                            />
-                            <Text style={styles.locationText}>Seyrantepe</Text>
-                        </View>
+                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
                         <Text style={styles.dateText}>Monday 12:00</Text>
                     </LightCard>
                     <LightCard>
-                        <View style={styles.locationsContainer}>
-                            <Text style={styles.locationText}>ISU ANK</Text>
-                            <Ionicons
-                                name="arrow-forward-sharp"
-                                color={"Black"}
-                                size={24}
-                            />
-                            <Text style={styles.locationText}>Seyrantepe</Text>
-                        </View>
+                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
+
                         <Text style={styles.dateText}>Monday 12:00</Text>
                     </LightCard>
                 </Card>
                 <Card title="Favorite Routes" style={styles.bookings}>
                     <LightCard onPressHandler={onPress}>
-                        <View style={styles.locationsContainer}>
-                            <Text style={styles.locationText}>ISU ANK</Text>
-                            <Ionicons
-                                name="arrow-forward-sharp"
-                                color={"Black"}
-                                size={24}
-                            />
-                            <Text style={styles.locationText}>Seyrantepe</Text>
-                        </View>
+                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
                         <Text style={styles.dateText}>Monday 12:00</Text>
                     </LightCard>
-                    <LightCard>
-                        <View style={styles.locationsContainer}>
-                            <Text style={styles.locationText}>ISU ANK</Text>
-                            <Ionicons
-                                name="arrow-forward-sharp"
-                                color={"Black"}
-                                size={24}
-                            />
-                            <Text style={styles.locationText}>Seyrantepe</Text>
-                        </View>
+                    <LightCard onPressHandler={onPress}>
+                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
                         <Text style={styles.dateText}>Monday 12:00</Text>
                     </LightCard>
-                    <LightCard>
-                        <View style={styles.locationsContainer}>
-                            <Text style={styles.locationText}>ISU ANK</Text>
-                            <Ionicons
-                                name="arrow-forward-sharp"
-                                color={"Black"}
-                                size={24}
-                            />
-                            <Text style={styles.locationText}>Seyrantepe</Text>
-                        </View>
+                    <LightCard onPressHandler={onPress}>
+                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
                         <Text style={styles.dateText}>Monday 12:00</Text>
                     </LightCard>
-                    <LightCard>
-                        <View style={styles.locationsContainer}>
-                            <Text style={styles.locationText}>ISU ANK</Text>
-                            <Ionicons
-                                name="arrow-forward-sharp"
-                                color={"Black"}
-                                size={24}
-                            />
-                            <Text style={styles.locationText}>Seyrantepe</Text>
-                        </View>
-                        <Text style={styles.dateText}>Monday 12:00</Text>
-                    </LightCard>
-                    <LightCard>
-                        <View style={styles.locationsContainer}>
-                            <Text style={styles.locationText}>ISU ANK</Text>
-                            <Ionicons
-                                name="arrow-forward-sharp"
-                                color={"Black"}
-                                size={24}
-                            />
-                            <Text style={styles.locationText}>Seyrantepe</Text>
-                        </View>
+                    <LightCard onPressHandler={onPress}>
+                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
                         <Text style={styles.dateText}>Monday 12:00</Text>
                     </LightCard>
                 </Card>
@@ -122,7 +83,10 @@ const Home: FC<Props> = () => {
 export default Home;
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 8 },
+    container: {
+        flex: 1,
+        margin: 10,
+    },
     bookings: { gap: 15 },
     locationsContainer: {
         justifyContent: "space-between",

@@ -1,5 +1,5 @@
 import ForgotPasswordForm from "@components/authForms/ForgotPasswordForm";
-import KeyboardView from "@components/UI/KeyboardView";
+import KeyboardView from "app/UI/KeyboardView";
 import React, { FC } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -47,5 +47,6 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         flex: 3,
+        marginHorizontal: 10,
     },
 });

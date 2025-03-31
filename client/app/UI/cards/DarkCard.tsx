@@ -9,39 +9,34 @@ interface Props {
     title?: string;
 }
 
-const Card: FC<Props> = ({ children, style, title }) => {
+const DarkCard: FC<Props> = ({ children }) => {
     return (
         <View style={styles.root}>
-            {title && <Text style={styles.title}>{title}</Text>}
-            <View style={styles.container}>
-                <LinearGradient
-                    colors={[colors.primary100, colors.primary50]}
-                    style={[styles.innerContainer, style]}
-                >
-                    {children}
-                </LinearGradient>
-            </View>
+            <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                colors={[colors.black, colors.grey]}
+                style={[styles.innerContainer]}
+            >
+                {children}
+            </LinearGradient>
         </View>
     );
 };
 
-export default Card;
+export default DarkCard;
 
 const styles = StyleSheet.create({
     root: {
-        margin: 10,
-        gap: 10,
-    },
-    title: {
-        fontSize: 24,
-    },
-    container: {
-        elevation: 65,
+        elevation: 15,
         shadowColor: "black",
         shadowOffset: { width: 1, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 15,
-        borderRadius: 15,
+        gap: 10,
+    },
+    title: {
+        fontSize: 24,
     },
     innerContainer: {
         borderRadius: 15,

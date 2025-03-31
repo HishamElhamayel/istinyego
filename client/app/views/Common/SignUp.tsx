@@ -1,6 +1,6 @@
 import SignUpForm from "@components/authForms/SignUpForm";
 import FormOverlay from "@components/form/FormOverlay";
-import KeyboardView from "@components/UI/KeyboardView";
+import KeyboardView from "app/UI/KeyboardView";
 import React, { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,5 +25,6 @@ const styles = StyleSheet.create({
     container: { flex: 1 },
     formContainer: {
         flex: 1,
+        marginHorizontal: 10,
     },
 });

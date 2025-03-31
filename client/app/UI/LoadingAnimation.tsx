@@ -1,4 +1,3 @@
-import colors from "@utils/colors";
 import LottieView from "lottie-react-native";
 import React from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
@@ -13,7 +12,7 @@ const LoadingAnimation = ({ visible }: Props) => {
         <Modal animationType="fade">
             <View style={styles.container}>
                 <LottieView
-                    source={require("../../../assets/IstinyeGo_Loading.json")}
+                    source={require("../../assets/IstinyeGo_Loading.json")}
                     autoPlay
                     loop
                     style={{ flex: 1 }}

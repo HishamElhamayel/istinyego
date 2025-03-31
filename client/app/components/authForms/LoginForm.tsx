@@ -1,9 +1,9 @@
 import FormInput from "@components/form/FormInput";
-import Button from "@components/UI/Button";
-import Card from "@components/UI/Card";
-import FlatButton from "@components/UI/FlatButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import Button from "@UI/buttons/Button";
+import FlatButton from "@UI/buttons/FlatButton";
+import Card from "@UI/cards/Card";
 import validate, { UserLoginSchema } from "@utils/validator";
 import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";

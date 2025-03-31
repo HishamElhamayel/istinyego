@@ -1,7 +1,7 @@
 import FormInput from "@components/form/FormInput";
-import Button from "@components/UI/Button";
-import Card from "@components/UI/Card";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import Button from "@UI/buttons/Button";
+import Card from "@UI/cards/Card";
 import validate, { ForgotPasswordSchema } from "@utils/validator";
 import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";

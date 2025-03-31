@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 
 interface Props {
     children?: React.ReactNode;

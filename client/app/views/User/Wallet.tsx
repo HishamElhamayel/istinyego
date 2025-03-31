@@ -1,11 +1,75 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
+import BlueButton from "@UI/buttons/BlueButton";
+import DarkCard from "@UI/cards/DarkCard";
+import TransactionCard from "@UI/cards/TransactionCard";
+import RoutLocations from "@UI/RoutLocations";
+import client from "app/API/client";
+import runAxiosAsync from "app/API/runAxiosAsync";
+import useAuth from "app/hooks/useAuth";
+import Header from "app/UI/Header";
 import { FC } from "react";
-import { StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Wallet: FC = () => {
+interface Props {}
+const Wallet: FC<Props> = () => {
+    const onPress = () => {
+        console.log("onPress");
+    };
+
     return (
         <SafeAreaView style={styles.container}>
-            <Text>Wallet Page</Text>
+            <ScrollView style={{ overflow: "visible" }}>
+                <Header>Wallet</Header>
+                <View style={styles.balanceContainer}>
+                    <DarkCard>
+                        <Text style={styles.walletText}>
+                            Balance: 800.00 TL
+                        </Text>
+                    </DarkCard>
+                    <BlueButton onPress={onPress}>Add Balance</BlueButton>
+                </View>
+                <View style={styles.historyContainer}>
+                    <Text style={{ fontSize: 20 }}>History</Text>
+                    <TransactionCard
+                        type="deduct"
+                        date={new Date()}
+                        amount={100}
+                    >
+                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
+                    </TransactionCard>
+                    <TransactionCard
+                        type="add"
+                        date={new Date()}
+                        amount={100}
+                    ></TransactionCard>
+                    <TransactionCard
+                        type="add"
+                        date={new Date()}
+                        amount={100}
+                    ></TransactionCard>
+                    <TransactionCard
+                        type="add"
+                        date={new Date()}
+                        amount={100}
+                    ></TransactionCard>
+                    <TransactionCard
+                        type="add"
+                        date={new Date()}
+                        amount={100}
+                    ></TransactionCard>
+                    <TransactionCard
+                        type="add"
+                        date={new Date()}
+                        amount={100}
+                    ></TransactionCard>
+                    <TransactionCard
+                        type="refund"
+                        date={new Date()}
+                        amount={100}
+                    ></TransactionCard>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -13,22 +77,16 @@ const Wallet: FC = () => {
 export default Wallet;
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
-    logoContainer: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+    container: { flex: 1, margin: 10 },
+    walletText: {
+        fontSize: 38,
+        color: "white",
     },
-    logo: {
-        width: 180,
-        height: 180,
-        elevation: 2,
-        shadowColor: "black",
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.5,
-        shadowRadius: 1,
+    balanceContainer: {
+        gap: 15,
     },
-    formContainer: {
-        flex: 3,
+    historyContainer: {
+        gap: 10,
+        marginTop: 20,
     },
 });

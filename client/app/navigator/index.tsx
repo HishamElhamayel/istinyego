@@ -1,11 +1,11 @@
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 
-import LoadingAnimation from "@components/UI/LoadingAnimation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useAuth from "app/hooks/useAuth";
 import { Profile, updateAuthState } from "app/store/auth";
+import LoadingAnimation from "app/UI/LoadingAnimation";
 import { FC, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import AuthNavigator from "./AuthNavigator";
