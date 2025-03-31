@@ -231,7 +231,7 @@ export const signIn: RequestHandler = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).populate("favoriteRoutes");
         if (!user) {
             res.status(403).json({ error: "Email or password is incorrect" });
             return;
@@ -259,7 +259,7 @@ export const signIn: RequestHandler = async (req, res) => {
             return;
         }
 
-        user.populate("favoriteRoutes");
+        await user;
         // console.log(password);
         const matched = await user.comparePassword(password);
         if (!matched) {
@@ -269,7 +269,9 @@ export const signIn: RequestHandler = async (req, res) => {
 
         // Generate Token
         const token = jwt.sign({ userId }, JWT_SECRET);
-        await User.findByIdAndUpdate(userId, { $push: { tokens: token } });
+        await User.findByIdAndUpdate(userId, {
+            $push: { tokens: token },
+        });
 
         res.json({
             profile: {
