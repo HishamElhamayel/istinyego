@@ -1,18 +1,67 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
+import TransactionList from "@components/TransactionList";
 import BlueButton from "@UI/buttons/BlueButton";
 import DarkCard from "@UI/cards/DarkCard";
-import TransactionCard from "@UI/cards/TransactionCard";
-import RoutLocations from "@UI/RoutLocations";
-import client from "app/API/client";
+import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
-import useAuth from "app/hooks/useAuth";
+import useClient from "app/hooks/useClient";
 import Header from "app/UI/Header";
-import { FC } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { FC, useEffect, useState } from "react";
+import {
+    ActivityIndicator,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+interface GetWalletRes {
+    balance: number;
+}
+interface GetTransactionsRes {
+    transactions: {
+        _id: string;
+        amount: number;
+        type: "add" | "deduct" | "refund";
+        createdAt: string;
+        route: {
+            startLocation: string;
+            endLocation: string;
+        };
+    }[];
+}
 
 interface Props {}
 const Wallet: FC<Props> = () => {
+    const { authClient } = useClient();
+
+    const [pending, setPending] = useState(true);
+    const [balance, setBalance] = useState<number>();
+    const [transactions, setTransactions] = useState<
+        GetTransactionsRes["transactions"]
+    >([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const walletRes = await runAxiosAsync<GetWalletRes>(
+                authClient.get("/wallet/get-balance")
+            );
+            if (walletRes?.balance) {
+                setBalance(walletRes.balance);
+            }
+
+            const TransactionRes = await runAxiosAsync<GetTransactionsRes>(
+                authClient.get("/transaction/get-transactions")
+            );
+            if (TransactionRes) {
+                setTransactions(TransactionRes.transactions);
+            }
+
+            setPending(false);
+        };
+        fetchData();
+    }, []);
+
     const onPress = () => {
         console.log("onPress");
     };
@@ -21,54 +70,23 @@ const Wallet: FC<Props> = () => {
         <SafeAreaView style={styles.container}>
             <ScrollView style={{ overflow: "visible" }}>
                 <Header>Wallet</Header>
-                <View style={styles.balanceContainer}>
-                    <DarkCard>
-                        <Text style={styles.walletText}>
-                            Balance: 800.00 TL
-                        </Text>
-                    </DarkCard>
-                    <BlueButton onPress={onPress}>Add Balance</BlueButton>
-                </View>
-                <View style={styles.historyContainer}>
-                    <Text style={{ fontSize: 20 }}>History</Text>
-                    <TransactionCard
-                        type="deduct"
-                        date={new Date()}
-                        amount={100}
-                    >
-                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
-                    </TransactionCard>
-                    <TransactionCard
-                        type="add"
-                        date={new Date()}
-                        amount={100}
-                    ></TransactionCard>
-                    <TransactionCard
-                        type="add"
-                        date={new Date()}
-                        amount={100}
-                    ></TransactionCard>
-                    <TransactionCard
-                        type="add"
-                        date={new Date()}
-                        amount={100}
-                    ></TransactionCard>
-                    <TransactionCard
-                        type="add"
-                        date={new Date()}
-                        amount={100}
-                    ></TransactionCard>
-                    <TransactionCard
-                        type="add"
-                        date={new Date()}
-                        amount={100}
-                    ></TransactionCard>
-                    <TransactionCard
-                        type="refund"
-                        date={new Date()}
-                        amount={100}
-                    ></TransactionCard>
-                </View>
+                {pending ? (
+                    <ActivityIndicator
+                        size="large"
+                        color={colors.primary100}
+                        style={styles.loading}
+                    />
+                ) : (
+                    <View style={styles.balanceContainer}>
+                        <DarkCard>
+                            <Text style={styles.walletText}>
+                                Balance: {balance?.toFixed(2)}₺
+                            </Text>
+                        </DarkCard>
+                        <BlueButton onPress={onPress}>Add Balance</BlueButton>
+                        <TransactionList transactions={transactions} />
+                    </View>
+                )}
             </ScrollView>
         </SafeAreaView>
     );
@@ -85,8 +103,7 @@ const styles = StyleSheet.create({
     balanceContainer: {
         gap: 15,
     },
-    historyContainer: {
-        gap: 10,
-        marginTop: 20,
+    loading: {
+        marginTop: 200,
     },
 });

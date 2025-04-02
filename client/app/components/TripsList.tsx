@@ -10,9 +10,9 @@ type Props = {
         _id: string;
         startLocation: string;
         endLocation: string;
-        startTime?: string;
-        endTime?: string;
-        tripId?: string;
+        startTime: string;
+        endTime: string;
+        tripId: string;
     }[];
     title: string;
 };
@@ -21,8 +21,6 @@ const TripsList = ({ trips, title }: Props) => {
     const onPress = () => {
         console.log("onPress");
     };
-
-    // console.log(trips);
 
     return (
         <Card title={title} style={styles.container}>

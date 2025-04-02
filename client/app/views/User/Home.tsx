@@ -33,8 +33,8 @@ const Home: FC<Props> = () => {
     const { authClient } = useClient();
     const profile = authState.profile;
     const firstName = profile?.firstName;
-    const [pending, setPending] = useState(true);
 
+    const [pending, setPending] = useState(true);
     const [favoriteRoutes, setFavoriteRoutes] = useState<
         GetFavoriteRes["routes"]
     >([]);
@@ -77,7 +77,7 @@ const Home: FC<Props> = () => {
                     <ActivityIndicator
                         size="large"
                         color={colors.primary100}
-                        style={styles.loadingScreen}
+                        style={styles.loading}
                     />
                 )}
 
@@ -102,8 +102,7 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 10,
     },
-    loadingScreen: {
-        flex: 1,
+    loading: {
         marginTop: 200,
     },
 });

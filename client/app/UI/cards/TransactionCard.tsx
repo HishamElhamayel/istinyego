@@ -1,12 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "@utils/colors";
+import { DateTime } from "luxon";
 import React, { FC } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 interface Props {
     children?: React.ReactNode;
     type: "add" | "deduct" | "refund";
-    date: Date;
+    date: string;
     amount: number;
 }
 
@@ -20,15 +21,15 @@ const TransactionCard: FC<Props> = ({ type, date, amount, children }) => {
                     ) : (
                         <Ionicons name="add-sharp" size={22} />
                     )}
-                    <Text style={styles.amountText}>{amount} TL</Text>
+                    <Text style={styles.text}>{amount} TL</Text>
                 </View>
-                <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
+                <Text style={styles.dateText}>
+                    {DateTime.fromISO(date).toFormat("cccc t")}
+                </Text>
             </View>
             {children && children}
             {type === "refund" && (
-                <Text style={styles.amountText}>
-                    Refund due to canceled trip
-                </Text>
+                <Text style={styles.text}>Refund due to canceled trip</Text>
             )}
         </View>
     );
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         gap: 10,
     },
-    amountText: {
+    text: {
         fontSize: 22,
     },
     dateText: {
