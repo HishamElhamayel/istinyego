@@ -231,7 +231,7 @@ export const signIn: RequestHandler = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email }).populate("favoriteRoutes");
+        const user = await User.findOne({ email });
         if (!user) {
             res.status(403).json({ error: "Email or password is incorrect" });
             return;

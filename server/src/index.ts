@@ -16,13 +16,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("src/public"));
 
+app.use("/booking", bookingRouter);
 app.use("/auth", authRouter);
 app.use("/wallet", walletRouter);
 app.use("/transaction", transactionRouter);
 app.use("/route", routeRouter);
 app.use("/shuttle", shuttleRouter);
 app.use("/trip", tripRouter);
-app.use("/booking", bookingRouter);
 app.use("/profile", profileRouter);
 
 app.use((req, res) => {

@@ -1,9 +1,8 @@
-import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import client from "app/API/client";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useAuth from "app/hooks/useAuth";
+import useClient from "app/hooks/useClient";
 import { Profile, updateAuthState } from "app/store/auth";
 import LoadingAnimation from "app/UI/LoadingAnimation";
 import { FC, useEffect } from "react";
@@ -24,6 +23,7 @@ interface Props {}
 const Navigator: FC = () => {
     const { authState, loggedIn } = useAuth();
     const dispatch = useDispatch();
+    const { authClient } = useClient();
 
     const fetchAuthState = async () => {
         // await AsyncStorage.removeItem("access-token");
@@ -31,7 +31,7 @@ const Navigator: FC = () => {
         if (token) {
             dispatch(updateAuthState({ profile: null, pending: true }));
             const res = await runAxiosAsync<{ profile: Profile }>(
-                client.get("/auth/is-auth", {
+                authClient.get("/auth/is-auth", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -40,7 +40,10 @@ const Navigator: FC = () => {
 
             if (res) {
                 dispatch(
-                    updateAuthState({ profile: res.profile, pending: false })
+                    updateAuthState({
+                        profile: { ...res.profile, token: token },
+                        pending: false,
+                    })
                 );
             } else {
                 dispatch(updateAuthState({ profile: null, pending: false }));

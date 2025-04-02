@@ -21,6 +21,33 @@ export const createRoute: RequestHandler = async (req, res) => {
     }
 };
 
+export const getFavRoutes: RequestHandler = async (req, res) => {
+    try {
+        const routes = await Route.aggregate([
+            { $match: { _id: { $in: req.user.favoriteRoutes } } },
+            {
+                $project: {
+                    _id: 1,
+                    startLocation: "$startLocation.description",
+                    endLocation: "$endLocation.description",
+                },
+            },
+        ]);
+
+        if (!routes) {
+            res.status(404).json({ error: "Route not found" });
+            return;
+        }
+
+        res.status(201).json({
+            routes: routes,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
 export const getAllRoutes: RequestHandler = async (req, res) => {
     try {
         const routes = await Route.find({});

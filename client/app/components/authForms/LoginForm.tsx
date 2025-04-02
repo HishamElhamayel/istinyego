@@ -15,7 +15,7 @@ import { showMessage } from "react-native-flash-message";
 import { useDispatch } from "react-redux";
 
 export interface SignInRes {
-    profile?: {
+    profile: {
         id: string;
         studentId: number;
         firstName: string;
@@ -26,7 +26,7 @@ export interface SignInRes {
         favoriteRoutes: string[];
         wallet: string;
     };
-    token?: string;
+    token: string;
     userId?: string;
 }
 
@@ -69,8 +69,13 @@ const LoginForm = () => {
                 // console.log(res);
                 await AsyncStorage.setItem("access-token", res.token);
                 // console.log(await AsyncStorage.getItem("access-token"));
+                dispatch(
+                    updateAuthState({
+                        profile: { ...res.profile, token: res.token },
+                        pending: false,
+                    })
+                );
             }
-            dispatch(updateAuthState({ profile: res.profile, pending: false }));
         }
         setBusy(false);
     };

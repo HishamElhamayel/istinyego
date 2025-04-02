@@ -2,6 +2,7 @@ import {
     createRoute,
     deleteRoute,
     getAllRoutes,
+    getFavRoutes,
     toggleFavRoute,
     updateRoute,
 } from "#/controller/route.controller";
@@ -20,6 +21,7 @@ router.post(
     createRoute
 );
 router.get("/", getAllRoutes);
+router.get("/get-fav-routes", mustAuth, getFavRoutes);
 router.patch("/toggle-fav-route/:id", mustAuth, toggleFavRoute);
 router.patch("/:id", mustAuth, mustRoles("admin"), updateRoute);
 router.delete("/:id", mustAuth, mustRoles("admin"), deleteRoute);

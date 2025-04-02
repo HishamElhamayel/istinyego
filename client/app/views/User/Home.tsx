@@ -1,40 +1,67 @@
-import Card from "@UI/cards/Card";
-import LightCard from "@UI/cards/LightCard";
-import RoutLocations from "@UI/RoutLocations";
-import client from "app/API/client";
+import RoutesList from "@components/RoutesList";
+import TripsList from "@components/TripsList";
+import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useAuth from "app/hooks/useAuth";
+import useClient from "app/hooks/useClient";
 import Header from "app/UI/Header";
 import { FC, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface GetBookingsRes {
-    bookings: object[];
+    bookings: {
+        _id: string;
+        startLocation: string;
+        endLocation: string;
+        startTime: string;
+        endTime: string;
+        tripId: string;
+    }[];
+}
+interface GetFavoriteRes {
+    routes: {
+        _id: string;
+        startLocation: string;
+        endLocation: string;
+    }[];
 }
 
 interface Props {}
 const Home: FC<Props> = () => {
     const { authState } = useAuth();
-    const firstName = authState.profile?.firstName;
+    const { authClient } = useClient();
+    const profile = authState.profile;
+    const firstName = profile?.firstName;
+    const [pending, setPending] = useState(true);
 
-    const [bookings, setBookings] = useState<object[]>([]);
+    const [favoriteRoutes, setFavoriteRoutes] = useState<
+        GetFavoriteRes["routes"]
+    >([]);
+    const [bookings, setBookings] = useState<GetBookingsRes["bookings"]>([]);
 
     useEffect(() => {
-        const fetchBookings = async () => {
+        const fetchData = async () => {
             const res = await runAxiosAsync<GetBookingsRes>(
-                client.get("/bookings")
+                authClient.get("/booking/bookings-by-userId")
             );
             if (res?.bookings) {
                 setBookings(res.bookings);
             }
-        };
-        fetchBookings();
-    }, []);
 
-    const onPress = () => {
-        console.log("onPress");
-    };
+            if (profile?.favoriteRoutes) {
+                const res = await runAxiosAsync<GetFavoriteRes>(
+                    authClient.get("/route/get-fav-routes")
+                );
+                if (res?.routes) {
+                    setFavoriteRoutes(res.routes);
+                }
+            }
+
+            setPending(false);
+        };
+        fetchData();
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -46,35 +73,23 @@ const Home: FC<Props> = () => {
                         : ""}
                     !
                 </Header>
-                <Card title="Bookings" style={styles.bookings}>
-                    <LightCard onPressHandler={onPress}>
-                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
-                        <Text style={styles.dateText}>Monday 12:00</Text>
-                    </LightCard>
-                    <LightCard>
-                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
+                {pending && (
+                    <ActivityIndicator
+                        size="large"
+                        color={colors.primary100}
+                        style={styles.loadingScreen}
+                    />
+                )}
 
-                        <Text style={styles.dateText}>Monday 12:00</Text>
-                    </LightCard>
-                </Card>
-                <Card title="Favorite Routes" style={styles.bookings}>
-                    <LightCard onPressHandler={onPress}>
-                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
-                        <Text style={styles.dateText}>Monday 12:00</Text>
-                    </LightCard>
-                    <LightCard onPressHandler={onPress}>
-                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
-                        <Text style={styles.dateText}>Monday 12:00</Text>
-                    </LightCard>
-                    <LightCard onPressHandler={onPress}>
-                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
-                        <Text style={styles.dateText}>Monday 12:00</Text>
-                    </LightCard>
-                    <LightCard onPressHandler={onPress}>
-                        <RoutLocations from="ISU ANK" to="Seyrantepe" />
-                        <Text style={styles.dateText}>Monday 12:00</Text>
-                    </LightCard>
-                </Card>
+                {!pending && bookings.length > 0 && (
+                    <TripsList trips={bookings} title="Your Trips" />
+                )}
+                {!pending && favoriteRoutes.length > 0 && (
+                    <RoutesList
+                        routes={favoriteRoutes}
+                        title="Favorite Routes"
+                    />
+                )}
             </ScrollView>
         </SafeAreaView>
     );
@@ -87,16 +102,8 @@ const styles = StyleSheet.create({
         flex: 1,
         margin: 10,
     },
-    bookings: { gap: 15 },
-    locationsContainer: {
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-    },
-    locationText: {
-        fontSize: 24,
-    },
-    dateText: {
-        fontSize: 22,
+    loadingScreen: {
+        flex: 1,
+        marginTop: 200,
     },
 });
