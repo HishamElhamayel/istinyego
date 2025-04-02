@@ -15,7 +15,7 @@ const router = Router();
 //     validate(CreateTransactionSchema),
 //     createTransaction
 // );
-router.get("/my-transactions", mustAuth, getTransactionsByWalletId);
+router.get("/get-transactions", mustAuth, getTransactionsByWalletId);
 router.get("/", mustAuth, mustRoles("admin"), getAllTransactions);
 
 export default router;

@@ -26,7 +26,7 @@ app.use("/trip", tripRouter);
 app.use("/profile", profileRouter);
 
 app.use((req, res) => {
-    res.status(404).json({ error: "Not found" });
+    res.status(404).json({ error: "End point not found" });
 });
 
 const PORT = parseInt(process.env.PORT || "8989");
