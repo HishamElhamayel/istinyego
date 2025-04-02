@@ -30,31 +30,33 @@ interface verifyEmailRes {
 }
 
 const LoginForm = () => {
-    const [token, setToken] = React.useState("");
-    const [busy, setBusy] = useState(false);
-    const [timer, setTimer] = useState(30); // Timer state
-    const [canResend, setCanResend] = useState(false); // Button state
+    const [token, setToken] = React.useState(""); // State for the token input
+    const [busy, setBusy] = useState(false); // State to track if the form is busy
+    const [timer, setTimer] = useState(30); // Timer state for the resend button
+    const [canResend, setCanResend] = useState(false); // State to enable/disable the resend button
 
     const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
     const route = useRoute<RouteProp<AuthStackParamList, "VerifyEmail">>();
 
-    const { userId } = route.params;
+    const { userId } = route.params; // Extract userId from route parameters
 
+    // Effect to start the timer when the component loads
     useEffect(() => {
         const interval = setInterval(() => {
             setTimer((prev) => {
                 if (prev <= 1) {
-                    clearInterval(interval);
-                    setCanResend(true);
+                    clearInterval(interval); // Clear the timer when it reaches 0
+                    setCanResend(true); // Enable the resend button
                     return 0;
                 }
-                return prev - 1;
+                return prev - 1; // Decrement the timer
             });
         }, 1000);
 
-        return () => clearInterval(interval);
+        return () => clearInterval(interval); // Cleanup the timer on unmount
     }, [canResend]);
 
+    // Function to handle the resend button click
     const handleResend = async () => {
         const res = await runAxiosAsync<{ message: string }>(
             client.post("/auth/reverify-email", {
@@ -63,14 +65,15 @@ const LoginForm = () => {
         );
 
         if (res?.message) {
-            showMessage({ message: res.message, type: "success" });
-            setCanResend(false);
-            setTimer(30);
+            showMessage({ message: res.message, type: "success" }); // Show success message
+            setCanResend(false); // Disable the button
+            setTimer(30); // Reset the timer
         }
     };
 
+    // Function to handle the form submission
     const handleSubmit = async () => {
-        setBusy(true);
+        setBusy(true); // Set the form to busy state
         const res = await runAxiosAsync<verifyEmailRes>(
             axios.post(
                 `http://${
@@ -81,10 +84,10 @@ const LoginForm = () => {
         );
 
         if (res?.message) {
-            showMessage({ message: res.message, type: "success" });
-            navigation.navigate("Login");
+            showMessage({ message: res.message, type: "success" }); // Show success message
+            navigation.navigate("Login"); // Navigate to the Login screen
         }
-        setBusy(false);
+        setBusy(false); // Reset the busy state
     };
 
     return (
@@ -93,7 +96,7 @@ const LoginForm = () => {
                 <Text style={styles.header}>Verify Email</Text>
                 <FormInput
                     label="Please Enter the token sent to your email, please check your spam folder"
-                    onChangeText={(value) => setToken(value)}
+                    onChangeText={(value) => setToken(value)} // Update token state
                     value={token}
                     autoCapitalize="none"
                     collapsable
@@ -118,8 +121,8 @@ const LoginForm = () => {
                     <Text style={styles.bottomText}>Did not receive OTP?</Text>
                     <Button
                         size="small"
-                        onPress={handleResend}
-                        active={canResend} // Disable button if timer is running
+                        onPress={handleResend} // Resend OTP
+                        active={canResend} // Enable/disable button based on timer
                     >
                         {canResend ? "Send Again" : `Wait ${timer}s`}
                     </Button>

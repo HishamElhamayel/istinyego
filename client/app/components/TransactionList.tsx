@@ -17,7 +17,6 @@ type Props = {
 };
 
 const TransactionList = ({ transactions }: Props) => {
-    console.log(transactions);
     return (
         <View style={styles.historyContainer}>
             <Text style={{ fontSize: 20 }}>History</Text>
