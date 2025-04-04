@@ -1,6 +1,6 @@
-import FormInput from "@components/form/FormInput";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
+import FormInput from "@UI/form/FormInput";
 import validate, { CreateUserSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";

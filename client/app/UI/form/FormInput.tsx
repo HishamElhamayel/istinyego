@@ -19,7 +19,7 @@ const FormInput: FC<props> = (props) => {
             <TextInput
                 style={[
                     styles.input,
-                    isFocused ? styles.borderActive : styles.borderDeActive,
+                    isFocused ? styles.borderActive : styles.borderInActive,
                 ]}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
@@ -34,6 +34,7 @@ export default FormInput;
 const styles = StyleSheet.create({
     container: {
         // marginBottom: 15,
+        flex: 1,
     },
     label: {
         color: "white",
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
         borderColor: "#FFFFFF",
         borderWidth: 1,
     },
-    borderDeActive: {
+    borderInActive: {
         borderColor: "#CCCCCC",
         borderWidth: 1,
     },

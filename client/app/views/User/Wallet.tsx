@@ -1,4 +1,7 @@
+import AddBalance from "@components/AddBalance";
 import TransactionList from "@components/TransactionList";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BlueButton from "@UI/buttons/BlueButton";
 import DarkCard from "@UI/cards/DarkCard";
 import colors from "@utils/colors";
@@ -16,32 +19,23 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// Define the type for the navigation stack
+export type WalletStackParamList = {
+    Wallet: undefined;
+    AddBalance: undefined;
+};
+
 // Interfaces for API response types
 interface GetWalletRes {
     balance: number; // Wallet balance
 }
-interface GetTransactionsRes {
-    transactions: {
-        _id: string; // Transaction ID
-        amount: number; // Transaction amount
-        type: "add" | "deduct" | "refund"; // Transaction type
-        createdAt: string; // Transaction creation date
-        route: {
-            startLocation: string; // Start location of the route
-            endLocation: string; // End location of the route
-        };
-    }[];
-}
 
-interface Props {}
-const Wallet: FC<Props> = () => {
+const WalletPage: FC = () => {
     const { authClient } = useClient(); // Custom hook to get authenticated client
     const [pending, setPending] = useState(true); // State to track loading status
     const [balance, setBalance] = useState<number>(); // State to store wallet balance
-    const [transactions, setTransactions] = useState<
-        GetTransactionsRes["transactions"]
-    >([]); // State to store transactions
     const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
+    const navigation = useNavigation<NavigationProp<WalletStackParamList>>();
 
     // Function to fetch wallet balance and transactions
     const fetchData = async () => {
@@ -50,13 +44,6 @@ const Wallet: FC<Props> = () => {
         );
         if (walletRes?.balance) {
             setBalance(walletRes.balance); // Update balance state
-        }
-
-        const TransactionRes = await runAxiosAsync<GetTransactionsRes>(
-            authClient.get("/transaction/get-transactions") // API call to get transactions
-        );
-        if (TransactionRes) {
-            setTransactions(TransactionRes.transactions); // Update transactions state
         }
 
         setPending(false); // Stop loading indicator
@@ -76,7 +63,7 @@ const Wallet: FC<Props> = () => {
 
     // Placeholder function for "Add Balance" button
     const onPress = () => {
-        console.log("onPress");
+        navigation.navigate("AddBalance"); // Navigate to AddBalance screen
     };
 
     return (
@@ -109,11 +96,30 @@ const Wallet: FC<Props> = () => {
                         {/* Button to add balance */}
                         <BlueButton onPress={onPress}>Add Balance</BlueButton>
                         {/* List of transactions */}
-                        <TransactionList transactions={transactions} />
+                        <TransactionList />
                     </View>
                 )}
             </ScrollView>
         </SafeAreaView>
+    );
+};
+
+const Wallet: FC = () => {
+    const Stack = createNativeStackNavigator();
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Wallet" component={WalletPage} />
+            <Stack.Screen
+                name="AddBalance"
+                component={AddBalance}
+                options={{
+                    presentation: "formSheet",
+                    sheetAllowedDetents: "fitToContents",
+                    sheetCornerRadius: 60,
+                    sheetGrabberVisible: true,
+                }}
+            />
+        </Stack.Navigator>
     );
 };
 

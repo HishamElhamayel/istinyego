@@ -1,4 +1,3 @@
-import FormInput from "@components/form/FormInput";
 import {
     NavigationProp,
     RouteProp,
@@ -7,6 +6,7 @@ import {
 } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
+import FormInput from "@UI/form/FormInput";
 import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";

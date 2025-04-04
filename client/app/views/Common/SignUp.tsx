@@ -1,5 +1,5 @@
 import SignUpForm from "@components/authForms/SignUpForm";
-import FormOverlay from "@components/form/FormOverlay";
+import FormOverlay from "@UI/form/FormOverlay";
 import KeyboardView from "app/UI/KeyboardView";
 import React, { FC } from "react";
 import { StyleSheet, View } from "react-native";
