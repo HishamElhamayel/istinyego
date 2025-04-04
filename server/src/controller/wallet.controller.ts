@@ -25,6 +25,8 @@ export const chargeWallet: RequestHandler = async (req, res) => {
         const user = req.user;
         const amount = req.body.amount;
 
+        console.log(amount);
+
         const wallet = await Wallet.findOne({ _id: user.wallet });
 
         if (!wallet) {
@@ -42,12 +44,7 @@ export const chargeWallet: RequestHandler = async (req, res) => {
         });
 
         res.status(201).json({
-            transaction: {
-                id: transaction._id,
-                type: transaction.type,
-                amount: transaction.amount,
-                balanceAfterTransaction: transaction.balanceAfterTransaction,
-            },
+            transaction,
         });
     } catch (err) {
         console.error(err);

@@ -6,26 +6,74 @@ import { WalletStackParamList } from "@views/User/Wallet";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+// import { SafeAreaView } from "react-native-safe-area-context";
+import validate, { AddBalanceSchema } from "@utils/validator";
+import runAxiosAsync from "app/API/runAxiosAsync";
+import useClient from "app/hooks/useClient";
+import { showMessage } from "react-native-flash-message";
 import FormInput from "../UI/form/FormInput";
+
+interface ChargeWalletRes {
+    transaction: {
+        _id: string;
+        type: string;
+        amount: number;
+        balanceAfterTransaction: number;
+    };
+}
 
 const AddBalance: FC = () => {
     const navigation = useNavigation<NavigationProp<WalletStackParamList>>();
+    const { authClient } = useClient(); // Access authenticated Axios client
 
     const [busy, setBusy] = useState(false);
     const [userInfo, setUserInfo] = React.useState({
-        cardNumber: "87164813120376",
-        amount: "1000",
-        cvv: "123",
+        cardNumber: "3412345645675678",
+        amount: "1222",
+        cvv: "2321",
     });
     const [expiryDate, setExpiryDate] = useState<Date>(new Date());
 
     const { cardNumber, amount, cvv } = userInfo;
 
+    const userData = {
+        cardNumber,
+        amount,
+        cvv,
+        expiryDate,
+    };
+
     const handleChange = (key: string) => (text: string) => {
         setUserInfo({ ...userInfo, [key]: text });
     };
 
-    console.log(cardNumber, amount, cvv, expiryDate);
+    const handleSubmit = async () => {
+        const { values, error } = await validate(AddBalanceSchema, userData);
+        if (error) return showMessage({ message: error, type: "danger" });
+
+        setBusy(true);
+        const res = await runAxiosAsync<ChargeWalletRes>(
+            authClient.post("/wallet/charge-wallet", { amount: Number(amount) })
+        );
+        navigation.goBack();
+
+        // if (res?.profile) {
+        //     showMessage({ message: "Signed in successful ", type: "success" });
+        //     if (res?.token) {
+        //         // console.log(res);
+        //         await AsyncStorage.setItem("access-token", res.token);
+        //         // console.log(await AsyncStorage.getItem("access-token"));
+        //         dispatch(
+        //             updateAuthState({
+        //                 profile: { ...res.profile, token: res.token },
+        //                 pending: false,
+        //             })
+        //         );
+        //     }
+        // }
+
+        setBusy(false);
+    };
 
     return (
         <LinearGradient
@@ -45,10 +93,10 @@ const AddBalance: FC = () => {
                 <FormInput
                     label="Card Number"
                     onChangeText={handleChange("cardNumber")}
+                    textContentType="creditCardNumber"
                     value={cardNumber}
                     keyboardType="numeric"
                     maxLength={16}
-                    collapsable
                 />
 
                 <View style={{ flexDirection: "row", gap: 15 }}>
@@ -71,7 +119,7 @@ const AddBalance: FC = () => {
                         size="medium"
                         active={!busy}
                         onPress={() => {
-                            console.log("hi");
+                            handleSubmit();
                         }}
                     >
                         Confirm

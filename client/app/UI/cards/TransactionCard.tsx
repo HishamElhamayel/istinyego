@@ -21,7 +21,7 @@ const TransactionCard: FC<Props> = ({ type, date, amount, children }) => {
                     ) : (
                         <Ionicons name="add-sharp" size={22} />
                     )}
-                    <Text style={styles.text}>{amount} TL</Text>
+                    <Text style={styles.text}>{amount}₺</Text>
                 </View>
                 <Text style={styles.dateText}>
                     {DateTime.fromISO(date).toFormat("cccc t")}

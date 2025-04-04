@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import * as yup from "yup";
 
 type ValidationResult<T> = {
@@ -64,6 +65,28 @@ export const UserLoginSchema = yup.object({
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
             "Password must contain at least one letter, one number and one special character"
         ),
+});
+
+export const AddBalanceSchema = yup.object({
+    amount: yup
+        .number()
+        .required("Amount is missing")
+        .min(30, "Amount must be above 30")
+        .max(3000, "Amount must be below 3000"),
+    cardNumber: yup
+        .string()
+        .required("Card number is missing")
+        .min(16, "Card number is invalid"),
+    cvv: yup
+        .string()
+        .required("CVV is missing")
+        .min(3, "CVV is invalid")
+        .max(4, "CVV is invalid"),
+    expiryDate: yup
+        .date()
+        .required("Expiry date is missing")
+
+        .min(DateTime.now().plus({ weeks: 1 }), "Expiry date is invalid"),
 });
 
 export const ForgotPasswordSchema = yup.object({

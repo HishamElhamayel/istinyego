@@ -1,7 +1,5 @@
-import AddBalance from "@components/AddBalance";
 import TransactionList from "@components/TransactionList";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BlueButton from "@UI/buttons/BlueButton";
 import DarkCard from "@UI/cards/DarkCard";
 import colors from "@utils/colors";
@@ -30,7 +28,7 @@ interface GetWalletRes {
     balance: number; // Wallet balance
 }
 
-const WalletPage: FC = () => {
+const Wallet: FC = () => {
     const { authClient } = useClient(); // Custom hook to get authenticated client
     const [pending, setPending] = useState(true); // State to track loading status
     const [balance, setBalance] = useState<number>(); // State to store wallet balance
@@ -62,7 +60,7 @@ const WalletPage: FC = () => {
     }, []);
 
     // Placeholder function for "Add Balance" button
-    const onPress = () => {
+    const showAddBalance = () => {
         navigation.navigate("AddBalance"); // Navigate to AddBalance screen
     };
 
@@ -94,32 +92,15 @@ const WalletPage: FC = () => {
                             </Text>
                         </DarkCard>
                         {/* Button to add balance */}
-                        <BlueButton onPress={onPress}>Add Balance</BlueButton>
+                        <BlueButton onPress={showAddBalance}>
+                            Add Balance
+                        </BlueButton>
                         {/* List of transactions */}
                         <TransactionList />
                     </View>
                 )}
             </ScrollView>
         </SafeAreaView>
-    );
-};
-
-const Wallet: FC = () => {
-    const Stack = createNativeStackNavigator();
-    return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Wallet" component={WalletPage} />
-            <Stack.Screen
-                name="AddBalance"
-                component={AddBalance}
-                options={{
-                    presentation: "formSheet",
-                    sheetAllowedDetents: "fitToContents",
-                    sheetCornerRadius: 60,
-                    sheetGrabberVisible: true,
-                }}
-            />
-        </Stack.Navigator>
     );
 };
 

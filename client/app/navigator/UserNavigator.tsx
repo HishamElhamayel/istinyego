@@ -1,3 +1,4 @@
+import AddBalance from "@components/AddBalance";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "@views/User/Home";
 import Profile from "@views/User/Profile";
@@ -5,14 +6,15 @@ import Routes from "@views/User/Routes";
 import Wallet from "@views/User/Wallet";
 import { FC } from "react";
 
-export type AuthStackParamList = {
+export type UserStackParamList = {
     Home: undefined;
     Routes: undefined;
     Profile: undefined;
     Wallet: undefined;
+    AddBalance: undefined;
 };
 
-const Stack = createNativeStackNavigator<AuthStackParamList>();
+const Stack = createNativeStackNavigator<UserStackParamList>();
 
 interface Props {}
 
@@ -58,6 +60,16 @@ export const UserWalletNavigator: FC<Props> = () => {
             }}
         >
             <Stack.Screen name="Wallet" component={Wallet} />
+            <Stack.Screen
+                name="AddBalance"
+                component={AddBalance}
+                options={{
+                    presentation: "formSheet",
+                    sheetAllowedDetents: "fitToContents",
+                    sheetCornerRadius: 60,
+                    sheetGrabberVisible: true,
+                }}
+            />
         </Stack.Navigator>
     );
 };

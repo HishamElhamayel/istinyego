@@ -64,8 +64,6 @@ export const getTransactionsByWalletId: RequestHandler = async (req, res) => {
             },
         ]);
 
-        console.log(transactions);
-
         res.json({ transactions });
     } catch (err) {
         console.error(err);
