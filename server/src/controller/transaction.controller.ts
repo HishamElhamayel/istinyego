@@ -17,7 +17,6 @@ export const getTransactionsByWalletId: RequestHandler = async (req, res) => {
                     as: "booking",
                 },
             },
-
             {
                 $lookup: {
                     from: "trips",
@@ -54,6 +53,11 @@ export const getTransactionsByWalletId: RequestHandler = async (req, res) => {
                             $arrayElemAt: ["$route.endLocation.description", 0],
                         },
                     },
+                },
+            },
+            {
+                $sort: {
+                    createdAt: -1,
                 },
             },
             {

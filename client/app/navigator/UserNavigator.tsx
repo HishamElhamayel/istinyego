@@ -1,9 +1,9 @@
-import AddBalance from "@components/AddBalance";
+import AddBalance, { ChargeWalletRes } from "@components/AddBalance";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "@views/User/Home";
 import Profile from "@views/User/Profile";
 import Routes from "@views/User/Routes";
-import Wallet from "@views/User/Wallet";
+import Wallet, { GetTransactionsRes } from "@views/User/Wallet";
 import { FC } from "react";
 
 export type UserStackParamList = {
@@ -11,7 +11,12 @@ export type UserStackParamList = {
     Routes: undefined;
     Profile: undefined;
     Wallet: undefined;
-    AddBalance: undefined;
+    AddBalance: {
+        setData: (
+            balance: number,
+            transactions: ChargeWalletRes["transaction"]
+        ) => void;
+    };
 };
 
 const Stack = createNativeStackNavigator<UserStackParamList>();

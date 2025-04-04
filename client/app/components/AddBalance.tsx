@@ -1,30 +1,38 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+    NavigationProp,
+    RouteProp,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import DateInput from "@UI/form/DateInput";
 import colors from "@utils/colors";
-import { WalletStackParamList } from "@views/User/Wallet";
-import { LinearGradient } from "expo-linear-gradient";
-import React, { FC, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-// import { SafeAreaView } from "react-native-safe-area-context";
 import validate, { AddBalanceSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
+import { UserStackParamList } from "app/navigator/UserNavigator";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { FC, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import FormInput from "../UI/form/FormInput";
 
-interface ChargeWalletRes {
+export interface ChargeWalletRes {
     transaction: {
-        _id: string;
-        type: string;
-        amount: number;
-        balanceAfterTransaction: number;
+        _id: string; // Transaction ID
+        amount: number; // Transaction amount
+        type: "add" | "deduct" | "refund"; // Transaction type
+        balanceAfterTransaction: number; // Balance after transaction
+        createdAt: string; // Transaction creation date
     };
 }
 
 const AddBalance: FC = () => {
-    const navigation = useNavigation<NavigationProp<WalletStackParamList>>();
+    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
     const { authClient } = useClient(); // Access authenticated Axios client
+    const { params } = useRoute<RouteProp<UserStackParamList>>();
+
+    const setData = params?.setData;
 
     const [busy, setBusy] = useState(false);
     const [userInfo, setUserInfo] = React.useState({
@@ -55,6 +63,11 @@ const AddBalance: FC = () => {
         const res = await runAxiosAsync<ChargeWalletRes>(
             authClient.post("/wallet/charge-wallet", { amount: Number(amount) })
         );
+
+        if (res?.transaction) {
+            setData?.(res.transaction.balanceAfterTransaction, res.transaction);
+        }
+
         navigation.goBack();
 
         // if (res?.profile) {

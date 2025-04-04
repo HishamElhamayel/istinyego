@@ -1,3 +1,4 @@
+import { ChargeWalletRes } from "@components/AddBalance";
 import TransactionList from "@components/TransactionList";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import BlueButton from "@UI/buttons/BlueButton";
@@ -5,6 +6,7 @@ import DarkCard from "@UI/cards/DarkCard";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
+import { UserStackParamList } from "app/navigator/UserNavigator";
 import Header from "app/UI/Header";
 import { FC, useCallback, useEffect, useState } from "react";
 import {
@@ -18,22 +20,40 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Define the type for the navigation stack
-export type WalletStackParamList = {
-    Wallet: undefined;
-    AddBalance: undefined;
-};
 
 // Interfaces for API response types
 interface GetWalletRes {
     balance: number; // Wallet balance
 }
-
+export interface GetTransactionsRes {
+    transactions: {
+        _id: string; // Transaction ID
+        amount: number; // Transaction amount
+        type: "add" | "deduct" | "refund"; // Transaction type
+        createdAt: string; // Transaction creation date
+        route?: {
+            startLocation: string; // Start location of the route
+            endLocation: string; // End location of the route
+        };
+    }[];
+}
 const Wallet: FC = () => {
     const { authClient } = useClient(); // Custom hook to get authenticated client
+    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
     const [pending, setPending] = useState(true); // State to track loading status
     const [balance, setBalance] = useState<number>(); // State to store wallet balance
     const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
-    const navigation = useNavigation<NavigationProp<WalletStackParamList>>();
+    const [transactions, setTransactions] = useState<
+        GetTransactionsRes["transactions"]
+    >([]);
+
+    const setData = (
+        balance: number,
+        transaction: ChargeWalletRes["transaction"]
+    ) => {
+        setBalance(balance); // Update balance state
+        setTransactions([transaction, ...transactions]); // Update transactions state
+    };
 
     // Function to fetch wallet balance and transactions
     const fetchData = async () => {
@@ -42,6 +62,12 @@ const Wallet: FC = () => {
         );
         if (walletRes?.balance) {
             setBalance(walletRes.balance); // Update balance state
+        }
+        const TransactionRes = await runAxiosAsync<GetTransactionsRes>(
+            authClient.get("/transaction/get-transactions") // API call to get transactions
+        );
+        if (TransactionRes) {
+            setTransactions(TransactionRes.transactions); // Update transactions state
         }
 
         setPending(false); // Stop loading indicator
@@ -61,7 +87,7 @@ const Wallet: FC = () => {
 
     // Placeholder function for "Add Balance" button
     const showAddBalance = () => {
-        navigation.navigate("AddBalance"); // Navigate to AddBalance screen
+        navigation.navigate("AddBalance", { setData }); // Navigate to AddBalance screen
     };
 
     return (
@@ -96,7 +122,7 @@ const Wallet: FC = () => {
                             Add Balance
                         </BlueButton>
                         {/* List of transactions */}
-                        <TransactionList />
+                        <TransactionList transactions={transactions} />
                     </View>
                 )}
             </ScrollView>

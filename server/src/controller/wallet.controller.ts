@@ -44,7 +44,13 @@ export const chargeWallet: RequestHandler = async (req, res) => {
         });
 
         res.status(201).json({
-            transaction,
+            transaction: {
+                _id: transaction._id,
+                type: transaction.type,
+                amount: transaction.amount,
+                balanceAfterTransaction: transaction.balanceAfterTransaction,
+                createdAt: transaction.createdAt,
+            },
         });
     } catch (err) {
         console.error(err);
