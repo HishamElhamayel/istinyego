@@ -50,7 +50,15 @@ export const getFavRoutes: RequestHandler = async (req, res) => {
 
 export const getAllRoutes: RequestHandler = async (req, res) => {
     try {
-        const routes = await Route.find({});
+        const routes = await Route.aggregate([
+            {
+                $project: {
+                    _id: 1,
+                    startLocation: "$startLocation.description",
+                    endLocation: "$endLocation.description",
+                },
+            },
+        ]);
 
         res.status(201).json({
             routes: routes,
