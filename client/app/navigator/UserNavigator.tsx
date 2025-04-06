@@ -1,22 +1,20 @@
-import AddBalance, { ChargeWalletRes } from "@components/AddBalance";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AddBalance from "@views/User/AddBalance";
 import Home from "@views/User/Home";
 import Profile from "@views/User/Profile";
 import Routes from "@views/User/Routes";
-import Wallet, { GetTransactionsRes } from "@views/User/Wallet";
+import Trips from "@views/User/Trips";
+import Wallet from "@views/User/Wallet";
 import { FC } from "react";
+import { Platform } from "react-native";
 
 export type UserStackParamList = {
     Home: undefined;
     Routes: undefined;
     Profile: undefined;
     Wallet: undefined;
-    AddBalance: {
-        setData: (
-            balance: number,
-            transactions: ChargeWalletRes["transaction"]
-        ) => void;
-    };
+    AddBalance: undefined;
+    Trips: { routeId: string; startLocation: string; endLocation: string };
 };
 
 const Stack = createNativeStackNavigator<UserStackParamList>();
@@ -31,6 +29,7 @@ export const UserHomeNavigator: FC<Props> = () => {
             }}
         >
             <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Trips" component={Trips} />
         </Stack.Navigator>
     );
 };
@@ -42,7 +41,8 @@ export const UserRoutesNavigator: FC<Props> = () => {
                 headerShown: false,
             }}
         >
-            <Stack.Screen name="Home" component={Routes} />
+            <Stack.Screen name="Routes" component={Routes} />
+            <Stack.Screen name="Trips" component={Trips} />
         </Stack.Navigator>
     );
 };
@@ -69,9 +69,9 @@ export const UserWalletNavigator: FC<Props> = () => {
                 name="AddBalance"
                 component={AddBalance}
                 options={{
-                    presentation: "formSheet",
-                    sheetAllowedDetents: "fitToContents",
+                    presentation: Platform.OS === "ios" ? "formSheet" : "card",
                     sheetCornerRadius: 60,
+                    sheetAllowedDetents: "fitToContents",
                     sheetGrabberVisible: true,
                 }}
             />

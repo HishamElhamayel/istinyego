@@ -66,9 +66,7 @@ const LoginForm = () => {
         if (res?.profile) {
             showMessage({ message: "Signed in successful ", type: "success" });
             if (res?.token) {
-                // console.log(res);
                 await AsyncStorage.setItem("access-token", res.token);
-                // console.log(await AsyncStorage.getItem("access-token"));
                 dispatch(
                     updateAuthState({
                         profile: { ...res.profile, token: res.token },

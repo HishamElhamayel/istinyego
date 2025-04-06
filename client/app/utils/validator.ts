@@ -85,7 +85,6 @@ export const AddBalanceSchema = yup.object({
     expiryDate: yup
         .date()
         .required("Expiry date is missing")
-
         .min(DateTime.now().plus({ weeks: 1 }), "Expiry date is invalid"),
 });
 

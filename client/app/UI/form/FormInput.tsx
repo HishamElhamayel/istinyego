@@ -9,12 +9,13 @@ import {
 
 interface props extends TextInputProps {
     label: string;
+    flex?: boolean;
 }
 const FormInput: FC<props> = (props) => {
     const [isFocused, setIsFocused] = React.useState(false);
 
     return (
-        <View style={styles.container}>
+        <View style={[props.flex ? styles.flexContainer : styles.container]}>
             <Text style={styles.label}>{props.label}</Text>
             <TextInput
                 style={[
@@ -34,6 +35,8 @@ export default FormInput;
 const styles = StyleSheet.create({
     container: {
         // marginBottom: 15,
+    },
+    flexContainer: {
         flex: 1,
     },
     label: {

@@ -1,5 +1,5 @@
+import BookingsList from "@components/BookingsList";
 import RoutesList from "@components/RoutesList";
-import TripsList from "@components/TripsList";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useAuth from "app/hooks/useAuth";
@@ -111,7 +111,7 @@ const Home: FC<Props> = () => {
 
                 {/* Show trips list if bookings are available */}
                 {!pending && bookings.length > 0 && (
-                    <TripsList trips={bookings} title="Your Trips" />
+                    <BookingsList bookings={bookings} title="Your Trips" />
                 )}
 
                 {/* Show favorite routes if available */}

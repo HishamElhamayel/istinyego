@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 2,
         flex: 1,
-        width: "100%",
     },
     pressed: {
         opacity: 0.7,

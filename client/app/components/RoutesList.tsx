@@ -1,6 +1,8 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Card from "@UI/cards/Card";
 import LightCard from "@UI/cards/LightCard";
-import RoutLocations from "@UI/RoutLocations";
+import RouteLocations from "@UI/RouteLocations";
+import { UserStackParamList } from "app/navigator/UserNavigator";
 import React from "react";
 import { StyleSheet } from "react-native";
 
@@ -14,8 +16,18 @@ type Props = {
 };
 
 const RoutesList = ({ routes, title }: Props) => {
-    const onPress = () => {
-        console.log("onPress");
+    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
+
+    const onPress = (route: {
+        _id: string;
+        startLocation: string;
+        endLocation: string;
+    }) => {
+        navigation.navigate("Trips", {
+            routeId: route._id,
+            startLocation: route.startLocation,
+            endLocation: route.endLocation,
+        });
     };
 
     // console.log(trips);
@@ -23,8 +35,11 @@ const RoutesList = ({ routes, title }: Props) => {
     return (
         <Card title={title} style={styles.container}>
             {routes.map((route) => (
-                <LightCard key={route._id} onPressHandler={onPress}>
-                    <RoutLocations
+                <LightCard
+                    key={route._id}
+                    onPressHandler={() => onPress(route)}
+                >
+                    <RouteLocations
                         from={route.startLocation}
                         to={route.endLocation}
                     />

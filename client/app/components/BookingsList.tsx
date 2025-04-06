@@ -1,12 +1,12 @@
 import Card from "@UI/cards/Card";
 import LightCard from "@UI/cards/LightCard";
-import RoutLocations from "@UI/RoutLocations";
+import RouteLocations from "@UI/RouteLocations";
 import { DateTime } from "luxon";
 import React from "react";
 import { StyleSheet, Text } from "react-native";
 
 type Props = {
-    trips: {
+    bookings: {
         _id: string;
         startLocation: string;
         endLocation: string;
@@ -17,21 +17,21 @@ type Props = {
     title: string;
 };
 
-const TripsList = ({ trips, title }: Props) => {
+const TripsList = ({ bookings, title }: Props) => {
     const onPress = () => {
         console.log("onPress");
     };
 
     return (
         <Card title={title} style={styles.container}>
-            {trips.map((trip) => (
-                <LightCard key={trip._id} onPressHandler={onPress}>
-                    <RoutLocations
-                        from={trip.startLocation}
-                        to={trip.endLocation}
+            {bookings.map((booking) => (
+                <LightCard key={booking._id} onPressHandler={onPress}>
+                    <RouteLocations
+                        from={booking.startLocation}
+                        to={booking.endLocation}
                     />
                     <Text style={styles.dateText}>
-                        {DateTime.fromISO(trip.startTime).toFormat("cccc t")}
+                        {DateTime.fromISO(booking.startTime).toFormat("cccc t")}
                     </Text>
                 </LightCard>
             ))}

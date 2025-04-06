@@ -2,6 +2,7 @@ import Navigator from "app/navigator";
 import store from "app/store";
 import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
+import React from "react";
 import { StyleSheet } from "react-native";
 import FlashMessage from "react-native-flash-message";
 import { SafeAreaProvider } from "react-native-safe-area-context";

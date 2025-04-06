@@ -1,5 +1,5 @@
 import TransactionCard from "@UI/cards/TransactionCard";
-import RoutLocations from "@UI/RoutLocations";
+import RouteLocations from "@UI/RouteLocations";
 import React, { FC } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -36,7 +36,7 @@ const TransactionList: FC<Props> = ({ transactions }) => {
                         amount={transaction.amount}
                     >
                         {transaction.type === "deduct" && transaction.route && (
-                            <RoutLocations
+                            <RouteLocations
                                 from={transaction.route.startLocation}
                                 to={transaction.route.endLocation}
                             />

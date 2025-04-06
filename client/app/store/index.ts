@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./auth";
+import walletReducer from "./wallet";
 
 const reducers = combineReducers({
     auth: authReducer,
+    wallet: walletReducer,
 });
 
 const store = configureStore({
