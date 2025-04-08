@@ -1,4 +1,4 @@
-import RoutesList from "@components/RoutesList";
+import RoutesList from "@components/Lists/RoutesList";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";

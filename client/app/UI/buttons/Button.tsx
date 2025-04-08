@@ -16,6 +16,7 @@ const Button: FC<Props> = ({ children, onPress, size, active = true }) => {
             style={({ pressed }) => [
                 styles.button,
                 (pressed || !active) && styles.pressed,
+                size === "small" || size === "medium" ? { flex: 1 } : {},
             ]}
             onPress={active ? onPress : null}
         >
@@ -48,7 +49,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.5,
         shadowRadius: 2,
-        flex: 1,
     },
     pressed: {
         opacity: 0.7,

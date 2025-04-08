@@ -14,12 +14,14 @@ export interface Transaction {
 }
 
 interface WalletState {
+    _id: string;
     balance: number;
     transactions: Transaction[];
     pending: boolean;
 }
 
 const initialState: WalletState = {
+    _id: "",
     balance: 0,
     transactions: [],
     pending: false,
@@ -29,6 +31,9 @@ const walletSlice = createSlice({
     name: "wallet",
     initialState,
     reducers: {
+        setId(state, { payload }: PayloadAction<string>) {
+            state._id = payload;
+        },
         setBalance(state, { payload }: PayloadAction<number>) {
             state.balance = payload;
         },
@@ -47,8 +52,13 @@ const walletSlice = createSlice({
     },
 });
 
-export const { setBalance, setTransactions, addTransaction, setPending } =
-    walletSlice.actions;
+export const {
+    setBalance,
+    setTransactions,
+    addTransaction,
+    setPending,
+    setId,
+} = walletSlice.actions;
 
 export const getWalletState = createSelector(
     (state: RootState) => state,

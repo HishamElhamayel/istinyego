@@ -3,6 +3,7 @@ import AddBalance from "@views/User/AddBalance";
 import Home from "@views/User/Home";
 import Profile from "@views/User/Profile";
 import Routes from "@views/User/Routes";
+import Trip from "@views/User/Trip";
 import Trips from "@views/User/Trips";
 import Wallet from "@views/User/Wallet";
 import { FC } from "react";
@@ -15,6 +16,7 @@ export type UserStackParamList = {
     Wallet: undefined;
     AddBalance: undefined;
     Trips: { routeId: string; startLocation: string; endLocation: string };
+    Trip: { tripId: string };
 };
 
 const Stack = createNativeStackNavigator<UserStackParamList>();
@@ -30,6 +32,7 @@ export const UserHomeNavigator: FC<Props> = () => {
         >
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Trips" component={Trips} />
+            <Stack.Screen name="Trip" component={Trip} />
         </Stack.Navigator>
     );
 };
@@ -43,6 +46,7 @@ export const UserRoutesNavigator: FC<Props> = () => {
         >
             <Stack.Screen name="Routes" component={Routes} />
             <Stack.Screen name="Trips" component={Trips} />
+            <Stack.Screen name="Trip" component={Trip} />
         </Stack.Navigator>
     );
 };

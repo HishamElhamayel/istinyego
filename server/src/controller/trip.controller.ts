@@ -1,4 +1,3 @@
-import Booking from "#/models/booking.model";
 import Route from "#/models/route.model";
 import Shuttle from "#/models/shuttle.model";
 import Trip from "#/models/trip.model";
@@ -86,10 +85,16 @@ export const getTripsByRouteId: RequestHandler = async (req, res) => {
             return;
         }
 
-        const trips = await Trip.find({ route: routeId, date });
+        const trips = await Trip.find({ route: routeId, date }).select({
+            _id: 1,
+            startTime: 1,
+            endTime: 1,
+            availableSeats: 1,
+            status: 1,
+        });
 
         if (trips.length === 0) {
-            res.status(404).json({ error: "No trips found" });
+            res.json({ message: "No trips found" });
             return;
         }
 
@@ -143,117 +148,62 @@ export const getTripById: RequestHandler = async (req, res) => {
     }
 
     const tripId = new mongoose.Types.ObjectId(req.params.id);
-    const user = req.user;
 
-    if (user.role === "user") {
-        if (await Booking.exists({ trip: tripId, user: user._id })) {
-            // console.log("hi");
+    // console.log("hi");
 
-            const trip = await Trip.aggregate([
-                { $match: { _id: tripId } },
-                {
-                    $unset: "__v",
+    const trip = await Trip.aggregate([
+        { $match: { _id: tripId } },
+        {
+            $unset: "__v",
+        },
+        {
+            $lookup: {
+                from: "shuttles",
+                localField: "shuttle",
+                foreignField: "_id",
+                as: "shuttle",
+            },
+        },
+        {
+            $unwind: "$shuttle",
+        },
+        {
+            $lookup: {
+                from: "routes",
+                localField: "route",
+                foreignField: "_id",
+                as: "route",
+            },
+        },
+        { $unwind: "$route" },
+        {
+            $project: {
+                _id: 1,
+                shuttle: {
+                    _id: "$shuttle._id",
+                    number: "$shuttle.number",
                 },
-                {
-                    $lookup: {
-                        from: "bookings",
-                        localField: "_id",
-                        foreignField: "trip",
-                        as: "booking",
-                    },
-                },
-                { $match: { "booking.user": user._id } },
-                {
-                    $addFields: {
-                        booking: {
-                            $filter: {
-                                input: "$booking",
-                                as: "b",
-                                cond: { $eq: ["$$b.user", user._id] }, // Keeps only bookings made by this user
-                            },
-                        },
-                    },
-                },
-                { $unwind: "$booking" },
-                {
-                    $addFields: {
-                        booking: "$booking._id", // Extract only the `_id` from the booking object
-                    },
-                },
-                {
-                    $lookup: {
-                        from: "shuttles",
-                        localField: "shuttle",
-                        foreignField: "_id",
-                        as: "shuttle",
-                    },
-                },
-                {
-                    $unwind: "$shuttle",
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        shuttle: {
-                            _id: "$shuttle._id",
-                            number: "$shuttle.number",
-                        },
-                        route: 1,
-                        startTime: 1,
-                        endTime: 1,
-                        date: 1,
-                        availableSeats: 1,
-                        state: 1,
-                        booking: 1,
-                    },
-                },
-                {
-                    $lookup: {
-                        from: "routes",
-                        localField: "route",
-                        foreignField: "_id",
-                        as: "route",
-                    },
-                },
-                { $unwind: "$route" },
-                {
-                    $project: {
-                        _id: 1,
-                        shuttle: 1,
-                        startLocation: "$route.startLocation.description",
-                        endLocation: "$route.endLocation.description",
-                        fare: "$route.fare",
-                        startTime: 1,
-                        endTime: 1,
-                        date: 1,
-                        availableSeats: 1,
-                        state: 1,
-                        booking: 1,
-                    },
-                },
-            ]);
+                startLocation: "$route.startLocation.description",
+                endLocation: "$route.endLocation.description",
+                fare: "$route.fare",
+                startTime: 1,
+                endTime: 1,
+                date: 1,
+                availableSeats: 1,
+                state: 1,
+                booking: 1,
+            },
+        },
+    ]);
 
-            // const trip = await Trip.findById(tripId);
-            if (!trip) {
-                res.status(404).json({ error: "Trip not found" });
-                return;
-            }
-
-            res.json({
-                trip: trip[0],
-            });
-            return;
-        }
-    }
-
-    const trip = await Trip.findById(tripId);
-
+    // const trip = await Trip.findById(tripId);
     if (!trip) {
         res.status(404).json({ error: "Trip not found" });
         return;
     }
 
     res.json({
-        trip,
+        trip: trip[0],
     });
+    return;
 };

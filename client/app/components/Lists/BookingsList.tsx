@@ -17,7 +17,7 @@ type Props = {
     title: string;
 };
 
-const TripsList = ({ bookings, title }: Props) => {
+const BookingsList = ({ bookings, title }: Props) => {
     const onPress = () => {
         console.log("onPress");
     };
@@ -39,7 +39,7 @@ const TripsList = ({ bookings, title }: Props) => {
     );
 };
 
-export default TripsList;
+export default BookingsList;
 
 const styles = StyleSheet.create({
     container: { gap: 15 },

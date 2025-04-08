@@ -85,6 +85,7 @@ const AddBalance: FC = () => {
                             label="Card Number"
                             value={cardNumber}
                             onChangeText={handleChange("cardNumber")}
+                            maxLength={16}
                             keyboardType="numeric"
                         />
 
@@ -93,6 +94,7 @@ const AddBalance: FC = () => {
                             value={amount}
                             onChangeText={handleChange("amount")}
                             keyboardType="numeric"
+                            maxLength={5}
                         />
 
                         <View style={styles.bottomContainer}>
@@ -102,6 +104,7 @@ const AddBalance: FC = () => {
                                 flex={true}
                                 onChangeText={handleChange("cvv")}
                                 keyboardType="numeric"
+                                maxLength={4}
                             />
                             <DateInput
                                 label="Expiry Date"

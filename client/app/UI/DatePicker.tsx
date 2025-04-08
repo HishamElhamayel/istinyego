@@ -50,19 +50,23 @@ const DatePicker = ({ date, setParentDate }: Props) => {
                             styles={{
                                 today: {
                                     borderColor: colors.primary100,
+                                    borderRadius: 10,
                                     borderWidth: 1,
                                 }, // Add a border to today's date
                                 selected: {
                                     backgroundColor: colors.primary100,
+                                    borderRadius: 10,
                                 }, // Highlight the selected day
                                 selected_label: { color: "white" },
                                 selected_month: {
+                                    borderRadius: 10,
                                     backgroundColor: colors.primary100,
                                 },
                                 selected_month_label: {
                                     color: "white",
                                 },
                                 selected_year: {
+                                    borderRadius: 10,
                                     backgroundColor: colors.primary100,
                                 },
                                 selected_year_label: {

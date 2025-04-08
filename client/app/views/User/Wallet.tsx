@@ -1,9 +1,8 @@
-import TransactionList from "@components/TransactionList";
+import TransactionList from "@components/Lists/TransactionList";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import BlueButton from "@UI/buttons/BlueButton";
 import DarkCard from "@UI/cards/DarkCard";
 import colors from "@utils/colors";
-import { ChargeWalletRes } from "@views/User/AddBalance";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { UserStackParamList } from "app/navigator/UserNavigator";
@@ -27,9 +26,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 
 // Interfaces for API response types
-interface GetWalletRes {
-    balance: number; // Wallet balance
-}
+
 export interface GetTransactionsRes {
     transactions: {
         _id: string; // Transaction ID
@@ -53,12 +50,7 @@ const Wallet: FC = () => {
     // Function to fetch wallet balance and transactions
     const fetchData = async () => {
         dispatch(setPending(true));
-        const walletRes = await runAxiosAsync<GetWalletRes>(
-            authClient.get("/wallet/get-balance") // API call to get wallet balance
-        );
-        if (walletRes?.balance) {
-            dispatch(setBalance(walletRes.balance));
-        }
+
         const TransactionRes = await runAxiosAsync<GetTransactionsRes>(
             authClient.get("/transaction/get-transactions") // API call to get transactions
         );
@@ -98,6 +90,16 @@ const Wallet: FC = () => {
                 }
             >
                 <Header>Wallet</Header>
+                <View style={styles.balanceContainer}>
+                    <DarkCard>
+                        <Text style={styles.balanceText}>
+                            Balance: {balance?.toFixed(2)}₺
+                        </Text>
+                    </DarkCard>
+                    <BlueButton onPress={showAddBalance}>
+                        Add Balance
+                    </BlueButton>
+                </View>
                 {pending ? (
                     <ActivityIndicator
                         size="large"
@@ -105,17 +107,7 @@ const Wallet: FC = () => {
                         style={styles.loading}
                     />
                 ) : (
-                    <View style={styles.balanceContainer}>
-                        <DarkCard>
-                            <Text style={styles.walletText}>
-                                Balance: {balance?.toFixed(2)}₺
-                            </Text>
-                        </DarkCard>
-                        <BlueButton onPress={showAddBalance}>
-                            Add Balance
-                        </BlueButton>
-                        <TransactionList transactions={transactions} />
-                    </View>
+                    <TransactionList transactions={transactions} />
                 )}
             </ScrollView>
         </SafeAreaView>
@@ -127,7 +119,7 @@ export default Wallet;
 // Styles for the Wallet component
 const styles = StyleSheet.create({
     container: { flex: 1, margin: 10 }, // Main container style
-    walletText: {
+    balanceText: {
         fontSize: 38, // Font size for wallet balance text
         color: "white", // Text color
     },

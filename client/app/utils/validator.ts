@@ -72,7 +72,7 @@ export const AddBalanceSchema = yup.object({
         .number()
         .required("Amount is missing")
         .min(30, "Amount must be above 30")
-        .max(3000, "Amount must be below 3000"),
+        .max(99999, "Amount must be below 99999"),
     cardNumber: yup
         .string()
         .required("Card number is missing")

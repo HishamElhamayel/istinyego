@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         paddingHorizontal: 15,
         backgroundColor: "#fff",
+        width: "100%",
+        // flex: 1,
     },
     pressed: {
         opacity: 0.7,

@@ -1,5 +1,5 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import TripsList from "@components/Lists/TripsList";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import DatePicker from "@UI/DatePicker";
 import RouteLocations from "@UI/RouteLocations";
 import colors from "@utils/colors";
@@ -23,19 +23,14 @@ type Props = {};
 interface GetTripsRes {
     trips: {
         _id: string;
-        shuttle: string;
-        startTime: Date;
-        endTime: Date;
-        date: string;
-        route: string;
+        startTime: string;
+        endTime: string;
         availableSeats: number;
-        price: number;
-        status: string;
+        state: string;
     }[];
 }
 const Home: FC<Props> = () => {
     const route = useRoute<RouteProp<UserStackParamList, "Trips">>();
-    const navigation = useNavigation();
     const { authClient } = useClient();
     const [refreshing, setRefreshing] = useState(false);
     const [pending, setPending] = useState(true);
@@ -50,6 +45,9 @@ const Home: FC<Props> = () => {
 
     const fetchData = async () => {
         // Fetch user bookings
+        setTrips([]);
+        setPending(true); // Stop loading indicator
+
         const res = await runAxiosAsync<GetTripsRes>(
             authClient.get("/trip/trips-by-route", { params: values })
         );
@@ -86,7 +84,7 @@ const Home: FC<Props> = () => {
                 {/* Show loading indicator while data is being fetched */}
 
                 <RouteLocations from={startLocation} to={endLocation} />
-                <View style={{ marginTop: 20 }}>
+                <View style={{ marginTop: 20, gap: 20 }}>
                     <DatePicker date={date} setParentDate={setDate} />
                     {pending && (
                         <ActivityIndicator
@@ -94,6 +92,11 @@ const Home: FC<Props> = () => {
                             color={colors.primary100}
                             style={styles.loading}
                         />
+                    )}
+
+                    {trips.length > 0 && <TripsList trips={trips} />}
+                    {!pending && trips.length === 0 && (
+                        <Text style={styles.noTrips}>No trips found</Text>
                     )}
                 </View>
             </ScrollView>
@@ -110,5 +113,10 @@ const styles = StyleSheet.create({
     },
     loading: {
         marginTop: 200,
+    },
+    noTrips: {
+        textAlign: "center",
+        fontSize: 20,
+        color: colors.grey,
     },
 });

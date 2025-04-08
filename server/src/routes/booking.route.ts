@@ -10,7 +10,7 @@ import { Router } from "express";
 
 const router = Router();
 
-router.post("/create", mustAuth, validate(CreateBookingSchema), createBooking);
+router.post("/book", mustAuth, validate(CreateBookingSchema), createBooking);
 router.get("/bookings-by-userId", mustAuth, getBookingsByUserId);
 router.delete("/:id", mustAuth, deleteBooking);
 

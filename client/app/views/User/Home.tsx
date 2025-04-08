@@ -1,19 +1,30 @@
-import BookingsList from "@components/BookingsList";
-import RoutesList from "@components/RoutesList";
-import colors from "@utils/colors";
-import runAxiosAsync from "app/API/runAxiosAsync";
-import useAuth from "app/hooks/useAuth";
-import useClient from "app/hooks/useClient";
-import Header from "app/UI/Header";
+// Import UI components
+import BookingsList from "@components/Lists/BookingsList"; // Component to display list of bookings
+import RoutesList from "@components/Lists/RoutesList"; // Component to display list of favorite routes
+import Header from "app/UI/Header"; // Header component for the screen
+
+// Import utilities and hooks
+import colors from "@utils/colors"; // Color constants for styling
+import runAxiosAsync from "app/API/runAxiosAsync"; // Utility function for making API calls
+import useAuth from "app/hooks/useAuth"; // Custom hook for authentication state
+import useClient from "app/hooks/useClient"; // Custom hook for API client
+
+// Import Redux related utilities
+import { getBookingsState, setBookings } from "app/store/bookings"; // Redux actions and selectors for bookings
+import { setBalance } from "app/store/wallet"; // Redux action for updating wallet balance
+
+// Import React and React Native components
 import { FC, useCallback, useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
+    ActivityIndicator, // Loading spinner component
+    RefreshControl, // Pull-to-refresh functionality
+    ScrollView, // Scrollable container
+    StyleSheet, // Style creation utility
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context"; // Safe area wrapper for iOS
+import { useDispatch, useSelector } from "react-redux"; // Redux hooks for state management
 
+// Interface definitions for API response types
 interface GetBookingsRes {
     bookings: {
         _id: string;
@@ -31,32 +42,49 @@ interface GetFavoriteRes {
         endLocation: string;
     }[];
 }
+interface GetWalletRes {
+    balance: number;
+}
 
 interface Props {}
 const Home: FC<Props> = () => {
-    const { authState } = useAuth(); // Access authentication state
-    const { authClient } = useClient(); // Access authenticated Axios client
-    const profile = authState.profile; // Extract user profile
-    const firstName = profile?.firstName; // Extract user's first name
-    const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
-    const [pending, setPending] = useState(true); // State to track loading
+    // Get authentication state and client
+    const { authState } = useAuth();
+    const { authClient } = useClient();
+    const profile = authState.profile;
+    const firstName = profile?.firstName;
+
+    // State management for loading and data
+    const [refreshing, setRefreshing] = useState(false);
+    const [pending, setPending] = useState(true);
     const [favoriteRoutes, setFavoriteRoutes] = useState<
         GetFavoriteRes["routes"]
-    >([]); // State for favorite routes
-    const [bookings, setBookings] = useState<GetBookingsRes["bookings"]>([]); // State for user bookings
+    >([]);
 
-    // Function to fetch data for bookings and favorite routes
+    // Redux state management
+    const dispatch = useDispatch();
+    const { bookings } = useSelector(getBookingsState);
+
+    // Function to fetch all necessary data (bookings, wallet balance, and favorite routes)
     const fetchData = async () => {
         // Fetch user bookings
         const res = await runAxiosAsync<GetBookingsRes>(
             authClient.get("/booking/bookings-by-userId")
         );
-        if (res?.bookings) {
-            setBookings(res.bookings);
+        if (res?.bookings && res.bookings.length > 0) {
+            dispatch(setBookings(res.bookings));
         }
 
-        // Fetch favorite routes if available in the profile
-        if (profile?.favoriteRoutes) {
+        // Fetch wallet balance
+        const walletRes = await runAxiosAsync<GetWalletRes>(
+            authClient.get("/wallet/get-balance")
+        );
+        if (walletRes?.balance) {
+            dispatch(setBalance(walletRes.balance));
+        }
+
+        // Fetch favorite routes if user has any
+        if (profile?.favoriteRoutes && profile.favoriteRoutes.length > 0) {
             const res = await runAxiosAsync<GetFavoriteRes>(
                 authClient.get("/route/get-fav-routes")
             );
@@ -65,17 +93,17 @@ const Home: FC<Props> = () => {
             }
         }
 
-        setPending(false); // Stop loading indicator
-        setRefreshing(false); // Stop pull-to-refresh indicator
+        setPending(false);
+        setRefreshing(false);
     };
 
-    // Function to handle pull-to-refresh
+    // Pull-to-refresh handler
     const onRefresh = useCallback(() => {
-        setRefreshing(true); // Start pull-to-refresh indicator
-        fetchData(); // Fetch data
+        setRefreshing(true);
+        fetchData();
     }, []);
 
-    // Fetch data when the component mounts
+    // Initial data fetch on component mount
     useEffect(() => {
         fetchData();
     }, []);
@@ -86,12 +114,12 @@ const Home: FC<Props> = () => {
                 style={{ overflow: "visible" }}
                 refreshControl={
                     <RefreshControl
-                        refreshing={refreshing} // Show refresh indicator while loading
-                        onRefresh={onRefresh} // Trigger refresh on pull
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
                     />
                 }
             >
-                {/* Header with a welcome message */}
+                {/* Welcome header with user's first name */}
                 <Header>
                     Welcome{" "}
                     {firstName
@@ -100,7 +128,7 @@ const Home: FC<Props> = () => {
                     !
                 </Header>
 
-                {/* Show loading indicator while data is being fetched */}
+                {/* Loading indicator while data is being fetched */}
                 {pending && (
                     <ActivityIndicator
                         size="large"
@@ -109,12 +137,12 @@ const Home: FC<Props> = () => {
                     />
                 )}
 
-                {/* Show trips list if bookings are available */}
+                {/* Display bookings list if available */}
                 {!pending && bookings.length > 0 && (
                     <BookingsList bookings={bookings} title="Your Trips" />
                 )}
 
-                {/* Show favorite routes if available */}
+                {/* Display favorite routes if available */}
                 {!pending && favoriteRoutes.length > 0 && (
                     <RoutesList
                         routes={favoriteRoutes}
@@ -128,6 +156,7 @@ const Home: FC<Props> = () => {
 
 export default Home;
 
+// Component styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,

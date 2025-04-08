@@ -5,6 +5,7 @@ import Trip from "#/models/trip.model";
 import { WalletDocument } from "#/models/wallet.model";
 import { RequestHandler } from "express";
 import { isValidObjectId, startSession } from "mongoose";
+import { start } from "repl";
 
 export const createBooking: RequestHandler = async (req, res) => {
     const session = await startSession();
@@ -78,7 +79,29 @@ export const createBooking: RequestHandler = async (req, res) => {
         await session.commitTransaction();
 
         res.status(201).json({
-            booking: booking[0]._id,
+            booking: {
+                _id: booking[0]._id,
+                startLocation:
+                    route.startLocation?.description ?? "Unknown location",
+                endLocation:
+                    route.endLocation?.description ?? "Unknown location",
+                startTime: trip.startTime,
+                endTime: trip.endTime,
+                tripId: booking[0].trip,
+            },
+            transaction: {
+                _id: transaction[0]._id,
+                type: transaction[0].type,
+                amount: transaction[0].amount,
+                balanceAfterTransaction: transaction[0].balanceAfterTransaction,
+                createdAt: transaction[0].createdAt,
+                route: {
+                    startLocation:
+                        route.startLocation?.description ?? "Unknown location",
+                    endLocation:
+                        route.endLocation?.description ?? "Unknown location",
+                },
+            },
         });
     } catch (err) {
         await session.abortTransaction();
