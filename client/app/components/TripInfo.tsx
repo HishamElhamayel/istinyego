@@ -1,25 +1,15 @@
-import Card from "@UI/cards/Card";
-import DarkCard from "@UI/cards/DarkCard";
 import Info from "@UI/info";
-import RouteLocations from "@UI/RouteLocations";
 import { getEtc } from "@utils/functions";
 import { GetTripRes } from "@views/User/Trip";
-import { getBookingsState } from "app/store/bookings";
-import { getWalletState } from "app/store/wallet";
 import { DateTime } from "luxon";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
+import { StyleSheet, View } from "react-native";
 
 type Props = {
     trip: GetTripRes["trip"];
 };
 
 const TripInfo = ({ trip }: Props) => {
-    const { bookings } = useSelector(getBookingsState);
-    const { balance } = useSelector(getWalletState);
-    const booking = bookings.find((booking) => booking.tripId === trip._id);
-
     return (
         <>
             <Info title="Shuttle">
@@ -54,18 +44,10 @@ const TripInfo = ({ trip }: Props) => {
 export default TripInfo;
 
 const styles = StyleSheet.create({
-    balanceText: {
-        fontSize: 38,
-        color: "white",
-    },
     rowContainer: {
         flexDirection: "row",
     },
     rowItem: {
         flex: 1,
-    },
-    centerText: {
-        textAlign: "center",
-        fontSize: 24,
     },
 });

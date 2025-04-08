@@ -5,7 +5,6 @@ import Trip from "#/models/trip.model";
 import { WalletDocument } from "#/models/wallet.model";
 import { RequestHandler } from "express";
 import { isValidObjectId, startSession } from "mongoose";
-import { start } from "repl";
 
 export const createBooking: RequestHandler = async (req, res) => {
     const session = await startSession();

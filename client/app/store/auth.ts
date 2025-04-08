@@ -8,9 +8,12 @@ export interface Profile {
     lastName: string;
     email: string;
     role: string;
+    phoneNumber: number | null;
     favoriteRoutes: any[];
     wallet: string;
     token: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface AuthState {

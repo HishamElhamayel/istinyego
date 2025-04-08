@@ -71,7 +71,7 @@ const Home: FC<Props> = () => {
     }, [date]);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
             <ScrollView
                 style={{ overflow: "visible" }}
                 refreshControl={

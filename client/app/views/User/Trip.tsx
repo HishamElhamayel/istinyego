@@ -1,3 +1,8 @@
+/**
+ * Trip component displays detailed information about a specific trip and allows users to book it.
+ * It shows route locations, trip date, available seats, and booking functionality.
+ */
+
 import TripInfo from "@components/TripInfo";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
@@ -24,6 +29,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 
+/**
+ * Interface for the API response when fetching trip details
+ */
 export interface GetTripRes {
     trip: {
         _id: string;
@@ -44,24 +52,43 @@ export interface GetTripRes {
 
 type Props = {};
 
+/**
+ * Interface for the API response when creating a new booking
+ */
 export interface GetBookingRes {
     booking: Booking;
     transaction: Transaction;
 }
 
+/**
+ * Trip component that handles displaying and booking a specific trip
+ * Features:
+ * - Displays trip details including route, date, and availability
+ * - Shows user's current balance
+ * - Allows booking the trip if not already booked
+ * - Supports pull-to-refresh for updating trip data
+ */
 const Trip: FC = (props: Props) => {
+    // Route parameters and authentication client
     const { params } = useRoute<RouteProp<UserStackParamList, "Trip">>();
     const { authClient } = useClient();
+
+    // State management
     const [refreshing, setRefreshing] = useState(false);
     const [pending, setPending] = useState(true);
     const [trip, setTrip] = useState<GetTripRes["trip"]>();
+    const [busy, setBusy] = useState(false);
+
+    // Redux state and dispatch
     const { tripId } = params;
     const { bookings } = useSelector(getBookingsState);
     const { balance } = useSelector(getWalletState);
     const booking = bookings.find((booking) => booking.tripId === tripId);
     const dispatch = useDispatch();
-    const [busy, setBusy] = useState(false);
 
+    /**
+     * Fetches trip data from the API
+     */
     const fetchData = async () => {
         if (!tripId) {
             return;
@@ -78,6 +105,10 @@ const Trip: FC = (props: Props) => {
         setRefreshing(false);
     };
 
+    /**
+     * Handles the booking process for the trip
+     * Creates a new booking and associated transaction
+     */
     const handleBook = async () => {
         if (!tripId) {
             return;
@@ -96,17 +127,21 @@ const Trip: FC = (props: Props) => {
         setBusy(false);
     };
 
+    /**
+     * Callback for pull-to-refresh functionality
+     */
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchData();
     }, []);
 
+    // Initial data fetch on component mount
     useEffect(() => {
         fetchData();
     }, []);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
             <ScrollView
                 style={{ overflow: "visible" }}
                 refreshControl={
@@ -178,6 +213,7 @@ const Trip: FC = (props: Props) => {
 
 export default Trip;
 
+// Styles definition
 const styles = StyleSheet.create({
     container: {
         flex: 1,

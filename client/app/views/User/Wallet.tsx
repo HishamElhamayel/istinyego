@@ -79,7 +79,7 @@ const Wallet: FC = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
             <ScrollView
                 style={{ overflow: "visible" }}
                 refreshControl={

@@ -73,7 +73,7 @@ const AddBalance: FC = () => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} edges={["right", "left", "top"]}>
             <LinearGradient
                 colors={[colors.primary100, colors.primary50]}
                 style={styles.formContainer}

@@ -6,7 +6,7 @@ import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
 import axios from "axios";
 import React, { FC, useState } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 interface Props {}
