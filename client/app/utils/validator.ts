@@ -55,6 +55,21 @@ export const CreateUserSchema = yup.object({
     studentId: yup.number().required("ID is missing"),
 });
 
+export const UpdateUserSchema = yup.object({
+    firstName: yup
+        .string()
+        .required("First name is missing")
+        .min(3, "First name is too short")
+        .max(30, "First name is too long"),
+    lastName: yup
+        .string()
+        .required("Last name is missing")
+        .min(3, "Last name is too short")
+        .max(30, "Last name is too long"),
+    email: yup.string().email("Invalid Email").required("Email is missing"),
+    studentId: yup.number().required("ID is missing"),
+});
+
 export const UserLoginSchema = yup.object({
     email: yup.string().required("Email is missing").email("Invalid Email"),
     password: yup
@@ -65,6 +80,29 @@ export const UserLoginSchema = yup.object({
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
             "Password must contain at least one letter, one number and one special character"
         ),
+});
+
+export const ChangePasswordSchema = yup.object({
+    oldPassword: yup
+        .string()
+        .required("Password is missing")
+        .min(8, "Password is too short")
+        .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
+            "Password must contain at least one letter, one number and one special character"
+        ),
+    newPassword: yup
+        .string()
+        .required("Password is missing")
+        .min(8, "Password is too short")
+        .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
+            "Password must contain at least one letter, one number and one special character"
+        ),
+    confirmPassword: yup
+        .string()
+        .required("Password is missing")
+        .min(8, "Password is too short"),
 });
 
 export const AddBalanceSchema = yup.object({

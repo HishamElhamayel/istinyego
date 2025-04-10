@@ -227,6 +227,46 @@ export const updatePassword: RequestHandler = async (req, res) => {
     }
 };
 
+export const verifiedUpdatePassword: RequestHandler = async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const userId = req.user._id;
+
+        if (!oldPassword || !newPassword) {
+            res.status(400).json({ error: "Missing required fields" });
+            return;
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
+
+        const isMatch = await user.comparePassword(oldPassword);
+        if (!isMatch) {
+            res.status(403).json({ error: "Old password is incorrect" });
+            return;
+        }
+
+        if (oldPassword === newPassword) {
+            res.status(422).json({
+                error: "New password cannot be the same as the old password",
+            });
+            return;
+        }
+
+        user.password = newPassword;
+        user.tokens = [];
+        await user.save();
+
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
 export const signIn: RequestHandler = async (req, res) => {
     try {
         const { email, password } = req.body;

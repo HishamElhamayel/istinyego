@@ -24,6 +24,9 @@ export interface SignInRes {
         role: string;
         verified: boolean;
         favoriteRoutes: string[];
+        phoneNumber: number | null;
+        createdAt: string;
+        updatedAt: string;
         wallet: string;
     };
     token: string;
@@ -69,7 +72,10 @@ const LoginForm = () => {
                 await AsyncStorage.setItem("access-token", res.token);
                 dispatch(
                     updateAuthState({
-                        profile: { ...res.profile, token: res.token },
+                        profile: {
+                            ...res.profile,
+                            token: res.token,
+                        },
                         pending: false,
                     })
                 );

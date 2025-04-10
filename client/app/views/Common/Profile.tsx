@@ -1,10 +1,12 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
 import Header from "@UI/Header";
 import Info from "@UI/info";
 import useAuth from "app/hooks/useAuth";
+import { UserStackParamList } from "app/navigator/UserNavigator";
 import { DateTime } from "luxon";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 import {
     RefreshControl,
     ScrollView,
@@ -19,7 +21,7 @@ type Props = {};
 const Trip: FC = (props: Props) => {
     const { authState } = useAuth();
     const profile = authState.profile;
-
+    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
@@ -64,8 +66,18 @@ const Trip: FC = (props: Props) => {
                     </Info>
 
                     <View style={styles.buttonsContainer}>
-                        <Button onPress={() => {}}>Edit Profile</Button>
-                        <Button onPress={() => {}}>Change Password</Button>
+                        <Button
+                            onPress={() => navigation.navigate("EditAccount")}
+                        >
+                            Edit Profile
+                        </Button>
+                        <Button
+                            onPress={() =>
+                                navigation.navigate("ChangePassword")
+                            }
+                        >
+                            Change Password
+                        </Button>
                     </View>
                 </Card>
             </ScrollView>

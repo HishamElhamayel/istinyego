@@ -1,4 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import ChangePassword from "@views/Common/ChangePassword";
+import EditAccount from "@views/Common/EditAccount";
 import Profile from "@views/Common/Profile";
 import AddBalance from "@views/User/AddBalance";
 import Home from "@views/User/Home";
@@ -17,6 +19,8 @@ export type UserStackParamList = {
     AddBalance: undefined;
     Trips: { routeId: string; startLocation: string; endLocation: string };
     Trip: { tripId: string };
+    ChangePassword: undefined;
+    EditAccount: undefined;
 };
 
 const Stack = createNativeStackNavigator<UserStackParamList>();
@@ -58,6 +62,8 @@ export const UserProfileNavigator: FC<Props> = () => {
             }}
         >
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="ChangePassword" component={ChangePassword} />
+            <Stack.Screen name="EditAccount" component={EditAccount} />
         </Stack.Navigator>
     );
 };

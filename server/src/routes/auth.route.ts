@@ -7,6 +7,7 @@ import {
     sendReVerificationToken,
     signIn,
     updatePassword,
+    verifiedUpdatePassword,
     verifyEmail,
 } from "#/controller/auth.controller";
 import { isValidPassResetToken, mustAuth } from "#/middleware/auth.middleware";
@@ -40,6 +41,7 @@ router.post(
 
 router.post("/sign-in", validate(SignInValidationSchema), signIn);
 router.get("/is-auth", mustAuth, sendProfile);
+router.post("/verified-update-password", mustAuth, verifiedUpdatePassword);
 
 router.post("/log-out", mustAuth, logout);
 
