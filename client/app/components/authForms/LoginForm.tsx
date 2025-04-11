@@ -22,11 +22,8 @@ export interface SignInRes {
         lastName: string;
         email: string;
         role: string;
-        verified: boolean;
         favoriteRoutes: string[];
-        phoneNumber: number | null;
         createdAt: string;
-        updatedAt: string;
         wallet: string;
     };
     token: string;

@@ -43,6 +43,6 @@ router.post("/sign-in", validate(SignInValidationSchema), signIn);
 router.get("/is-auth", mustAuth, sendProfile);
 router.post("/verified-update-password", mustAuth, verifiedUpdatePassword);
 
-router.post("/log-out", mustAuth, logout);
+router.post("/logout", mustAuth, logout);
 
 export default router;

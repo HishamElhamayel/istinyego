@@ -1,3 +1,4 @@
+import LogoutModal from "@components/authForms/LogoutModal";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
@@ -6,14 +7,8 @@ import Info from "@UI/info";
 import useAuth from "app/hooks/useAuth";
 import { UserStackParamList } from "app/navigator/UserNavigator";
 import { DateTime } from "luxon";
-import React, { FC, useCallback, useState } from "react";
-import {
-    RefreshControl,
-    ScrollView,
-    StyleSheet,
-    Text,
-    View,
-} from "react-native";
+import React, { FC, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = {};
@@ -22,11 +17,7 @@ const Trip: FC = (props: Props) => {
     const { authState } = useAuth();
     const profile = authState.profile;
     const navigation = useNavigation<NavigationProp<UserStackParamList>>();
-    const [refreshing, setRefreshing] = useState(false);
-
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-    }, []);
+    const [showLogout, setShowLogout] = useState(false);
 
     if (!profile) {
         return <Text style={styles.centerText}>No trip found</Text>;
@@ -34,15 +25,7 @@ const Trip: FC = (props: Props) => {
 
     return (
         <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
-            <ScrollView
-                style={{ overflow: "visible" }}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                }
-            >
+            <ScrollView style={{ overflow: "visible" }}>
                 <Header>Profile</Header>
                 <Card>
                     <Info title="Name">
@@ -59,11 +42,6 @@ const Trip: FC = (props: Props) => {
                             DateTime.DATE_FULL
                         )}
                     </Info>
-                    <Info title="Phone Number">
-                        {profile.phoneNumber
-                            ? profile.phoneNumber
-                            : "Add phone number"}
-                    </Info>
 
                     <View style={styles.buttonsContainer}>
                         <Button
@@ -78,7 +56,14 @@ const Trip: FC = (props: Props) => {
                         >
                             Change Password
                         </Button>
+                        <Button onPress={() => setShowLogout(true)}>
+                            Logout
+                        </Button>
                     </View>
+                    <LogoutModal
+                        showLogout={showLogout}
+                        setShowLogout={setShowLogout}
+                    />
                 </Card>
             </ScrollView>
         </SafeAreaView>
@@ -98,7 +83,7 @@ const styles = StyleSheet.create({
     },
     buttonsContainer: {
         marginTop: 25,
-        gap: 15,
+        gap: 10,
     },
     centerText: {
         textAlign: "center",

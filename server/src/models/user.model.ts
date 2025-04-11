@@ -45,7 +45,6 @@ const userSchema = new Schema(
         tokens: [
             {
                 type: String,
-                select: false,
             },
         ],
         wallet: {

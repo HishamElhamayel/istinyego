@@ -145,3 +145,26 @@ export const updateShuttle: RequestHandler = async (req, res) => {
         res.status(500).json({ error: "Something went wrong" });
     }
 };
+
+export const getShuttleByDriverId: RequestHandler = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const shuttle = await Shuttle.findOne({ driver: userId }).select({
+            _id: 1,
+            number: 1,
+        });
+
+        if (!shuttle) {
+            res.status(404).json({ error: "No shuttles found for this user" });
+            return;
+        }
+
+        res.json({
+            shuttle,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};

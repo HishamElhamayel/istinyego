@@ -1,9 +1,10 @@
 import React, { FC } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
 
 interface Props {
     children?: React.ReactNode;
     onPressHandler?: () => void;
+    completed?: boolean;
 }
 
 const LightCard: FC<Props> = ({ children, onPressHandler }) => {

@@ -6,6 +6,7 @@ import {
 
 import colors from "@utils/colors";
 import useAuth from "app/hooks/useAuth";
+import { DriverHomeNavigator } from "./DriverNavigator";
 import {
     UserHomeNavigator,
     UserProfileNavigator,
@@ -74,7 +75,7 @@ const DriverTabs = () => {
         >
             <Tab.Screen
                 name="DriverHome"
-                component={UserHomeNavigator}
+                component={DriverHomeNavigator}
                 options={getOptions("Home", "home-sharp")}
             />
             <Tab.Screen
@@ -91,6 +92,8 @@ const TabNavigator = () => {
     return authState.profile && authState.profile.role === "user" ? (
         <UserTabs />
     ) : authState.profile && authState.profile.role === "driver" ? (
+        <DriverTabs />
+    ) : authState.profile && authState.profile.role === "admin" ? (
         <DriverTabs />
     ) : null;
 };

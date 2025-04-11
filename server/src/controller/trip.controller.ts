@@ -111,29 +111,73 @@ export const getTripsByShuttleId: RequestHandler = async (req, res) => {
     const {
         shuttleId,
         date,
-        time = date, //if no date is provided, use start of the day
+        // time = date, //if no date is provided, use start of the day
     } = req.query as {
         shuttleId: string;
         date: string;
-        time: string;
+        // time: string;
     };
 
     if (
         !isValidObjectId(shuttleId) ||
         !shuttleId ||
         !date ||
-        !Date.parse(date) ||
-        !Date.parse(time)
+        !Date.parse(date)
     ) {
         res.status(400).json({ error: "Invalid query parameters" });
         return;
     }
 
-    const trips = await Trip.find({
-        shuttle: shuttleId,
-        date,
-        endTime: { $gte: time },
-    });
+    const trips = await Trip.aggregate([
+        {
+            $match: {
+                shuttle: new mongoose.Types.ObjectId(shuttleId),
+                date: date,
+            },
+        },
+        {
+            $lookup: {
+                from: "routes",
+                localField: "route",
+                foreignField: "_id",
+                as: "route",
+            },
+        },
+        {
+            $unwind: "$route",
+        },
+        {
+            $lookup: {
+                from: "shuttles",
+                localField: "shuttle",
+                foreignField: "_id",
+                as: "shuttle",
+            },
+        },
+        {
+            $unwind: "$shuttle",
+        },
+        {
+            $unset: "__v",
+        },
+        {
+            $project: {
+                _id: 1,
+                shuttle: {
+                    _id: "$shuttle._id",
+                    number: "$shuttle.number",
+                },
+                startLocation: "$route.startLocation.description",
+                endLocation: "$route.endLocation.description",
+                fare: "$route.fare",
+                startTime: 1,
+                endTime: 1,
+                date: 1,
+                availableSeats: 1,
+                state: 1,
+            },
+        },
+    ]);
 
     res.json({
         trips,
@@ -191,7 +235,6 @@ export const getTripById: RequestHandler = async (req, res) => {
                 date: 1,
                 availableSeats: 1,
                 state: 1,
-                booking: 1,
             },
         },
     ]);
@@ -206,4 +249,62 @@ export const getTripById: RequestHandler = async (req, res) => {
         trip: trip[0],
     });
     return;
+};
+
+export const updateTripStateToInProgress: RequestHandler = async (req, res) => {
+    try {
+        const { tripId } = req.params;
+
+        if (!isValidObjectId(tripId)) {
+            res.status(400).json({ error: "Invalid trip ID" });
+            return;
+        }
+
+        const trip = await Trip.findByIdAndUpdate(
+            tripId,
+            { state: "inProgress" },
+            { new: true }
+        );
+
+        if (!trip) {
+            res.status(404).json({ error: "Trip not found" });
+            return;
+        }
+
+        res.status(200).json({
+            message: "Trip started",
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const updateTripStateToCompleted: RequestHandler = async (req, res) => {
+    try {
+        const { tripId } = req.params;
+
+        if (!isValidObjectId(tripId)) {
+            res.status(400).json({ error: "Invalid trip ID" });
+            return;
+        }
+
+        const trip = await Trip.findByIdAndUpdate(
+            tripId,
+            { state: "completed" },
+            { new: true }
+        );
+
+        if (!trip) {
+            res.status(404).json({ error: "Trip not found" });
+            return;
+        }
+
+        res.status(200).json({
+            message: "Trip completed",
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
 };

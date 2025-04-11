@@ -6,28 +6,31 @@ import runAxiosAsync from "app/API/runAxiosAsync";
 import useAuth from "app/hooks/useAuth";
 import useClient from "app/hooks/useClient";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
+import { Profile, updateAuthState } from "app/store/auth";
 import React, { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
+import { useDispatch } from "react-redux";
 
 interface Props {}
 
 interface signUpRes {
-    message: string;
+    user: Profile;
 }
 const EditAccountForm: FC<Props> = () => {
     const { authClient } = useClient();
     const { authState } = useAuth();
-
+    const dispatch = useDispatch();
     const [userInfo, setUserInfo] = React.useState({
         firstName: authState.profile?.firstName,
         lastName: authState.profile?.lastName,
         email: authState.profile?.email,
         studentId: authState.profile?.studentId,
-        phoneNumber: authState.profile?.phoneNumber ?? "",
     });
 
-    const { firstName, lastName, email, studentId, phoneNumber } = userInfo;
+    const token = authState.profile?.token;
+
+    const { firstName, lastName, email, studentId } = userInfo;
 
     const [busy, setBusy] = useState(false);
 
@@ -46,8 +49,14 @@ const EditAccountForm: FC<Props> = () => {
             authClient.patch("/profile/update-profile", values)
         );
 
-        if (res?.message) {
-            showMessage({ message: res.message, type: "success" });
+        if (res?.user) {
+            showMessage({ message: "Profile updated", type: "success" });
+            dispatch(
+                updateAuthState({
+                    profile: { ...res.user, token: token || "" },
+                    pending: false,
+                })
+            );
             navigation.goBack();
         }
         setBusy(false);
@@ -82,13 +91,7 @@ const EditAccountForm: FC<Props> = () => {
                 keyboardType="numeric"
                 collapsable
             />
-            <FormInput
-                label="Phone Number"
-                onChangeText={handleChange("phoneNumber")}
-                value={phoneNumber.toString()}
-                keyboardType="numeric"
-                collapsable
-            />
+
             <Button active={!busy} onPress={handleSubmit}>
                 Update Profile
             </Button>

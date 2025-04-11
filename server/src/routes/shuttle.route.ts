@@ -2,6 +2,7 @@ import {
     createShuttle,
     deleteShuttle,
     getAllShuttles,
+    getShuttleByDriverId,
     getShuttleById,
     updateShuttle,
     updateShuttleLocation,
@@ -31,6 +32,8 @@ router.patch(
     updateShuttleLocation
 );
 router.get("/", mustAuth, mustRoles("admin"), getAllShuttles);
+router.get("/get-shuttle-by-driver", mustAuth, getShuttleByDriverId);
+
 router.patch(
     "/:id",
     mustAuth,

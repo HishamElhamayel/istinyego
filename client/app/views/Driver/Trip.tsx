@@ -1,23 +1,16 @@
-/**
- * Trip component displays detailed information about a specific trip and allows users to book it.
- * It shows route locations, trip date, available seats, and booking functionality.
- */
-
 import TripInfo from "@components/TripInfo";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
-import DarkCard from "@UI/cards/DarkCard";
 import LoadingAnimation from "@UI/LoadingAnimation";
 import RouteLocations from "@UI/RouteLocations";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { UserStackParamList } from "app/navigator/UserNavigator";
-import { addBooking, Booking, getBookingsState } from "app/store/bookings";
-import { addTransaction, getWalletState, Transaction } from "app/store/wallet";
+import { getTripsState, setTrip } from "app/store/trips";
 import { DateTime } from "luxon";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 import {
     ActivityIndicator,
     RefreshControl,
@@ -26,13 +19,11 @@ import {
     Text,
     View,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 
-/**
- * Interface for the API response when fetching trip details
- */
-export interface GetTripRes {
+interface GetTripRes {
     trip: {
         _id: string;
         startTime: string;
@@ -51,40 +42,20 @@ export interface GetTripRes {
 }
 
 type Props = {};
-
-/**
- * Interface for the API response when creating a new booking
- */
-export interface GetBookingRes {
-    booking: Booking;
-    transaction: Transaction;
-}
-
-/**
- * Trip component that handles displaying and booking a specific trip
- * Features:
- * - Displays trip details including route, date, and availability
- * - Shows user's current balance
- * - Allows booking the trip if not already booked
- * - Supports pull-to-refresh for updating trip data
- */
 const Trip: FC = (props: Props) => {
     // Route parameters and authentication client
     const { params } = useRoute<RouteProp<UserStackParamList, "Trip">>();
     const { authClient } = useClient();
+    const dispatch = useDispatch();
+    const { tripId } = params;
+    const { trips } = useSelector(getTripsState);
+    const trip = trips.find((trip) => trip._id === tripId);
 
     // State management
     const [refreshing, setRefreshing] = useState(false);
-    const [pending, setPending] = useState(true);
-    const [trip, setTrip] = useState<GetTripRes["trip"]>();
-    const [busy, setBusy] = useState(false);
+    const [pending, setPending] = useState(false);
 
-    // Redux state and dispatch
-    const { tripId } = params;
-    const { bookings } = useSelector(getBookingsState);
-    const { balance } = useSelector(getWalletState);
-    const booking = bookings.find((booking) => booking.tripId === tripId);
-    const dispatch = useDispatch();
+    const [busy, setBusy] = useState(false);
 
     /**
      * Fetches trip data from the API
@@ -98,47 +69,48 @@ const Trip: FC = (props: Props) => {
         );
 
         if (res?.trip) {
-            setTrip(res.trip);
+            dispatch(setTrip(res.trip));
         }
 
         setPending(false);
         setRefreshing(false);
     };
 
-    /**
-     * Handles the booking process for the trip
-     * Creates a new booking and associated transaction
-     */
-    const handleBook = async () => {
-        if (!tripId) {
-            return;
-        }
+    const handleStartTrip = async () => {
         setBusy(true);
-        const res = await runAxiosAsync<GetBookingRes>(
-            authClient.post(`/booking/book`, {
-                tripId,
-            })
+        const res = await runAxiosAsync<{ message: string }>(
+            authClient.patch(`/trip/${tripId}/inProgress`)
         );
 
-        if (res?.booking && res?.transaction) {
-            dispatch(addBooking(res.booking));
-            dispatch(addTransaction(res.transaction));
+        if (res?.message) {
+            showMessage({
+                message: res.message,
+                type: "success",
+            });
         }
 
         fetchData();
         setBusy(false);
     };
 
-    /**
-     * Callback for pull-to-refresh functionality
-     */
+    const handleEndTrip = async () => {
+        setBusy(true);
+        const res = await runAxiosAsync<{ message: string }>(
+            authClient.patch(`/trip/${tripId}/completed`)
+        );
+
+        if (res?.message) {
+            showMessage({
+                message: res.message,
+                type: "success",
+            });
+        }
+
+        fetchData();
+        setBusy(false);
+    };
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        fetchData();
-    }, []);
-
-    // Initial data fetch on component mount
-    useEffect(() => {
         fetchData();
     }, []);
 
@@ -176,32 +148,39 @@ const Trip: FC = (props: Props) => {
                                 )}
                             </Text>
 
-                            {!booking && (
-                                <DarkCard>
-                                    <Text style={styles.balanceText}>
-                                        Balance: {balance?.toFixed(2)}₺
-                                    </Text>
-                                </DarkCard>
-                            )}
                             <Card>
                                 <TripInfo trip={trip} />
                                 <View style={styles.buttonsContainer}>
-                                    {!booking && (
-                                        <Button
-                                            onPress={() => {
-                                                handleBook();
-                                            }}
-                                        >
-                                            Book
-                                        </Button>
-                                    )}
                                     <Button
                                         onPress={() => {
                                             console.log("hi");
                                         }}
                                     >
-                                        Track Shuttle
+                                        Bookings
                                     </Button>
+
+                                    {trip.state === "inProgress" ? (
+                                        <>
+                                            <Button
+                                                onPress={() => {
+                                                    console.log("hi");
+                                                }}
+                                            >
+                                                Open Map
+                                            </Button>
+                                            <Button
+                                                onPress={() => handleEndTrip()}
+                                            >
+                                                End Trip
+                                            </Button>
+                                        </>
+                                    ) : trip.state === "scheduled" ? (
+                                        <Button
+                                            onPress={() => handleStartTrip()}
+                                        >
+                                            Start Trip
+                                        </Button>
+                                    ) : null}
                                 </View>
                             </Card>
                         </View>

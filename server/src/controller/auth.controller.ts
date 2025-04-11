@@ -323,6 +323,7 @@ export const signIn: RequestHandler = async (req, res) => {
                 role: user.role,
                 favoriteRoutes: user.favoriteRoutes,
                 wallet: user.wallet,
+                createdAt: user.createdAt,
             },
             token,
         });

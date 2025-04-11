@@ -4,6 +4,8 @@ import {
     getTripById,
     getTripsByRouteId,
     getTripsByShuttleId,
+    updateTripStateToCompleted,
+    updateTripStateToInProgress,
 } from "#/controller/trip.controller";
 import { mustAuth, mustRoles } from "#/middleware/auth.middleware";
 import { validate } from "#/middleware/validator.middleware";
@@ -20,8 +22,10 @@ router.post(
     createTrip
 );
 router.get("/trips-by-route", getTripsByRouteId);
-router.get("/trips-by-shuttleId", getTripsByShuttleId);
+router.get("/trips-by-shuttle", getTripsByShuttleId);
 router.get("/:id", mustAuth, getTripById);
 router.delete("/:id", mustAuth, deleteTrip);
+router.patch("/:tripId/inProgress", mustAuth, updateTripStateToInProgress);
+router.patch("/:tripId/completed", mustAuth, updateTripStateToCompleted);
 
 export default router;
