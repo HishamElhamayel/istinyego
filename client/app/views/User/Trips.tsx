@@ -1,7 +1,7 @@
 import TripsList from "@components/Lists/TripsList";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import DatePicker from "@UI/DatePicker";
-import RouteLocations from "@UI/RouteLocations";
+import DatePicker from "@UI/form/DatePicker";
+import RouteLocations from "@UI/ui/RouteLocations";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";

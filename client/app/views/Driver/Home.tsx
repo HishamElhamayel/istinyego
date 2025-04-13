@@ -1,4 +1,4 @@
-import Header from "app/UI/Header"; // Header component for the screen
+import Header from "@UI/ui/Header"; // Header component for the screen
 
 // Import utilities and hooks
 import colors from "@utils/colors"; // Color constants for styling
@@ -10,12 +10,14 @@ import { getTripsState, setTrips } from "app/store/trips";
 
 // Import React and React Native components
 import UpcomingTripsList from "@components/Lists/upcomingTripsList";
+import DarkCard from "@UI/cards/DarkCard";
 import { FC, useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator, // Loading spinner component
     RefreshControl, // Pull-to-refresh functionality
     ScrollView, // Scrollable container
     StyleSheet, // Style creation utility
+    Text,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context"; // Safe area wrapper for iOS
 import { useDispatch, useSelector } from "react-redux";
@@ -93,6 +95,8 @@ const Home: FC<Props> = () => {
 
         if (shuttleRes?.shuttle) {
             setShuttle(shuttleRes.shuttle);
+        } else {
+            setPending(false);
         }
     };
 
@@ -114,8 +118,6 @@ const Home: FC<Props> = () => {
         }
     }, [shuttle]);
 
-    // console.log(trips);
-
     return (
         <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
             <ScrollView
@@ -136,6 +138,15 @@ const Home: FC<Props> = () => {
                     !
                 </Header>
 
+                {shuttle && (
+                    <DarkCard>
+                        <Text style={styles.shuttleText}>
+                            Assigned Shuttle: {"\n"}
+                            ISU - {shuttle.number.toString().padStart(2, "0")}
+                        </Text>
+                    </DarkCard>
+                )}
+
                 {/* Loading indicator while data is being fetched */}
                 {pending && (
                     <ActivityIndicator
@@ -148,6 +159,12 @@ const Home: FC<Props> = () => {
                 {!pending && trips.length > 0 && (
                     <UpcomingTripsList trips={trips} title="Upcoming Trips" />
                 )}
+
+                {!pending && trips.length === 0 && (
+                    <Text style={styles.text}>No trips found</Text>
+                )}
+
+                {!shuttle && <Text style={styles.text}>No shuttle found</Text>}
             </ScrollView>
         </SafeAreaView>
     );
@@ -163,5 +180,14 @@ const styles = StyleSheet.create({
     },
     loading: {
         marginTop: 200,
+    },
+    text: {
+        textAlign: "center",
+        fontSize: 20,
+        color: colors.grey,
+    },
+    shuttleText: {
+        fontSize: 38,
+        color: "white",
     },
 });

@@ -1,8 +1,8 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Card from "@UI/cards/Card";
 import LightCard from "@UI/cards/LightCard";
-import RouteLocations from "@UI/RouteLocations";
-import { UserStackParamList } from "app/navigator/UserNavigator";
+import RouteLocations from "@UI/ui/RouteLocations";
+import { DriverStackParamList } from "app/navigator/DriverNavigator";
 import { DateTime } from "luxon";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -20,7 +20,7 @@ type Props = {
 };
 
 const UpcomingTripsList = ({ trips, title }: Props) => {
-    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
+    const navigation = useNavigation<NavigationProp<DriverStackParamList>>();
 
     const onPress = (tripId: string) => {
         navigation.navigate("Trip", { tripId });

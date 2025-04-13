@@ -4,7 +4,7 @@ import Transaction from "#/models/transaction.model";
 import Trip from "#/models/trip.model";
 import { WalletDocument } from "#/models/wallet.model";
 import { RequestHandler } from "express";
-import { isValidObjectId, startSession } from "mongoose";
+import mongoose, { isValidObjectId, startSession } from "mongoose";
 
 export const createBooking: RequestHandler = async (req, res) => {
     const session = await startSession();
@@ -169,6 +169,50 @@ export const deleteBooking: RequestHandler = async (req, res) => {
         }
 
         res.status(204).json({});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const getBookingsByTripId: RequestHandler = async (req, res) => {
+    try {
+        const { tripId } = req.query;
+
+        if (!tripId) {
+            res.status(400).json({ error: "Trip ID is required" });
+            return;
+        }
+
+        if (!isValidObjectId(tripId)) {
+            res.status(400).json({ error: "Invalid trip ID" });
+            return;
+        }
+        const bookings = await Booking.aggregate([
+            { $match: { trip: new mongoose.Types.ObjectId(tripId as string) } },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "user",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            { $unwind: "$user" },
+            {
+                $project: {
+                    _id: 1,
+                    user: {
+                        _id: "$user._id",
+                        firstName: "$user.firstName",
+                        lastName: "$user.lastName",
+                        studentId: "$user.studentId",
+                    },
+                },
+            },
+        ]);
+
+        res.json({ bookings });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });

@@ -1,7 +1,7 @@
 // Import UI components
 import BookingsList from "@components/Lists/BookingsList"; // Component to display list of bookings
 import RoutesList from "@components/Lists/RoutesList"; // Component to display list of favorite routes
-import Header from "app/UI/Header"; // Header component for the screen
+import Header from "@UI/ui/Header"; // Header component for the screen
 
 // Import utilities and hooks
 import colors from "@utils/colors"; // Color constants for styling

@@ -4,16 +4,20 @@ import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
 interface Props {
     children?: React.ReactNode;
     onPressHandler?: () => void;
-    completed?: boolean;
+    unPressable?: boolean;
 }
 
-const LightCard: FC<Props> = ({ children, onPressHandler }) => {
+const LightCard: FC<Props> = ({
+    children,
+    onPressHandler,
+    unPressable = false,
+}) => {
     return (
         <Pressable
             onPress={onPressHandler}
             style={({ pressed }) => [
                 styles.container,
-                pressed && styles.pressed,
+                !unPressable && pressed && styles.pressed,
             ]}
         >
             {children}

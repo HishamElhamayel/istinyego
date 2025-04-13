@@ -1,5 +1,5 @@
 import TransactionCard from "@UI/cards/TransactionCard";
-import RouteLocations from "@UI/RouteLocations";
+import RouteLocations from "@UI/ui/RouteLocations";
 import React, { FC } from "react";
 import { StyleSheet, Text, View } from "react-native";
 

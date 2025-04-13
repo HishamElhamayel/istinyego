@@ -2,6 +2,7 @@ import TransactionList from "@components/Lists/TransactionList";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import BlueButton from "@UI/buttons/BlueButton";
 import DarkCard from "@UI/cards/DarkCard";
+import Header from "@UI/ui/Header";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
@@ -12,7 +13,6 @@ import {
     setPending,
     setTransactions,
 } from "app/store/wallet";
-import Header from "app/UI/Header";
 import { FC, useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,

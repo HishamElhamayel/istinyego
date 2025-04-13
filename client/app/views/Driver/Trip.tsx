@@ -1,13 +1,18 @@
 import TripInfo from "@components/TripInfo";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import {
+    NavigationProp,
+    RouteProp,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
-import LoadingAnimation from "@UI/LoadingAnimation";
-import RouteLocations from "@UI/RouteLocations";
+import LoadingAnimation from "@UI/loading/LoadingAnimation";
+import RouteLocations from "@UI/ui/RouteLocations";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
-import { UserStackParamList } from "app/navigator/UserNavigator";
+import { DriverStackParamList } from "app/navigator/DriverNavigator";
 import { getTripsState, setTrip } from "app/store/trips";
 import { DateTime } from "luxon";
 import React, { FC, useCallback, useState } from "react";
@@ -22,7 +27,6 @@ import {
 import { showMessage } from "react-native-flash-message";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
-
 interface GetTripRes {
     trip: {
         _id: string;
@@ -44,17 +48,16 @@ interface GetTripRes {
 type Props = {};
 const Trip: FC = (props: Props) => {
     // Route parameters and authentication client
-    const { params } = useRoute<RouteProp<UserStackParamList, "Trip">>();
+    const { params } = useRoute<RouteProp<DriverStackParamList, "Trip">>();
     const { authClient } = useClient();
     const dispatch = useDispatch();
     const { tripId } = params;
     const { trips } = useSelector(getTripsState);
     const trip = trips.find((trip) => trip._id === tripId);
-
+    const navigation = useNavigation<NavigationProp<DriverStackParamList>>();
     // State management
     const [refreshing, setRefreshing] = useState(false);
     const [pending, setPending] = useState(false);
-
     const [busy, setBusy] = useState(false);
 
     /**
@@ -153,7 +156,12 @@ const Trip: FC = (props: Props) => {
                                 <View style={styles.buttonsContainer}>
                                     <Button
                                         onPress={() => {
-                                            console.log("hi");
+                                            navigation.navigate("Bookings", {
+                                                tripId: trip._id,
+                                                startLocation:
+                                                    trip.startLocation,
+                                                endLocation: trip.endLocation,
+                                            });
                                         }}
                                     >
                                         Bookings

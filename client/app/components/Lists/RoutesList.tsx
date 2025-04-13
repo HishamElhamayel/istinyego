@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Card from "@UI/cards/Card";
 import LightCard from "@UI/cards/LightCard";
-import RouteLocations from "@UI/RouteLocations";
+import RouteLocations from "@UI/ui/RouteLocations";
 import { UserStackParamList } from "app/navigator/UserNavigator";
 import React from "react";
 import { StyleSheet } from "react-native";
