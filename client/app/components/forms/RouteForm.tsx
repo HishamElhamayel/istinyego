@@ -112,7 +112,7 @@ const RouteForm: FC<Props> = () => {
                 {id ? "Edit Route" : "Create Route"}
             </Text>
 
-            <Text>Start Location</Text>
+            <Text style={styles.subtitle}>Start Location</Text>
 
             <FormInput
                 label="Address"
@@ -131,7 +131,14 @@ const RouteForm: FC<Props> = () => {
                 collapsable
             />
 
-            <Text>End Location</Text>
+            <View
+                style={{
+                    height: 1,
+                    backgroundColor: "white",
+                }}
+            />
+
+            <Text style={styles.subtitle}>End Location</Text>
 
             <FormInput
                 label="Address"
@@ -149,6 +156,14 @@ const RouteForm: FC<Props> = () => {
                 value={endLocation.description}
                 collapsable
             />
+            <View
+                style={{
+                    height: 1,
+                    backgroundColor: "white",
+                }}
+            />
+
+            <Text style={styles.subtitle}>Fare</Text>
 
             <FormInput
                 label="Fare"
@@ -176,6 +191,11 @@ const styles = StyleSheet.create({
     header: {
         color: "white",
         fontSize: 35,
+        fontWeight: "bold",
+    },
+    subtitle: {
+        color: "white",
+        fontSize: 21,
         fontWeight: "bold",
     },
 });
