@@ -6,6 +6,7 @@ import {
 
 import colors from "@utils/colors";
 import useAuth from "app/hooks/useAuth";
+import { AdminHomeNavigator, AdminRoutesNavigator } from "./AdminNavigator";
 import { DriverHomeNavigator } from "./DriverNavigator";
 import {
     UserHomeNavigator,
@@ -20,6 +21,8 @@ export type TabParamList = {
     UserProfile: undefined;
     UserWallet: undefined;
     DriverHome: undefined;
+    AdminHome: undefined;
+    AdminRoutes: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -87,6 +90,30 @@ const DriverTabs = () => {
     );
 };
 
+const AdminTabs = () => {
+    return (
+        <Tab.Navigator
+            screenOptions={{ headerShown: false, animation: "shift" }}
+        >
+            <Tab.Screen
+                name="AdminHome"
+                component={AdminHomeNavigator}
+                options={getOptions("Home", "home-sharp")}
+            />
+            <Tab.Screen
+                name="AdminRoutes"
+                component={AdminRoutesNavigator}
+                options={getOptions("Routes", "location-sharp")}
+            />
+            <Tab.Screen
+                name="UserProfile"
+                component={UserProfileNavigator}
+                options={getOptions("Profile", "person-sharp")}
+            />
+        </Tab.Navigator>
+    );
+};
+
 const TabNavigator = () => {
     const { authState } = useAuth();
     return authState.profile && authState.profile.role === "user" ? (
@@ -94,7 +121,7 @@ const TabNavigator = () => {
     ) : authState.profile && authState.profile.role === "driver" ? (
         <DriverTabs />
     ) : authState.profile && authState.profile.role === "admin" ? (
-        <DriverTabs />
+        <AdminTabs />
     ) : null;
 };
 

@@ -1,4 +1,4 @@
-import RoutesList from "@components/Lists/RoutesList";
+import RoutesList from "@components/lists/RoutesList";
 import Header from "@UI/ui/Header";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
@@ -9,6 +9,7 @@ import {
     RefreshControl,
     ScrollView,
     StyleSheet,
+    Text,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -30,9 +31,7 @@ const Routes: FC<Props> = () => {
     // Function to fetch data for bookings and favorite routes
     const fetchData = async () => {
         // Fetch user bookings
-        const res = await runAxiosAsync<GetRoutesRes>(
-            authClient.get("/route/")
-        );
+        const res = await runAxiosAsync<GetRoutesRes>(authClient.get("/route"));
 
         if (res?.routes) {
             setRoutes(res.routes);
@@ -80,6 +79,9 @@ const Routes: FC<Props> = () => {
                 {!pending && routes.length > 0 && (
                     <RoutesList routes={routes} title="All Routes" />
                 )}
+                {routes.length === 0 && (
+                    <Text style={styles.noRoutes}>No routes found</Text>
+                )}
             </ScrollView>
         </SafeAreaView>
     );
@@ -94,5 +96,10 @@ const styles = StyleSheet.create({
     },
     loading: {
         marginTop: 200,
+    },
+    noRoutes: {
+        textAlign: "center",
+        fontSize: 20,
+        color: colors.grey,
     },
 });

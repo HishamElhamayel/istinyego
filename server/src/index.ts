@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import "./db";
+import adminRouter from "./routes/admin.router";
 import authRouter from "./routes/auth.route";
 import bookingRouter from "./routes/booking.route";
 import profileRouter from "./routes/profile.route";
@@ -23,6 +24,7 @@ app.use("/transaction", transactionRouter);
 app.use("/route", routeRouter);
 app.use("/shuttle", shuttleRouter);
 app.use("/trip", tripRouter);
+app.use("/admin", adminRouter);
 app.use("/profile", profileRouter);
 
 app.use((req, res) => {

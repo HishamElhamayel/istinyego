@@ -28,6 +28,9 @@ const UpcomingTripsList = ({ trips, title }: Props) => {
 
     return (
         <Card title={title} style={styles.container}>
+            {trips.length === 0 && (
+                <Text style={styles.noTrips}>No trips found</Text>
+            )}
             {trips.map((trip) => (
                 <LightCard
                     key={trip._id}
@@ -78,5 +81,10 @@ const styles = StyleSheet.create({
     },
     completed: {
         color: "green",
+    },
+    noTrips: {
+        fontSize: 22,
+        textAlign: "center",
+        color: "white",
     },
 });

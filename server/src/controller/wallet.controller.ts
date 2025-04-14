@@ -25,8 +25,6 @@ export const chargeWallet: RequestHandler = async (req, res) => {
         const user = req.user;
         const amount = req.body.amount;
 
-        console.log(amount);
-
         const wallet = await Wallet.findOne({ _id: user.wallet });
 
         if (!wallet) {

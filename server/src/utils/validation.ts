@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { isValidObjectId } from "mongoose";
 import * as yup from "yup";
 
@@ -90,6 +91,19 @@ export const SignInValidationSchema = yup.object({
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
             "Password must contain at least one letter, one number and one special character"
         ),
+});
+
+export const AdminDashboardSchema = yup.object({
+    date: yup
+        .string()
+        .transform(function (value) {
+            if (DateTime.fromFormat(value, "yyyy-MM-dd").isValid) {
+                return value;
+            }
+
+            return "";
+        })
+        .required("Invalid date"),
 });
 
 export const CreateTransactionSchema = yup.object({

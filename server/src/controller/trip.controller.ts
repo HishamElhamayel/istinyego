@@ -158,9 +158,6 @@ export const getTripsByShuttleId: RequestHandler = async (req, res) => {
             $unwind: "$shuttle",
         },
         {
-            $unset: "__v",
-        },
-        {
             $project: {
                 _id: 1,
                 shuttle: {

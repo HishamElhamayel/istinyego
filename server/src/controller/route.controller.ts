@@ -21,6 +21,21 @@ export const createRoute: RequestHandler = async (req, res) => {
     }
 };
 
+export const getRouteById: RequestHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const route = await Route.findById(id);
+        if (!route) {
+            res.status(404).json({ error: "Route not found" });
+            return;
+        }
+        res.status(200).json({ route: route });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
 export const getFavRoutes: RequestHandler = async (req, res) => {
     try {
         const routes = await Route.aggregate([

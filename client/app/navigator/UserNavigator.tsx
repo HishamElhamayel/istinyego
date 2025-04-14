@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ChangePassword from "@views/Common/ChangePassword";
+import ChangePassword from "@views/Auth/ChangePassword";
 import EditAccount from "@views/Common/EditAccount";
 import Profile from "@views/Common/Profile";
+import Routes from "@views/Common/Routes";
 import AddBalance from "@views/User/AddBalance";
 import Home from "@views/User/Home";
-import Routes from "@views/User/Routes";
 import Trip from "@views/User/Trip";
 import Trips from "@views/User/Trips";
 import Wallet from "@views/User/Wallet";

@@ -1,4 +1,4 @@
-import TripsList from "@components/Lists/TripsList";
+import TripsList from "@components/lists/TripsList";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import DatePicker from "@UI/form/DatePicker";
 import RouteLocations from "@UI/ui/RouteLocations";

@@ -1,3 +1,7 @@
+// Import UI components
+import Dashboard from "@components/Dashboard";
+import UpcomingTripsList from "@components/lists/UpcomingTripsList";
+import DatePicker from "@UI/form/DatePicker";
 import Header from "@UI/ui/Header"; // Header component for the screen
 
 // Import utilities and hooks
@@ -5,47 +9,33 @@ import colors from "@utils/colors"; // Color constants for styling
 import runAxiosAsync from "app/API/runAxiosAsync"; // Utility function for making API calls
 import useAuth from "app/hooks/useAuth"; // Custom hook for authentication state
 import useClient from "app/hooks/useClient"; // Custom hook for API client
-import { getTripsState, setTrips } from "app/store/trips";
-// Import Redux related utilities
+import { DateTime } from "luxon";
+import React from "react";
 
 // Import React and React Native components
-import UpcomingTripsList from "@components/lists/UpcomingTripsList";
-import DarkCard from "@UI/cards/DarkCard";
 import { FC, useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator, // Loading spinner component
     RefreshControl, // Pull-to-refresh functionality
     ScrollView, // Scrollable container
-    StyleSheet, // Style creation utility
-    Text,
+    StyleSheet,
+    Text, // Style creation utility
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context"; // Safe area wrapper for iOS
-import { useDispatch, useSelector } from "react-redux";
 
 // Interface definitions for API response types
-interface GetShuttleRes {
-    shuttle: {
-        _id: string;
-        number: number;
-    };
-}
-
-interface GetTripsRes {
+interface GetDashboardRes {
     trips: {
         _id: string;
-        startTime: string;
-        endTime: string;
-        date: string;
         startLocation: string;
         endLocation: string;
-        shuttle: {
-            _id: string;
-            number: number;
-        };
-        availableSeats: number;
+        startTime: string;
+        endTime: string;
         state: string;
-        fare: number;
     }[];
+    tripsLeft: number;
+    bookings: number;
+    income: number;
 }
 
 interface Props {}
@@ -56,67 +46,46 @@ const Home: FC<Props> = () => {
     const profile = authState.profile;
     const firstName = profile?.firstName;
 
-    // State management
+    // State management for loading and data
     const [refreshing, setRefreshing] = useState(false);
     const [pending, setPending] = useState(true);
-    const [shuttle, setShuttle] = useState<GetShuttleRes["shuttle"]>();
-    const today = "2025-04-14";
+    const [trips, setTrips] = useState<GetDashboardRes["trips"]>([]);
+    const [tripsLeft, setTripsLeft] = useState<GetDashboardRes["tripsLeft"]>(0);
+    const [bookings, setBookings] = useState<GetDashboardRes["bookings"]>(0);
+    const [income, setIncome] = useState<GetDashboardRes["income"]>(0);
+    const [date, setDate] = useState<Date>(new Date());
 
-    const dispatch = useDispatch();
-    const { trips } = useSelector(getTripsState);
-
-    // Fetch trips data
+    // Function to fetch all necessary data (bookings, wallet balance, and favorite routes)
     const fetchData = async () => {
-        if (!shuttle?._id) return;
-
-        setPending(true);
-        const tripsRes = await runAxiosAsync<GetTripsRes>(
-            authClient.get("/trip/trips-by-shuttle", {
+        // Fetch user bookings
+        const res = await runAxiosAsync<GetDashboardRes>(
+            authClient.get("/admin/dashboard", {
                 params: {
-                    shuttleId: shuttle._id,
-                    date: today,
+                    date: DateTime.fromJSDate(date).toFormat("yyyy-MM-dd"),
                 },
             })
         );
 
-        if (tripsRes?.trips) {
-            dispatch(setTrips(tripsRes.trips));
-        }
+        setTrips(res?.trips || []);
+        setTripsLeft(res?.tripsLeft || 0);
+        setBookings(res?.bookings || 0);
+        setIncome(res?.income || 0);
 
         setPending(false);
         setRefreshing(false);
-    };
-
-    // Fetch shuttle data
-    const fetchShuttle = async () => {
-        const shuttleRes = await runAxiosAsync<GetShuttleRes>(
-            authClient.get("/shuttle/get-shuttle-by-driver")
-        );
-
-        if (shuttleRes?.shuttle) {
-            setShuttle(shuttleRes.shuttle);
-        } else {
-            setPending(false);
-        }
     };
 
     // Pull-to-refresh handler
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchData();
-    }, [shuttle]);
-
-    // Initial data fetch
-    useEffect(() => {
-        fetchShuttle();
     }, []);
 
-    // Fetch trips when shuttle is available
+    // Initial data fetch on component mount
     useEffect(() => {
-        if (shuttle) {
-            fetchData();
-        }
-    }, [shuttle]);
+        setPending(true);
+        fetchData();
+    }, [date]);
 
     return (
         <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
@@ -137,34 +106,28 @@ const Home: FC<Props> = () => {
                         : ""}
                     !
                 </Header>
-
-                {shuttle && (
-                    <DarkCard>
-                        <Text style={styles.shuttleText}>
-                            Assigned Shuttle: {"\n"}
-                            ISU - {shuttle.number.toString().padStart(2, "0")}
-                        </Text>
-                    </DarkCard>
-                )}
+                <DatePicker date={date} setParentDate={setDate} />
 
                 {/* Loading indicator while data is being fetched */}
-                {pending && (
+                {pending ? (
                     <ActivityIndicator
                         size="large"
                         color={colors.primary100}
                         style={styles.loading}
                     />
+                ) : (
+                    <>
+                        <Dashboard
+                            trips={tripsLeft}
+                            bookings={bookings}
+                            income={income}
+                        />
+                        <UpcomingTripsList
+                            trips={trips}
+                            title="Upcoming Trips"
+                        />
+                    </>
                 )}
-
-                {!pending && trips.length > 0 && (
-                    <UpcomingTripsList trips={trips} title="Upcoming Trips" />
-                )}
-
-                {!pending && trips.length === 0 && (
-                    <Text style={styles.text}>No trips found</Text>
-                )}
-
-                {!shuttle && <Text style={styles.text}>No shuttle found</Text>}
             </ScrollView>
         </SafeAreaView>
     );
@@ -180,14 +143,5 @@ const styles = StyleSheet.create({
     },
     loading: {
         marginTop: 200,
-    },
-    text: {
-        textAlign: "center",
-        fontSize: 20,
-        color: colors.grey,
-    },
-    shuttleText: {
-        fontSize: 38,
-        color: "white",
     },
 });

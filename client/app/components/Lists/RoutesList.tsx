@@ -1,7 +1,10 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
 import LightCard from "@UI/cards/LightCard";
 import RouteLocations from "@UI/ui/RouteLocations";
+import useAuth from "app/hooks/useAuth";
+import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import { UserStackParamList } from "app/navigator/UserNavigator";
 import React from "react";
 import { StyleSheet } from "react-native";
@@ -14,9 +17,12 @@ type Props = {
     }[];
     title: string;
 };
-
 const RoutesList = ({ routes, title }: Props) => {
-    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
+    const { authState } = useAuth();
+    const navigation =
+        useNavigation<
+            NavigationProp<AdminStackParamList & UserStackParamList>
+        >();
 
     const onPress = (route: {
         _id: string;
@@ -37,7 +43,15 @@ const RoutesList = ({ routes, title }: Props) => {
             {routes.map((route) => (
                 <LightCard
                     key={route._id}
-                    onPressHandler={() => onPress(route)}
+                    onPressHandler={() => {
+                        if (authState.profile?.role === "admin") {
+                            navigation.navigate("Route", {
+                                _id: route._id,
+                            });
+                        } else {
+                            onPress(route);
+                        }
+                    }}
                 >
                     <RouteLocations
                         from={route.startLocation}
@@ -45,6 +59,17 @@ const RoutesList = ({ routes, title }: Props) => {
                     />
                 </LightCard>
             ))}
+            {authState.profile?.role === "admin" && (
+                <Button
+                    onPress={() =>
+                        navigation.navigate("Route", {
+                            _id: undefined,
+                        })
+                    }
+                >
+                    Add Route
+                </Button>
+            )}
         </Card>
     );
 };

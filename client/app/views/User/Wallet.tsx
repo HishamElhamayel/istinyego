@@ -1,4 +1,4 @@
-import TransactionList from "@components/Lists/TransactionList";
+import TransactionList from "@components/lists/TransactionList";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import BlueButton from "@UI/buttons/BlueButton";
 import DarkCard from "@UI/cards/DarkCard";
