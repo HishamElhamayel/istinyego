@@ -13,7 +13,7 @@ export type AdminStackParamList = {
     };
     Map: {
         location?: number[];
-        setCoordinates?: (location: number[]) => void;
+        setCoordinates?: (location: number[], address: string) => void;
     };
 };
 

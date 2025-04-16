@@ -1,8 +1,6 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
 import colors from "@utils/colors";
-import runAxiosAsync from "app/API/runAxiosAsync";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
-import axios from "axios";
 import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
