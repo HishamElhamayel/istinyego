@@ -1,42 +1,52 @@
 {
-  "expo": {
-    "name": "istinyego",
-    "slug": "istinyego",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "backgroundColor": "#ffffff",
-    "experiments": {
-      "tsconfigPaths": true
-    },
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.hisham21.istinyego",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "dea1da00-f384-4983-9f86-5c0101a82d54"
-      }
-    },
-    "owner": "hisham21"
-  }
+    "expo": {
+        "name": "istinyego",
+        "slug": "istinyego",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "light",
+        "backgroundColor": "#ffffff",
+        "experiments": {
+            "tsconfigPaths": true
+        },
+        "newArchEnabled": true,
+        "splash": {
+            "image": "./assets/splash-icon.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "plugins": [
+            [
+                "expo-location",
+                {
+                    "locationAlwaysAndWhenInUsePermission": "Allow IstinyeGo to use your location.",
+                    "isAndroidBackgroundLocationEnabled": true
+                }
+            ]
+        ],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.hisham21.istinyego",
+            "infoPlist": {
+                "ITSAppUsesNonExemptEncryption": false
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#ffffff"
+            },
+            "package": "com.hisham21.istinyego"
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "extra": {
+            "eas": {
+                "projectId": "dea1da00-f384-4983-9f86-5c0101a82d54"
+            }
+        },
+        "owner": "hisham21"
+    }
 }

@@ -22,8 +22,8 @@ router.post(
     createRoute
 );
 router.get("/", getAllRoutes);
-router.get("/:id", getRouteById);
 router.get("/get-fav-routes", mustAuth, getFavRoutes);
+router.get("/:id", getRouteById);
 router.patch("/toggle-fav-route/:id", mustAuth, toggleFavRoute);
 router.patch("/:id", mustAuth, mustRoles("admin"), updateRoute);
 router.delete("/:id", mustAuth, mustRoles("admin"), deleteRoute);

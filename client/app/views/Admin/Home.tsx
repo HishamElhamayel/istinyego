@@ -87,6 +87,9 @@ const Home: FC<Props> = () => {
         fetchData();
     }, [date]);
 
+    const origin = { latitude: 41.068225, longitude: 28.947828 };
+    const destination = { latitude: 41.102628, longitude: 28.97552 };
+
     return (
         <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
             <ScrollView
@@ -98,7 +101,6 @@ const Home: FC<Props> = () => {
                     />
                 }
             >
-                {/* Welcome header with user's first name */}
                 <Header>
                     Welcome{" "}
                     {firstName
@@ -108,7 +110,6 @@ const Home: FC<Props> = () => {
                 </Header>
                 <DatePicker date={date} setParentDate={setDate} />
 
-                {/* Loading indicator while data is being fetched */}
                 {pending ? (
                     <ActivityIndicator
                         size="large"

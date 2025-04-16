@@ -38,6 +38,7 @@ export const getRouteById: RequestHandler = async (req, res) => {
 
 export const getFavRoutes: RequestHandler = async (req, res) => {
     try {
+        // console.log(req);
         const routes = await Route.aggregate([
             { $match: { _id: { $in: req.user.favoriteRoutes } } },
             {

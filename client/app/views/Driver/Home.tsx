@@ -11,6 +11,7 @@ import { getTripsState, setTrips } from "app/store/trips";
 // Import React and React Native components
 import UpcomingTripsList from "@components/lists/UpcomingTripsList";
 import DarkCard from "@UI/cards/DarkCard";
+import { DateTime } from "luxon";
 import { FC, useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator, // Loading spinner component
@@ -60,7 +61,7 @@ const Home: FC<Props> = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [pending, setPending] = useState(true);
     const [shuttle, setShuttle] = useState<GetShuttleRes["shuttle"]>();
-    const today = "2025-04-14";
+    const today = DateTime.now().toFormat("yyyy-MM-dd");
 
     const dispatch = useDispatch();
     const { trips } = useSelector(getTripsState);
@@ -182,6 +183,7 @@ const styles = StyleSheet.create({
         marginTop: 200,
     },
     text: {
+        marginTop: 100,
         textAlign: "center",
         fontSize: 20,
         color: colors.grey,

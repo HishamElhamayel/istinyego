@@ -6,6 +6,7 @@ import {
 } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import FormInput from "@UI/form/FormInput";
+import Info from "@UI/ui/info";
 import validate, { UpdateUserSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
@@ -21,13 +22,13 @@ interface RouteRes {
         _id: string;
         startLocation: {
             type: "Point";
-            coordinates: [number, number];
+            coordinates: number[];
             address: string;
             description: string;
         };
         endLocation: {
             type: "Point";
-            coordinates: [number, number];
+            coordinates: number[];
             address: string;
             description: string;
         };
@@ -47,7 +48,7 @@ const RouteForm: FC<Props> = () => {
         RouteRes["route"]["startLocation"]
     >({
         type: "Point",
-        coordinates: [0, 0],
+        coordinates: [],
         address: "",
         description: "",
     });
@@ -55,7 +56,7 @@ const RouteForm: FC<Props> = () => {
         RouteRes["route"]["endLocation"]
     >({
         type: "Point",
-        coordinates: [0, 0],
+        coordinates: [],
         address: "",
         description: "",
     });
@@ -107,21 +108,13 @@ const RouteForm: FC<Props> = () => {
     };
 
     return (
-        <View style={{ gap: 15 }}>
+        <View style={{ gap: 15, marginBottom: 30 }}>
             <Text style={styles.header}>
                 {id ? "Edit Route" : "Create Route"}
             </Text>
 
             <Text style={styles.subtitle}>Start Location</Text>
 
-            <FormInput
-                label="Address"
-                onChangeText={(text) =>
-                    setStartLocation({ ...startLocation, address: text })
-                }
-                value={startLocation.address}
-                collapsable
-            />
             <FormInput
                 label="Description"
                 onChangeText={(text) =>
@@ -130,6 +123,43 @@ const RouteForm: FC<Props> = () => {
                 value={startLocation.description}
                 collapsable
             />
+            {startLocation.coordinates.length > 0 && (
+                <View style={styles.infoContainer}>
+                    <Info title="Latitude">
+                        {startLocation.coordinates[0].toFixed(5)}
+                    </Info>
+                    <Info title="Longitude">
+                        {startLocation.coordinates[1].toFixed(5)}
+                    </Info>
+                </View>
+            )}
+            <FormInput
+                label="Address"
+                onChangeText={(text) =>
+                    setStartLocation({ ...startLocation, address: text })
+                }
+                value={startLocation.address}
+                collapsable
+            />
+            <Button
+                onPress={() =>
+                    navigation.navigate("Map", {
+                        location: startLocation.coordinates,
+                        setCoordinates: (
+                            location: number[],
+                            address: string
+                        ) => {
+                            setStartLocation({
+                                ...startLocation,
+                                coordinates: location,
+                                address: address,
+                            });
+                        },
+                    })
+                }
+            >
+                Select Start Location
+            </Button>
 
             <View
                 style={{
@@ -156,6 +186,36 @@ const RouteForm: FC<Props> = () => {
                 value={endLocation.description}
                 collapsable
             />
+            {endLocation.coordinates.length > 0 && (
+                <View style={styles.infoContainer}>
+                    <Info title="Latitude">
+                        {endLocation.coordinates[0].toFixed(5)}
+                    </Info>
+                    <Info title="Longitude">
+                        {endLocation.coordinates[1].toFixed(5)}
+                    </Info>
+                </View>
+            )}
+
+            <Button
+                onPress={() =>
+                    navigation.navigate("Map", {
+                        location: endLocation.coordinates,
+                        setCoordinates: (
+                            location: number[],
+                            address: string
+                        ) => {
+                            setEndLocation({
+                                ...endLocation,
+                                coordinates: location,
+                                address: address,
+                            });
+                        },
+                    })
+                }
+            >
+                Select End Location
+            </Button>
             <View
                 style={{
                     height: 1,
@@ -197,5 +257,10 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 21,
         fontWeight: "bold",
+    },
+    infoContainer: {
+        flexDirection: "row",
+        gap: 40,
+        justifyContent: "center",
     },
 });
