@@ -1,4 +1,4 @@
-import RoutesList from "@components/lists/RoutesList";
+import UsersList from "@components/lists/UsersList";
 import { useFocusEffect } from "@react-navigation/native";
 import Header from "@UI/ui/Header";
 import colors from "@utils/colors";
@@ -14,28 +14,30 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-interface GetRoutesRes {
-    routes: {
+interface GetDriversRes {
+    drivers: {
         _id: string;
-        startLocation: string;
-        endLocation: string;
+        firstName: string;
+        lastName: string;
+        studentId: number;
     }[];
 }
 
 interface Props {}
-const Routes: FC<Props> = () => {
-    const { authClient } = useClient(); // Access authenticated Axios client
-    const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
-    const [pending, setPending] = useState(true); // State to track loading
-    const [routes, setRoutes] = useState<GetRoutesRes["routes"]>([]); // State for favorite routes
+const Drivers: FC<Props> = () => {
+    const { authClient } = useClient();
+    const [refreshing, setRefreshing] = useState(false);
+    const [pending, setPending] = useState(true);
+    const [drivers, setDrivers] = useState<GetDriversRes["drivers"]>([]);
 
-    // Function to fetch data for bookings and favorite routes
     const fetchData = async () => {
         // Fetch user bookings
-        const res = await runAxiosAsync<GetRoutesRes>(authClient.get("/route"));
+        const res = await runAxiosAsync<GetDriversRes>(
+            authClient.get("/profile/drivers")
+        );
 
-        if (res?.routes) {
-            setRoutes(res.routes);
+        if (res?.drivers) {
+            setDrivers(res.drivers);
         }
 
         setPending(false); // Stop loading indicator
@@ -67,7 +69,7 @@ const Routes: FC<Props> = () => {
                 }
             >
                 {/* Header with a welcome message */}
-                <Header>Routes</Header>
+                <Header>Drivers</Header>
 
                 {/* Show loading indicator while data is being fetched */}
                 {pending && (
@@ -79,18 +81,18 @@ const Routes: FC<Props> = () => {
                 )}
 
                 {/* Show favorite routes if available */}
-                {!pending && routes.length > 0 && (
-                    <RoutesList routes={routes} title="All Routes" />
+                {!pending && drivers.length > 0 && (
+                    <UsersList users={drivers} />
                 )}
-                {routes.length === 0 && (
-                    <Text style={styles.noRoutes}>No routes found</Text>
+                {drivers.length === 0 && (
+                    <Text style={styles.noRoutes}>No drivers found</Text>
                 )}
             </ScrollView>
         </SafeAreaView>
     );
 };
 
-export default Routes;
+export default Drivers;
 
 const styles = StyleSheet.create({
     container: {

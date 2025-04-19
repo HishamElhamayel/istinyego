@@ -1,4 +1,5 @@
 import {
+    getAllDrivers,
     getAllProfileData,
     getAllProfiles,
     updateProfile,
@@ -11,6 +12,7 @@ import { Router } from "express";
 const router = Router();
 
 router.get("/", mustAuth, mustRoles("admin"), getAllProfiles);
+router.get("/drivers", mustAuth, mustRoles("admin"), getAllDrivers);
 router.get("/:id", mustAuth, mustRoles("admin"), getAllProfileData);
 router.patch(
     "/update-profile",

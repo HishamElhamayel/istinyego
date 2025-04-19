@@ -1,7 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Map from "@views/Admin/AddCoordinates";
+import Drivers from "@views/Admin/Drivers";
 import Home from "@views/Admin/Home";
-import Map from "@views/Admin/Map";
 import Route from "@views/Admin/Route";
+import User from "@views/Admin/User";
 import Routes from "@views/Common/Routes";
 import { FC } from "react";
 
@@ -14,6 +16,10 @@ export type AdminStackParamList = {
     Map: {
         location?: number[];
         setCoordinates?: (location: number[], address: string) => void;
+    };
+    Drivers: undefined;
+    User: {
+        _id: string;
     };
 };
 
@@ -45,6 +51,15 @@ export const AdminRoutesNavigator: FC<Props> = () => {
                     headerShown: true,
                 }}
             />
+        </Stack.Navigator>
+    );
+};
+
+export const AdminDriversNavigator: FC<Props> = () => {
+    return (
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Drivers" component={Drivers} />
+            <Stack.Screen name="User" component={User} />
         </Stack.Navigator>
     );
 };

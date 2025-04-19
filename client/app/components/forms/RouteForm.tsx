@@ -7,7 +7,7 @@ import {
 import Button from "@UI/buttons/Button";
 import FormInput from "@UI/form/FormInput";
 import Info from "@UI/ui/info";
-import validate, { UpdateUserSchema } from "@utils/validator";
+import validate, { CreateRouteSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
@@ -84,26 +84,40 @@ const RouteForm: FC<Props> = () => {
         fetchRoute();
     }, [route.params?._id]);
 
-    const routeInfo = {
-        _id: id,
-        startLocation,
-        endLocation,
-        fare,
-    };
-
     const handleSubmit = async () => {
-        // const { values, error } = await validate(createRoute, routeInfo);
-        // if (error) return showMessage({ message: error, type: "danger" });
-
         setBusy(true);
-        const res = await runAxiosAsync<RouteRes>(
-            authClient.post("/routes/create", routeInfo)
-        );
 
-        if (res?.route) {
-            showMessage({ message: "Route created", type: "success" });
-            navigation.goBack();
+        const routeInfo = {
+            startLocation,
+            endLocation,
+            fare,
+        };
+
+        const { values, error } = await validate(CreateRouteSchema, routeInfo);
+        if (error) {
+            showMessage({ message: error, type: "danger" });
+            setBusy(false);
+            return;
         }
+
+        if (id) {
+            const res = await runAxiosAsync<RouteRes>(
+                authClient.patch(`/route/${id}`, values)
+            );
+            if (res?.route) {
+                showMessage({ message: "Route updated", type: "success" });
+                navigation.goBack();
+            }
+        } else {
+            const res = await runAxiosAsync<RouteRes>(
+                authClient.post("/route/create", values)
+            );
+            if (res?.route) {
+                showMessage({ message: "Route created", type: "success" });
+                navigation.goBack();
+            }
+        }
+
         setBusy(false);
     };
 
@@ -123,6 +137,16 @@ const RouteForm: FC<Props> = () => {
                 value={startLocation.description}
                 collapsable
             />
+
+            <FormInput
+                label="Address"
+                onChangeText={(text) =>
+                    setStartLocation({ ...startLocation, address: text })
+                }
+                value={startLocation.address}
+                collapsable
+            />
+
             {startLocation.coordinates.length > 0 && (
                 <View style={styles.infoContainer}>
                     <Info title="Latitude">
@@ -133,14 +157,6 @@ const RouteForm: FC<Props> = () => {
                     </Info>
                 </View>
             )}
-            <FormInput
-                label="Address"
-                onChangeText={(text) =>
-                    setStartLocation({ ...startLocation, address: text })
-                }
-                value={startLocation.address}
-                collapsable
-            />
             <Button
                 onPress={() =>
                     navigation.navigate("Map", {

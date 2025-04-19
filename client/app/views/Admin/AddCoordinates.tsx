@@ -11,7 +11,7 @@ type Props = {};
 
 const origin = { latitude: 41.102635, longitude: 28.975461 };
 
-const Map = (props: Props) => {
+const AddCoordinates = (props: Props) => {
     const route = useRoute<RouteProp<AdminStackParamList, "Map">>();
     const [location, setLocation] = useState<number[] | null>(null);
     const [loading, setLoading] = useState(true);
@@ -138,7 +138,7 @@ const Map = (props: Props) => {
     );
 };
 
-export default Map;
+export default AddCoordinates;
 
 const styles = StyleSheet.create({
     loadingContainer: {

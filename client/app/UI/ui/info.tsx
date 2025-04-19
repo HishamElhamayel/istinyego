@@ -10,8 +10,8 @@ type Props = {
 const info = ({ title, children, style }: Props) => {
     return (
         <View style={[styles.container, style]}>
-            <Text style={styles.text}>{title}</Text>
-            <Text style={styles.text}>{children}</Text>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.content}>{children}</Text>
         </View>
     );
 };
@@ -22,7 +22,12 @@ const styles = StyleSheet.create({
     container: {
         marginVertical: 10,
     },
-    text: {
+    title: {
+        fontSize: 18,
+        color: "white",
+        marginVertical: 2,
+    },
+    content: {
         fontSize: 16,
         color: "white",
         marginVertical: 2,

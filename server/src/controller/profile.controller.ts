@@ -1,3 +1,4 @@
+import Shuttle from "#/models/shuttle.model";
 import User from "#/models/user.model";
 import { paginationQuery } from "#/types/misc.types";
 import { RequestHandler } from "express";
@@ -13,6 +14,22 @@ export const getAllProfiles: RequestHandler = async (req, res) => {
             .sort({ firstName: 1 });
 
         res.json({ users });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const getAllDrivers: RequestHandler = async (req, res) => {
+    try {
+        const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
+        const users = await User.find({ role: "driver" })
+            .select(" _id firstName lastName studentId ")
+            .limit(parseInt(limit))
+            .skip(parseInt(limit) * parseInt(pageNo))
+            .sort({ firstName: 1 });
+
+        res.json({ drivers: users });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });
@@ -35,7 +52,6 @@ export const getAllProfileData: RequestHandler = async (req, res) => {
                     tokens: 0,
                     __v: 0,
                     favoriteRoutes: 0,
-                    createdAt: 0,
                     updatedAt: 0,
                 },
             },
@@ -72,6 +88,17 @@ export const getAllProfileData: RequestHandler = async (req, res) => {
         if (!user[0]) {
             res.status(404).json({ error: "User not found" });
             return;
+        }
+
+        const shuttle = await Shuttle.findOne(
+            { driver: userId },
+            {
+                _id: 1,
+                number: 1,
+            }
+        );
+        if (shuttle) {
+            user[0].shuttle = shuttle;
         }
 
         res.json({ user: user[0] });

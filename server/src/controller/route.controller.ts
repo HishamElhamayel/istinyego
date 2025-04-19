@@ -87,11 +87,11 @@ export const getAllRoutes: RequestHandler = async (req, res) => {
 
 export const updateRoute: RequestHandler = async (req, res) => {
     try {
-        const { routeId } = req.params;
+        const { id } = req.params;
         const { startLocation, endLocation, fare } = req.body;
         // console.log(id);
 
-        const route = await Route.findByIdAndUpdate(routeId, {
+        const route = await Route.findByIdAndUpdate(id, {
             startLocation,
             endLocation,
             fare,

@@ -129,3 +129,40 @@ export const AddBalanceSchema = yup.object({
 export const ForgotPasswordSchema = yup.object({
     email: yup.string().required("Email is missing").email("Invalid Email"),
 });
+
+export const CreateRouteSchema = yup.object({
+    startLocation: yup.object({
+        coordinates: yup
+            .array()
+            .of(yup.number().required("Coordinates can only be numbers"))
+            .length(2, "2 coordinates are required")
+            .required("Start location coordinates are missing"),
+        address: yup
+            .string()
+            .trim()
+            .required("Start location address is required"),
+        description: yup
+            .string()
+            .trim()
+            .required("Start location description is required"),
+    }),
+    endLocation: yup.object({
+        coordinates: yup
+            .array()
+            .of(yup.number().required("Coordinates can only be numbers"))
+            .length(2, "2 coordinates are required")
+            .required("End location coordinates are missing"),
+        address: yup
+            .string()
+            .trim()
+            .required("End location address is required"),
+        description: yup
+            .string()
+            .trim()
+            .required("End location description is required"),
+    }),
+    fare: yup
+        .number()
+        .required("Amount is missing")
+        .min(1, "Amount cant be negative"),
+});

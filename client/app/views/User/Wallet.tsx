@@ -91,11 +91,7 @@ const Wallet: FC = () => {
             >
                 <Header>Wallet</Header>
                 <View style={styles.balanceContainer}>
-                    <DarkCard>
-                        <Text style={styles.balanceText}>
-                            Balance: {balance?.toFixed(2)}₺
-                        </Text>
-                    </DarkCard>
+                    <DarkCard title="Balance">{balance?.toFixed(2)}₺</DarkCard>
                     <BlueButton onPress={showAddBalance}>
                         Add Balance
                     </BlueButton>

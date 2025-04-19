@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = {};
 
-const Trip: FC = (props: Props) => {
+const Profile: FC = (props: Props) => {
     const { authState } = useAuth();
     const profile = authState.profile;
     const navigation = useNavigation<NavigationProp<UserStackParamList>>();
@@ -70,7 +70,7 @@ const Trip: FC = (props: Props) => {
     );
 };
 
-export default Trip;
+export default Profile;
 
 // Styles definition
 const styles = StyleSheet.create({

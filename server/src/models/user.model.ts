@@ -35,9 +35,6 @@ const userSchema = new Schema(
             enum: ["user", "admin", "driver"],
             default: "user",
         },
-        phoneNumber: {
-            type: Number,
-        },
         verified: {
             type: Boolean,
             default: false,

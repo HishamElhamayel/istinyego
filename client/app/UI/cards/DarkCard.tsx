@@ -5,11 +5,10 @@ import { StyleSheet, Text, View } from "react-native";
 
 interface Props {
     children?: React.ReactNode;
-    style?: object;
     title?: string;
 }
 
-const DarkCard: FC<Props> = ({ children }) => {
+const DarkCard: FC<Props> = ({ children, title }) => {
     return (
         <View style={styles.root}>
             <LinearGradient
@@ -18,7 +17,8 @@ const DarkCard: FC<Props> = ({ children }) => {
                 colors={[colors.black, colors.grey]}
                 style={[styles.innerContainer]}
             >
-                {children}
+                <Text style={styles.title}>{title}:</Text>
+                <Text style={styles.content}>{children}</Text>
             </LinearGradient>
         </View>
     );
@@ -36,11 +36,18 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     title: {
-        fontSize: 24,
+        fontSize: 28,
+        color: "white",
     },
+
     innerContainer: {
         borderRadius: 15,
         paddingVertical: 25,
         paddingHorizontal: 15,
+    },
+    content: {
+        fontSize: 28,
+        color: "white",
+        textAlign: "right",
     },
 });

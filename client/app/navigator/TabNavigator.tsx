@@ -6,7 +6,11 @@ import {
 
 import colors from "@utils/colors";
 import useAuth from "app/hooks/useAuth";
-import { AdminHomeNavigator, AdminRoutesNavigator } from "./AdminNavigator";
+import {
+    AdminDriversNavigator,
+    AdminHomeNavigator,
+    AdminRoutesNavigator,
+} from "./AdminNavigator";
 import { DriverHomeNavigator } from "./DriverNavigator";
 import {
     UserHomeNavigator,
@@ -23,6 +27,7 @@ export type TabParamList = {
     DriverHome: undefined;
     AdminHome: undefined;
     AdminRoutes: undefined;
+    AdminDrivers: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -104,6 +109,11 @@ const AdminTabs = () => {
                 name="AdminRoutes"
                 component={AdminRoutesNavigator}
                 options={getOptions("Routes", "location-sharp")}
+            />
+            <Tab.Screen
+                name="AdminDrivers"
+                component={AdminDriversNavigator}
+                options={getOptions("Drivers", "people-sharp")}
             />
             <Tab.Screen
                 name="UserProfile"

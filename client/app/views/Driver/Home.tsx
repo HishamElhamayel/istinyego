@@ -140,11 +140,8 @@ const Home: FC<Props> = () => {
                 </Header>
 
                 {shuttle && (
-                    <DarkCard>
-                        <Text style={styles.shuttleText}>
-                            Assigned Shuttle: {"\n"}
-                            ISU - {shuttle.number.toString().padStart(2, "0")}
-                        </Text>
+                    <DarkCard title="Assigned Shuttle">
+                        ISU - {shuttle.number.toString().padStart(2, "0")}
                     </DarkCard>
                 )}
 
