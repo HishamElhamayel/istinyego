@@ -16,10 +16,7 @@ const ShuttlesList = ({ shuttles }: Props) => {
     const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
 
     const onPress = (shuttleId: string) => {
-        // navigation.navigate("Shuttle", {
-        //     shuttleId,
-        // });
-        console.log("Shuttle", shuttleId);
+        navigation.navigate("Shuttle", { shuttleId });
     };
 
     return (

@@ -1,17 +1,18 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+    NavigationProp,
+    RouteProp,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import DropDown from "@UI/form/DropDown";
 import FormInput from "@UI/form/FormInput";
-import validate, {
-    CreateDriverSchema,
-    CreateShuttleSchema,
-} from "@utils/validator";
+import validate, { CreateShuttleSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Dropdown } from "react-native-element-dropdown";
 import { showMessage } from "react-native-flash-message";
 
 interface Props {}
@@ -34,6 +35,8 @@ const ShuttleForm: FC<Props> = () => {
     const [busy, setBusy] = useState(false);
     const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
     const [drivers, setDrivers] = useState<DriversRes["drivers"]>();
+    const route = useRoute<RouteProp<AdminStackParamList, "CreateShuttle">>();
+    const { shuttle } = route.params;
 
     const [shuttleInfo, setShuttleInfo] = React.useState({
         number: "",
@@ -54,6 +57,21 @@ const ShuttleForm: FC<Props> = () => {
         if (error) return showMessage({ message: error, type: "danger" });
 
         setBusy(true);
+
+        // If editing, update the shuttle
+        if (shuttle) {
+            const res = await runAxiosAsync<ShuttleRes>(
+                authClient.patch(`/shuttle/${shuttle._id}`, values)
+            );
+
+            if (res?.message) {
+                showMessage({ message: res.message, type: "success" });
+                navigation.goBack();
+            }
+            setBusy(false);
+            return;
+        }
+
         const res = await runAxiosAsync<ShuttleRes>(
             authClient.post("/shuttle/create", values)
         );
@@ -73,11 +91,41 @@ const ShuttleForm: FC<Props> = () => {
             if (res?.drivers) setDrivers(res.drivers);
         };
         fetchDrivers();
+
+        if (shuttle) {
+            setShuttleInfo({
+                number: shuttle.number.toString(),
+                capacity: shuttle.capacity.toString(),
+                driver: shuttle.driver._id,
+            });
+        }
     }, []);
 
+    // Build driverList and ensure the shuttle’s driver (when editing) is included
+    const driverList = [
+        // If editing, prepend the shuttle’s current driver when not in fetched drivers
+        ...(shuttle &&
+        shuttle.driver &&
+        !drivers?.some((d) => d._id === shuttle.driver._id)
+            ? [
+                  {
+                      label: `${shuttle.driver.firstName} ${shuttle.driver.lastName}`,
+                      value: shuttle.driver._id,
+                  },
+              ]
+            : []),
+        // Then append all fetched drivers
+        ...(drivers?.map((driver) => ({
+            label: `${driver.firstName} ${driver.lastName}`,
+            value: driver._id,
+        })) ?? []),
+    ];
+
     return (
-        <View style={{ gap: 15, marginBottom: 30 }}>
-            <Text style={styles.header}>Create Driver</Text>
+        <View style={styles.container}>
+            <Text style={styles.header}>
+                {shuttle ? "Update Shuttle" : "Create Shuttle"}
+            </Text>
             <FormInput
                 label="Number"
                 onChangeText={handleChange("number")}
@@ -91,23 +139,21 @@ const ShuttleForm: FC<Props> = () => {
                 collapsable
             />
             <DropDown
-                data={
-                    drivers?.map((driver) => ({
-                        label: `${driver.firstName} ${driver.lastName}`,
-                        value: driver._id,
-                    })) || []
-                }
+                data={driverList} // now includes shuttle’s driver if in edit mode
                 onChange={handleChange("driver")}
                 placeholder="Select Driver"
                 label="Driver"
+                value={shuttleInfo.driver}
             />
-            <Button active={!busy} onPress={handleSubmit}>
-                Create Shuttle
-            </Button>
+            <View style={styles.buttonsContainer}>
+                <Button active={!busy} onPress={handleSubmit}>
+                    {shuttle ? "Update Shuttle" : "Create Driver"}
+                </Button>
 
-            <Button active={!busy} onPress={() => navigation.goBack()}>
-                Cancel
-            </Button>
+                <Button active={!busy} onPress={() => navigation.goBack()}>
+                    Cancel
+                </Button>
+            </View>
         </View>
     );
 };
@@ -115,9 +161,17 @@ const ShuttleForm: FC<Props> = () => {
 export default ShuttleForm;
 
 const styles = StyleSheet.create({
+    container: {
+        gap: 10,
+        marginBottom: 30,
+    },
     header: {
         color: "white",
         fontSize: 35,
         fontWeight: "bold",
+    },
+    buttonsContainer: {
+        marginTop: 20,
+        gap: 15,
     },
 });

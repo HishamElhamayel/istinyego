@@ -49,7 +49,12 @@ export const getAllShuttles: RequestHandler = async (req, res) => {
 export const getShuttleById: RequestHandler = async (req, res) => {
     try {
         const { id } = req.params;
-        const shuttle = await Shuttle.findById(id);
+        const shuttle = await Shuttle.findById(id).populate("driver", {
+            _id: 1,
+            firstName: 1,
+            lastName: 1,
+            studentId: 1,
+        });
 
         if (!shuttle) {
             res.status(404).json({ error: "Shuttle not found" });
@@ -121,6 +126,16 @@ export const updateShuttle: RequestHandler = async (req, res) => {
             return;
         }
 
+        const otherShuttle = await Shuttle.findOne({
+            number,
+        })
+            .where("_id")
+            .ne(id);
+        if (otherShuttle) {
+            res.status(400).json({ error: "Shuttle number already exists" });
+            return;
+        }
+
         const shuttle = await Shuttle.findByIdAndUpdate(
             id,
             {
@@ -137,7 +152,7 @@ export const updateShuttle: RequestHandler = async (req, res) => {
         }
 
         res.json({
-            shuttle,
+            message: "Shuttle updated successfully",
         });
     } catch (err) {
         console.error(err);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
@@ -8,11 +8,18 @@ type Props = {
     placeholder: string;
     label: string;
     flex?: boolean;
+    value?: string | null;
 };
 
 const DropDown = (props: Props) => {
     const [isFocused, setIsFocused] = useState<boolean>(false);
-    const [value, setValue] = useState<string | null>(null);
+    const [value, setValue] = useState<string | null>(props.value || null);
+
+    useEffect(() => {
+        if (props.value) {
+            setValue(props.value);
+        }
+    }, [props.value]);
 
     return (
         <View>

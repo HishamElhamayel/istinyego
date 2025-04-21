@@ -1,7 +1,9 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
 import LightCard from "@UI/cards/LightCard";
 import RouteLocations from "@UI/ui/RouteLocations";
+import useAuth from "app/hooks/useAuth";
 import { DriverStackParamList } from "app/navigator/DriverNavigator";
 import { DateTime } from "luxon";
 import React from "react";
@@ -21,6 +23,8 @@ type Props = {
 
 const UpcomingTripsList = ({ trips, title }: Props) => {
     const navigation = useNavigation<NavigationProp<DriverStackParamList>>();
+    const { authState } = useAuth();
+    const profile = authState.profile;
 
     const onPress = (tripId: string) => {
         navigation.navigate("Trip", { tripId });
@@ -28,8 +32,8 @@ const UpcomingTripsList = ({ trips, title }: Props) => {
 
     return (
         <Card title={title} style={styles.container}>
-            {trips.length === 0 && (
-                <Text style={styles.noTrips}>No trips found</Text>
+            {profile?.role === "admin" && (
+                <Button onPress={() => {}}> Create a new trip</Button>
             )}
             {trips.map((trip) => (
                 <LightCard
@@ -68,6 +72,9 @@ const UpcomingTripsList = ({ trips, title }: Props) => {
                     </View>
                 </LightCard>
             ))}
+            {trips.length === 0 && (
+                <Text style={styles.noTrips}>No trips found</Text>
+            )}
         </Card>
     );
 };

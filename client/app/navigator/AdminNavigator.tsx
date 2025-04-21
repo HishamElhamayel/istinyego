@@ -5,6 +5,7 @@ import CreateShuttle from "@views/Admin/CreateShuttle";
 import Drivers from "@views/Admin/Drivers";
 import Home from "@views/Admin/Home";
 import Route from "@views/Admin/Route";
+import Shuttle, { GetShuttleRes } from "@views/Admin/Shuttle";
 import Shuttles from "@views/Admin/Shuttles";
 import User from "@views/Admin/User";
 import Routes from "@views/Common/Routes";
@@ -26,7 +27,12 @@ export type AdminStackParamList = {
     };
     CreateDriver: undefined;
     Shuttles: undefined;
-    CreateShuttle: undefined;
+    CreateShuttle: {
+        shuttle?: GetShuttleRes["shuttle"];
+    };
+    Shuttle: {
+        shuttleId: string;
+    };
 };
 
 const Stack = createNativeStackNavigator<AdminStackParamList>();
@@ -74,7 +80,7 @@ export const AdminShuttlesNavigator: FC<Props> = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Shuttles" component={Shuttles} />
-            {/* <Stack.Screen name="Shuttle" component={Shuttle} /> */}
+            <Stack.Screen name="Shuttle" component={Shuttle} />
             <Stack.Screen name="CreateShuttle" component={CreateShuttle} />
         </Stack.Navigator>
     );

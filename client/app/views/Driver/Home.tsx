@@ -31,7 +31,7 @@ interface GetShuttleRes {
     };
 }
 
-interface GetTripsRes {
+export interface GetTripsRes {
     trips: {
         _id: string;
         startTime: string;

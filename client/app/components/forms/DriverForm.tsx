@@ -112,12 +112,14 @@ const DriverForm: FC<Props> = () => {
                 onChangeText={handleChange("confirmPassword")}
                 secureTextEntry
             />
-            <Button active={!busy} onPress={handleSubmit}>
-                Create Driver
-            </Button>
-            <Button active={!busy} onPress={() => navigation.goBack()}>
-                Cancel
-            </Button>
+            <View style={styles.buttonsContainer}>
+                <Button active={!busy} onPress={handleSubmit}>
+                    Create Driver
+                </Button>
+                <Button active={!busy} onPress={() => navigation.goBack()}>
+                    Cancel
+                </Button>
+            </View>
         </View>
     );
 };
@@ -130,14 +132,9 @@ const styles = StyleSheet.create({
         fontSize: 35,
         fontWeight: "bold",
     },
-    subtitle: {
-        color: "white",
-        fontSize: 21,
-        fontWeight: "bold",
-    },
-    infoContainer: {
-        flexDirection: "row",
-        gap: 40,
-        justifyContent: "center",
+
+    buttonsContainer: {
+        marginTop: 20,
+        gap: 15,
     },
 });

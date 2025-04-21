@@ -1,5 +1,4 @@
 import ShuttlesList from "@components/lists/ShuttlesList";
-import UsersList from "@components/lists/UsersList";
 import {
     NavigationProp,
     useFocusEffect,
@@ -80,7 +79,7 @@ const Drivers: FC<Props> = () => {
 
                 <Card>
                     <Button
-                        onPress={() => navigation.navigate("CreateShuttle")}
+                        onPress={() => navigation.navigate("CreateShuttle", {})}
                     >
                         Create Shuttle
                     </Button>
@@ -95,12 +94,15 @@ const Drivers: FC<Props> = () => {
                     />
                 )}
 
-                {/* Show favorite routes if available */}
-                {!pending && shuttles.length > 0 && (
-                    <ShuttlesList shuttles={shuttles} />
-                )}
                 {shuttles.length === 0 && (
                     <Text style={styles.noShuttles}>No Shuttles found</Text>
+                )}
+
+                {/* Show favorite routes if available */}
+                {!pending && shuttles.length > 0 && (
+                    <>
+                        <ShuttlesList shuttles={shuttles} />
+                    </>
                 )}
             </ScrollView>
         </SafeAreaView>
