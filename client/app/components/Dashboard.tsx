@@ -13,7 +13,7 @@ const Dashboard = ({ trips, bookings, income }: Props) => {
         <>
             <View>
                 <Card title="Dashboard" style={styles.card}>
-                    <Text style={styles.title}>Trips left today: </Text>
+                    <Text style={styles.title}>Trips left: </Text>
                     <Text style={styles.text}>{trips}</Text>
                 </Card>
                 <View style={styles.rowContainer}>

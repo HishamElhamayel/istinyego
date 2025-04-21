@@ -10,7 +10,7 @@ export const createShuttle: RequestHandler = async (req, res) => {
         // console.log(Shuttle);
         const user = await User.findById(driver);
         if (!user) {
-            res.status(404).json({ error: "User not found" });
+            res.status(404).json({ error: "Driver not found" });
             return;
         } else if (user.role !== "driver") {
             res.status(403).json({ error: "User is not a driver" });
@@ -25,8 +25,7 @@ export const createShuttle: RequestHandler = async (req, res) => {
         });
 
         res.status(201).json({
-            // shuttle: await shuttle.populate("driver"),
-            shuttle: await shuttle,
+            message: "Shuttle created successfully",
         });
     } catch (err) {
         console.error(err);
@@ -36,7 +35,7 @@ export const createShuttle: RequestHandler = async (req, res) => {
 
 export const getAllShuttles: RequestHandler = async (req, res) => {
     try {
-        const shuttles = await Shuttle.find({});
+        const shuttles = await Shuttle.find({}, { _id: 1, number: 1 });
 
         res.json({
             shuttles,

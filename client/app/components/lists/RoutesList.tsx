@@ -15,9 +15,8 @@ type Props = {
         startLocation: string;
         endLocation: string;
     }[];
-    title: string;
 };
-const RoutesList = ({ routes, title }: Props) => {
+const RoutesList = ({ routes }: Props) => {
     const { authState } = useAuth();
     const navigation =
         useNavigation<
@@ -39,7 +38,7 @@ const RoutesList = ({ routes, title }: Props) => {
     // console.log(trips);
 
     return (
-        <Card title={title} style={styles.container}>
+        <Card style={styles.container}>
             {routes.map((route) => (
                 <LightCard
                     key={route._id}
@@ -59,17 +58,6 @@ const RoutesList = ({ routes, title }: Props) => {
                     />
                 </LightCard>
             ))}
-            {authState.profile?.role === "admin" && (
-                <Button
-                    onPress={() =>
-                        navigation.navigate("Route", {
-                            _id: undefined,
-                        })
-                    }
-                >
-                    Add Route
-                </Button>
-            )}
         </Card>
     );
 };

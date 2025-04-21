@@ -19,9 +19,15 @@ export const createUser: RequestHandler = async (req: CreateUser, res) => {
     try {
         const { firstName, lastName, email, password, studentId } = req.body;
 
-        const oldUser = await User.findOne({ email });
+        let oldUser = await User.findOne({ email });
         if (oldUser) {
             res.status(403).json({ error: "Email already exists" });
+            return;
+        }
+
+        oldUser = await User.findOne({ studentId });
+        if (oldUser) {
+            res.status(403).json({ error: "Student ID already exists" });
             return;
         }
 
@@ -348,6 +354,64 @@ export const logout: RequestHandler = async (req, res) => {
         await User.findByIdAndUpdate(req.user._id, updateQuery);
 
         res.json({ message: "Successfully logged out" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const createDriver: RequestHandler = async (req, res) => {
+    try {
+        const {
+            firstName,
+            lastName,
+            email,
+            password,
+            studentId,
+            licenseNumber,
+        } = req.body;
+
+        let oldUser = await User.findOne({ email });
+        if (oldUser) {
+            res.status(403).json({ error: "Email already exists" });
+            return;
+        }
+
+        oldUser = await User.findOne({ studentId });
+        if (oldUser) {
+            res.status(403).json({ error: "Staff ID already exists" });
+            return;
+        }
+
+        const wallet = await Wallet.create({});
+
+        const user = await User.create({
+            firstName,
+            lastName,
+            email,
+            role: "driver",
+            licenseNumber,
+            password,
+            studentId,
+            wallet: wallet._id,
+        });
+
+        const token = generateToken(6);
+
+        await Token.create({
+            owner: user._id,
+            token,
+        });
+
+        sendVerificationMail(token, {
+            firstName,
+            lastName,
+            email,
+        });
+
+        res.status(201).json({
+            message: "Please check driver email",
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });

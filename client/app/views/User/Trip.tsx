@@ -177,10 +177,8 @@ const Trip: FC = (props: Props) => {
                             </Text>
 
                             {!booking && (
-                                <DarkCard>
-                                    <Text style={styles.balanceText}>
-                                        Balance: {balance?.toFixed(2)}₺
-                                    </Text>
+                                <DarkCard title="Balance">
+                                    {balance?.toFixed(2)}₺
                                 </DarkCard>
                             )}
                             <Card>

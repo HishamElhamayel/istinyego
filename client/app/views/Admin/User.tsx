@@ -69,7 +69,6 @@ const User: FC = (props: Props) => {
         const res = await runAxiosAsync<GetUserRes>(
             authClient.get(`/profile/${_id}`)
         );
-
         if (res?.user) {
             setUser(res.user);
         }
@@ -136,10 +135,6 @@ const User: FC = (props: Props) => {
                                 DateTime.DATE_FULL
                             )}
                         </Info>
-
-                        <View style={styles.buttonsContainer}>
-                            <Button onPress={() => {}}>Edit Profile</Button>
-                        </View>
                     </Card>
                 )}
 

@@ -2,6 +2,7 @@ import {
     getAllDrivers,
     getAllProfileData,
     getAllProfiles,
+    getPossibleDrivers,
     updateProfile,
 } from "#/controller/profile.controller";
 import { mustAuth, mustRoles } from "#/middleware/auth.middleware";
@@ -13,6 +14,12 @@ const router = Router();
 
 router.get("/", mustAuth, mustRoles("admin"), getAllProfiles);
 router.get("/drivers", mustAuth, mustRoles("admin"), getAllDrivers);
+router.get(
+    "/possible-drivers",
+    mustAuth,
+    mustRoles("admin"),
+    getPossibleDrivers
+);
 router.get("/:id", mustAuth, mustRoles("admin"), getAllProfileData);
 router.patch(
     "/update-profile",

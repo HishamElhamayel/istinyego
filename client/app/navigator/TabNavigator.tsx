@@ -10,6 +10,7 @@ import {
     AdminDriversNavigator,
     AdminHomeNavigator,
     AdminRoutesNavigator,
+    AdminShuttlesNavigator,
 } from "./AdminNavigator";
 import { DriverHomeNavigator } from "./DriverNavigator";
 import {
@@ -28,6 +29,7 @@ export type TabParamList = {
     AdminHome: undefined;
     AdminRoutes: undefined;
     AdminDrivers: undefined;
+    AdminShuttles: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -114,6 +116,11 @@ const AdminTabs = () => {
                 name="AdminDrivers"
                 component={AdminDriversNavigator}
                 options={getOptions("Drivers", "people-sharp")}
+            />
+            <Tab.Screen
+                name="AdminShuttles"
+                component={AdminShuttlesNavigator}
+                options={getOptions("Shuttles", "bus")}
             />
             <Tab.Screen
                 name="UserProfile"

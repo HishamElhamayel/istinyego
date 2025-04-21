@@ -1,4 +1,5 @@
-import RoutesList from "@components/lists/RoutesList";
+import ShuttlesList from "@components/lists/ShuttlesList";
+import UsersList from "@components/lists/UsersList";
 import {
     NavigationProp,
     useFocusEffect,
@@ -9,7 +10,6 @@ import Card from "@UI/cards/Card";
 import Header from "@UI/ui/Header";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
-import useAuth from "app/hooks/useAuth";
 import useClient from "app/hooks/useClient";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import { FC, useCallback, useState } from "react";
@@ -22,29 +22,29 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-interface GetRoutesRes {
-    routes: {
+interface GetShuttlesRes {
+    shuttles: {
         _id: string;
-        startLocation: string;
-        endLocation: string;
+        number: number;
     }[];
 }
 
 interface Props {}
-const Routes: FC<Props> = () => {
-    const { authClient } = useClient(); // Access authenticated Axios client
-    const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
-    const [pending, setPending] = useState(true); // State to track loading
-    const [routes, setRoutes] = useState<GetRoutesRes["routes"]>([]); // State for favorite routes
+const Drivers: FC<Props> = () => {
+    const { authClient } = useClient();
+    const [refreshing, setRefreshing] = useState(false);
+    const [pending, setPending] = useState(true);
+    const [shuttles, setShuttles] = useState<GetShuttlesRes["shuttles"]>([]);
     const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
-    const { authState } = useAuth();
-    // Function to fetch data for bookings and favorite routes
+
     const fetchData = async () => {
         // Fetch user bookings
-        const res = await runAxiosAsync<GetRoutesRes>(authClient.get("/route"));
+        const res = await runAxiosAsync<GetShuttlesRes>(
+            authClient.get("/shuttle")
+        );
 
-        if (res?.routes) {
-            setRoutes(res.routes);
+        if (res?.shuttles) {
+            setShuttles(res.shuttles);
         }
 
         setPending(false); // Stop loading indicator
@@ -76,7 +76,15 @@ const Routes: FC<Props> = () => {
                 }
             >
                 {/* Header with a welcome message */}
-                <Header>Routes</Header>
+                <Header>Shuttles</Header>
+
+                <Card>
+                    <Button
+                        onPress={() => navigation.navigate("CreateShuttle")}
+                    >
+                        Create Shuttle
+                    </Button>
+                </Card>
 
                 {/* Show loading indicator while data is being fetched */}
                 {pending && (
@@ -87,33 +95,19 @@ const Routes: FC<Props> = () => {
                     />
                 )}
 
-                {authState.profile?.role === "admin" && (
-                    <Card>
-                        <Button
-                            onPress={() =>
-                                navigation.navigate("Route", {
-                                    _id: undefined,
-                                })
-                            }
-                        >
-                            Add Route
-                        </Button>
-                    </Card>
-                )}
-
                 {/* Show favorite routes if available */}
-                {!pending && routes.length > 0 && (
-                    <RoutesList routes={routes} />
+                {!pending && shuttles.length > 0 && (
+                    <ShuttlesList shuttles={shuttles} />
                 )}
-                {routes.length === 0 && (
-                    <Text style={styles.noRoutes}>No routes found</Text>
+                {shuttles.length === 0 && (
+                    <Text style={styles.noShuttles}>No Shuttles found</Text>
                 )}
             </ScrollView>
         </SafeAreaView>
     );
 };
 
-export default Routes;
+export default Drivers;
 
 const styles = StyleSheet.create({
     container: {
@@ -123,7 +117,7 @@ const styles = StyleSheet.create({
     loading: {
         marginTop: 200,
     },
-    noRoutes: {
+    noShuttles: {
         textAlign: "center",
         fontSize: 20,
         color: colors.grey,

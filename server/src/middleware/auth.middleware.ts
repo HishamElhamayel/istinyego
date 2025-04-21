@@ -48,7 +48,10 @@ export const mustAuth: RequestHandler = (req, res, next) => {
                 }).select("-password -verified");
 
                 if (!user) {
-                    res.status(403).json({ error: "Unauthorized request" });
+                    res.status(403).json({
+                        error: "Unauthorized request",
+                        logout: true,
+                    });
                     return;
                 }
 

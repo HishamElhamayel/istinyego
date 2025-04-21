@@ -55,6 +55,42 @@ export const CreateUserSchema = yup.object({
     studentId: yup.number().required("ID is missing"),
 });
 
+export const CreateDriverSchema = yup.object({
+    firstName: yup
+        .string()
+        .required("First name is missing")
+        .min(3, "First name is too short")
+        .max(30, "First name is too long"),
+    lastName: yup
+        .string()
+        .required("Last name is missing")
+        .min(3, "Last name is too short")
+        .max(30, "Last name is too long"),
+    email: yup.string().email("Invalid Email").required("Email is missing"),
+    password: yup
+        .string()
+        .required("Password is missing")
+        .min(8, "Password is too short")
+        .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
+            "Password must contain at least one letter, one number and one special character"
+        ),
+    confirmPassword: yup
+        .string()
+        .required("Password is missing")
+        .min(8, "Password is too short")
+        .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
+            "Password must contain at least one letter, one number and one special character"
+        ),
+    studentId: yup.number().required("ID is missing"),
+    licenseNumber: yup
+        .number()
+        .min(1000000000000000, "Invalid license number - too low")
+        .max(9999999999999999, "Invalid license number - too high")
+        .required("License number is missing"),
+});
+
 export const UpdateUserSchema = yup.object({
     firstName: yup
         .string()
@@ -165,4 +201,17 @@ export const CreateRouteSchema = yup.object({
         .number()
         .required("Amount is missing")
         .min(1, "Amount cant be negative"),
+});
+
+export const CreateShuttleSchema = yup.object({
+    capacity: yup
+        .number()
+        .required("Capacity is missing")
+        .min(1, "Capacity cant be negative")
+        .max(30, "Capacity cant be more than 30"),
+    number: yup
+        .number()
+        .required("Shuttle number is missing")
+        .min(1, "Shuttle number cant be negative"),
+    driver: yup.string().required("Invalid Driver ID"),
 });

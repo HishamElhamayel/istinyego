@@ -1,9 +1,16 @@
 import UsersList from "@components/lists/UsersList";
-import { useFocusEffect } from "@react-navigation/native";
+import {
+    NavigationProp,
+    useFocusEffect,
+    useNavigation,
+} from "@react-navigation/native";
+import Button from "@UI/buttons/Button";
+import Card from "@UI/cards/Card";
 import Header from "@UI/ui/Header";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
+import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import { FC, useCallback, useState } from "react";
 import {
     ActivityIndicator,
@@ -29,6 +36,7 @@ const Drivers: FC<Props> = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [pending, setPending] = useState(true);
     const [drivers, setDrivers] = useState<GetDriversRes["drivers"]>([]);
+    const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
 
     const fetchData = async () => {
         // Fetch user bookings
@@ -71,6 +79,12 @@ const Drivers: FC<Props> = () => {
                 {/* Header with a welcome message */}
                 <Header>Drivers</Header>
 
+                <Card>
+                    <Button onPress={() => navigation.navigate("CreateDriver")}>
+                        Create Driver
+                    </Button>
+                </Card>
+
                 {/* Show loading indicator while data is being fetched */}
                 {pending && (
                     <ActivityIndicator
@@ -85,7 +99,7 @@ const Drivers: FC<Props> = () => {
                     <UsersList users={drivers} />
                 )}
                 {drivers.length === 0 && (
-                    <Text style={styles.noRoutes}>No drivers found</Text>
+                    <Text style={styles.noDrivers}>No drivers found</Text>
                 )}
             </ScrollView>
         </SafeAreaView>
@@ -102,7 +116,7 @@ const styles = StyleSheet.create({
     loading: {
         marginTop: 200,
     },
-    noRoutes: {
+    noDrivers: {
         textAlign: "center",
         fontSize: 20,
         color: colors.grey,

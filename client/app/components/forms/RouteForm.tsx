@@ -41,7 +41,6 @@ const RouteForm: FC<Props> = () => {
     const route = useRoute<RouteProp<AdminStackParamList, "Route">>();
     const [busy, setBusy] = useState(false);
     const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
-    const [pending, setPending] = useState(true);
 
     const [id, setId] = useState<RouteRes["route"]["_id"]>("");
     const [startLocation, setStartLocation] = useState<
@@ -77,8 +76,6 @@ const RouteForm: FC<Props> = () => {
                     setFare(res.route.fare);
                 }
             }
-
-            setPending(false);
         };
 
         fetchRoute();

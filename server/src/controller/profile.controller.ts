@@ -20,13 +20,37 @@ export const getAllProfiles: RequestHandler = async (req, res) => {
     }
 };
 
+export const getPossibleDrivers: RequestHandler = async (req, res) => {
+    try {
+        // Get all drivers
+        const drivers = await User.find({ role: "driver" })
+            .select("_id firstName lastName studentId")
+            .sort({ firstName: 1 });
+
+        // Get all shuttles with their drivers
+        const shuttles = await Shuttle.find({}, { driver: 1 });
+
+        // Get array of driver IDs that are already assigned to shuttles
+        const assignedDriverIds = shuttles
+            .map((shuttle) => shuttle.driver?.toString())
+            .filter((id): id is string => id !== undefined);
+
+        // Filter out drivers who are already assigned
+        const possibleDrivers = drivers.filter(
+            (driver) => !assignedDriverIds.includes(driver._id.toString())
+        );
+
+        res.json({ drivers: possibleDrivers });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
 export const getAllDrivers: RequestHandler = async (req, res) => {
     try {
-        const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
         const users = await User.find({ role: "driver" })
             .select(" _id firstName lastName studentId ")
-            .limit(parseInt(limit))
-            .skip(parseInt(limit) * parseInt(pageNo))
             .sort({ firstName: 1 });
 
         res.json({ drivers: users });

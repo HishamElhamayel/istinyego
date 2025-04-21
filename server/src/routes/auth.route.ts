@@ -1,4 +1,5 @@
 import {
+    createDriver,
     createUser,
     generateForgetPasswordLink,
     grantValid,
@@ -10,9 +11,14 @@ import {
     verifiedUpdatePassword,
     verifyEmail,
 } from "#/controller/auth.controller";
-import { isValidPassResetToken, mustAuth } from "#/middleware/auth.middleware";
+import {
+    isValidPassResetToken,
+    mustAuth,
+    mustRoles,
+} from "#/middleware/auth.middleware";
 import { validate } from "#/middleware/validator.middleware";
 import {
+    CreateDriverSchema,
     CreateUserSchema,
     SignInValidationSchema,
     TokenAndIdValidationSchema,
@@ -23,6 +29,13 @@ import { Router } from "express";
 const router = Router();
 
 router.post("/register", validate(CreateUserSchema), createUser);
+router.post(
+    "/register-driver",
+    mustAuth,
+    mustRoles("admin"),
+    validate(CreateDriverSchema),
+    createDriver
+);
 router.post("/verify-email", validate(TokenAndIdValidationSchema), verifyEmail);
 router.post("/reverify-email", sendReVerificationToken);
 router.post("/forget-password", generateForgetPasswordLink);

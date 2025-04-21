@@ -12,7 +12,7 @@ import { getTripsState, setTrips } from "app/store/trips";
 import UpcomingTripsList from "@components/lists/UpcomingTripsList";
 import DarkCard from "@UI/cards/DarkCard";
 import { DateTime } from "luxon";
-import { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator, // Loading spinner component
     RefreshControl, // Pull-to-refresh functionality
@@ -139,11 +139,13 @@ const Home: FC<Props> = () => {
                     !
                 </Header>
 
-                {shuttle && (
-                    <DarkCard title="Assigned Shuttle">
-                        ISU - {shuttle.number.toString().padStart(2, "0")}
-                    </DarkCard>
-                )}
+                <DarkCard title="Assigned Shuttle">
+                    {shuttle ? (
+                        <>ISU - {shuttle.number.toString().padStart(2, "0")}</>
+                    ) : (
+                        <>No shuttle assigned</>
+                    )}
+                </DarkCard>
 
                 {/* Loading indicator while data is being fetched */}
                 {pending && (
@@ -161,8 +163,6 @@ const Home: FC<Props> = () => {
                 {!pending && trips.length === 0 && (
                     <Text style={styles.text}>No trips found</Text>
                 )}
-
-                {!shuttle && <Text style={styles.text}>No shuttle found</Text>}
             </ScrollView>
         </SafeAreaView>
     );
