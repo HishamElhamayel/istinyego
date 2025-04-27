@@ -4,11 +4,10 @@ import {
     useNavigation,
     useRoute,
 } from "@react-navigation/native";
-import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
 import DarkCard from "@UI/cards/DarkCard";
 import Header from "@UI/ui/Header";
-import Info from "@UI/ui/info";
+import Info from "@UI/ui/Info";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
@@ -56,7 +55,6 @@ interface GetUserRes {
     };
 }
 const User: FC = (props: Props) => {
-    const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
     const route = useRoute<RouteProp<AdminStackParamList, "User">>();
     const { _id } = route.params;
     const { authClient } = useClient();

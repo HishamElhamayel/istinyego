@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Bookings from "@views/Driver/Bookings";
+import Bookings from "@views/Common/Bookings";
 import Home from "@views/Driver/Home";
 import Trip from "@views/Driver/Trip";
 import { FC } from "react";

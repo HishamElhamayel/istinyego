@@ -32,9 +32,17 @@ const authSlice = createSlice({
             state.profile = payload.profile;
             state.pending = payload.pending;
         },
+        setFavRoutes(
+            state,
+            { payload }: PayloadAction<{ favoriteRoutes: any[] }>
+        ) {
+            if (state.profile) {
+                state.profile.favoriteRoutes = payload.favoriteRoutes;
+            }
+        },
     },
 });
-export const { updateAuthState } = authSlice.actions;
+export const { updateAuthState, setFavRoutes } = authSlice.actions;
 
 export const getAuthState = createSelector(
     (state: RootState) => state,

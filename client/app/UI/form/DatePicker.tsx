@@ -72,6 +72,14 @@ const DatePicker = ({ date, setParentDate }: Props) => {
                                 selected_year_label: {
                                     color: "white",
                                 },
+                                button_next: {
+                                    borderRadius: 5,
+                                    backgroundColor: colors.primary100,
+                                },
+                                button_prev: {
+                                    borderRadius: 5,
+                                    backgroundColor: colors.primary100,
+                                },
                             }}
                         />
                     </View>

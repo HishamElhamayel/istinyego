@@ -53,7 +53,10 @@ const styles = StyleSheet.create({
     pressed: {
         opacity: 0.7,
     },
-    buttonText: { textAlign: "center", color: colors.primary100 },
+    buttonText: {
+        textAlign: "center",
+        color: colors.primary100,
+    },
     small: {
         fontSize: 18,
     },

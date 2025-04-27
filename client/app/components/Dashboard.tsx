@@ -23,7 +23,7 @@ const Dashboard = ({ trips, bookings, income }: Props) => {
                     </Card>
                     <Card style={styles.card}>
                         <Text style={styles.title}>Income: </Text>
-                        <Text style={styles.text}>{income}</Text>
+                        <Text style={styles.text}>{income}₺</Text>
                     </Card>
                 </View>
             </View>

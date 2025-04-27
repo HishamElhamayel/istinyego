@@ -5,7 +5,7 @@ import validate, { CreateDriverSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 

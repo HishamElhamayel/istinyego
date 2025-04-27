@@ -37,7 +37,9 @@ const BookingsList = ({ bookings, title }: Props) => {
                         to={booking.endLocation}
                     />
                     <Text style={styles.dateText}>
-                        {DateTime.fromISO(booking.startTime).toFormat("cccc t")}
+                        {DateTime.fromISO(booking.startTime).toFormat(
+                            "ccc dd MMM t"
+                        )}
                     </Text>
                 </LightCard>
             ))}

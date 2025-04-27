@@ -2,12 +2,15 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Map from "@views/Admin/AddCoordinates";
 import CreateDriver from "@views/Admin/CreateDriver";
 import CreateShuttle from "@views/Admin/CreateShuttle";
+import CreateTrip from "@views/Admin/CreateTrip";
 import Drivers from "@views/Admin/Drivers";
 import Home from "@views/Admin/Home";
 import Route from "@views/Admin/Route";
 import Shuttle, { GetShuttleRes } from "@views/Admin/Shuttle";
 import Shuttles from "@views/Admin/Shuttles";
+import Trip from "@views/Admin/Trip";
 import User from "@views/Admin/User";
+import Bookings from "@views/Common/Bookings";
 import Routes from "@views/Common/Routes";
 import { FC } from "react";
 
@@ -33,6 +36,19 @@ export type AdminStackParamList = {
     Shuttle: {
         shuttleId: string;
     };
+    CreateTrip: {
+        shuttleId: string;
+        date: string;
+        availableSeats: number;
+    };
+    Trip: {
+        tripId: string;
+    };
+    Bookings: {
+        tripId: string;
+        startLocation: string;
+        endLocation: string;
+    };
 };
 
 const Stack = createNativeStackNavigator<AdminStackParamList>();
@@ -47,6 +63,8 @@ export const AdminHomeNavigator: FC<Props> = () => {
             }}
         >
             <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Trip" component={Trip} />
+            <Stack.Screen name="Bookings" component={Bookings} />
         </Stack.Navigator>
     );
 };
@@ -82,6 +100,9 @@ export const AdminShuttlesNavigator: FC<Props> = () => {
             <Stack.Screen name="Shuttles" component={Shuttles} />
             <Stack.Screen name="Shuttle" component={Shuttle} />
             <Stack.Screen name="CreateShuttle" component={CreateShuttle} />
+            <Stack.Screen name="CreateTrip" component={CreateTrip} />
+            <Stack.Screen name="Trip" component={Trip} />
+            <Stack.Screen name="Bookings" component={Bookings} />
         </Stack.Navigator>
     );
 };

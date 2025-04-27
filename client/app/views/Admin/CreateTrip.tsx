@@ -1,17 +1,18 @@
-import ShuttleForm from "@components/forms/ShuttleForm";
+import DriverForm from "@components/forms/DriverForm";
+import TripForm from "@components/forms/TripForm";
 import FormOverlay from "@UI/form/FormOverlay";
 import KeyboardView from "app/UI/KeyboardView";
 import React, { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const CreateShuttle: FC = () => {
+const CreateTrip: FC = () => {
     return (
         <FormOverlay>
             <SafeAreaView style={styles.container}>
                 <KeyboardView>
                     <View style={styles.formContainer}>
-                        <ShuttleForm />
+                        <TripForm />
                     </View>
                 </KeyboardView>
             </SafeAreaView>
@@ -19,7 +20,7 @@ const CreateShuttle: FC = () => {
     );
 };
 
-export default CreateShuttle;
+export default CreateTrip;
 
 const styles = StyleSheet.create({
     container: { flex: 1 },

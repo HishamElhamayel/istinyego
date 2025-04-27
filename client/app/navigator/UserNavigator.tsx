@@ -1,4 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import User from "@views/Admin/User";
+import Users from "@views/Admin/Users";
 import ChangePassword from "@views/Auth/ChangePassword";
 import EditAccount from "@views/Common/EditAccount";
 import Profile from "@views/Common/Profile";
@@ -8,6 +10,7 @@ import Home from "@views/User/Home";
 import Trip from "@views/User/Trip";
 import Trips from "@views/User/Trips";
 import Wallet from "@views/User/Wallet";
+import useAuth from "app/hooks/useAuth";
 import { FC } from "react";
 import { Platform } from "react-native";
 
@@ -21,6 +24,10 @@ export type UserStackParamList = {
     Trip: { tripId: string };
     ChangePassword: undefined;
     EditAccount: undefined;
+    Users: undefined;
+    User: {
+        _id: string;
+    };
 };
 
 const Stack = createNativeStackNavigator<UserStackParamList>();
@@ -55,6 +62,8 @@ export const UserRoutesNavigator: FC<Props> = () => {
     );
 };
 export const UserProfileNavigator: FC<Props> = () => {
+    const { authState } = useAuth();
+    const isAdmin = authState.profile?.role === "admin";
     return (
         <Stack.Navigator
             screenOptions={{
@@ -64,6 +73,8 @@ export const UserProfileNavigator: FC<Props> = () => {
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} />
             <Stack.Screen name="EditAccount" component={EditAccount} />
+            {isAdmin && <Stack.Screen name="Users" component={Users} />}
+            {isAdmin && <Stack.Screen name="User" component={User} />}
         </Stack.Navigator>
     );
 };

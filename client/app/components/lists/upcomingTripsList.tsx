@@ -19,26 +19,33 @@ type Props = {
         state: string;
     }[];
     title: string;
+
+    onCreateNew?: () => void;
 };
 
-const UpcomingTripsList = ({ trips, title }: Props) => {
+const UpcomingTripsList = ({
+    trips,
+    title,
+
+    onCreateNew,
+}: Props) => {
     const navigation = useNavigation<NavigationProp<DriverStackParamList>>();
     const { authState } = useAuth();
     const profile = authState.profile;
 
-    const onPress = (tripId: string) => {
+    const onPressHandler = (tripId: string) => {
         navigation.navigate("Trip", { tripId });
     };
 
     return (
         <Card title={title} style={styles.container}>
-            {profile?.role === "admin" && (
-                <Button onPress={() => {}}> Create a new trip</Button>
+            {profile?.role === "admin" && onCreateNew && (
+                <Button onPress={onCreateNew}> Create a new trip</Button>
             )}
             {trips.map((trip) => (
                 <LightCard
                     key={trip._id}
-                    onPressHandler={() => onPress(trip._id)}
+                    onPressHandler={() => onPressHandler(trip._id)}
                 >
                     <RouteLocations
                         from={trip.startLocation}

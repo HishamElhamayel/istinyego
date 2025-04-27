@@ -25,6 +25,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     locationText: {
-        fontSize: 24,
+        fontSize: 20,
     },
 });

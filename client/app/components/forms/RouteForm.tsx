@@ -6,7 +6,7 @@ import {
 } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import FormInput from "@UI/form/FormInput";
-import Info from "@UI/ui/info";
+import Info from "@UI/ui/Info";
 import validate, { CreateRouteSchema } from "@utils/validator";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";

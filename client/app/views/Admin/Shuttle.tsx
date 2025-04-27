@@ -10,7 +10,7 @@ import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
 import DatePicker from "@UI/form/DatePicker";
 import Header from "@UI/ui/Header";
-import Info from "@UI/ui/info";
+import Info from "@UI/ui/Info";
 import colors from "@utils/colors";
 import { GetTripsRes } from "@views/Driver/Home";
 import { GetTripRes } from "@views/User/Trip";
@@ -27,6 +27,7 @@ import {
     Text,
     View,
 } from "react-native";
+import { showMessage } from "react-native-flash-message";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = {};
@@ -72,8 +73,22 @@ const User: FC = (props: Props) => {
         setRefreshing(false); // Stop pull-to-refresh indicator
     };
 
+    const fetchTrips = async () => {
+        const res = await runAxiosAsync<GetTripsRes>(
+            authClient.get("/trip/trips-by-shuttle", {
+                params: {
+                    shuttleId: shuttleId,
+                    date: DateTime.fromJSDate(date).toFormat("yyyy-MM-dd"),
+                },
+            })
+        );
+
+        setTrips(res?.trips || []);
+    };
+
     const onRefresh = useCallback(() => {
         setRefreshing(true); // Start pull-to-refresh indicator
+        fetchTrips();
         fetchData(); // Fetch data
     }, []);
 
@@ -84,24 +99,26 @@ const User: FC = (props: Props) => {
     );
 
     useEffect(() => {
-        const fetchTrips = async () => {
-            const res = await runAxiosAsync<GetTripsRes>(
-                authClient.get("/trip/trips-by-shuttle", {
-                    params: {
-                        shuttleId: shuttleId,
-                        date: DateTime.fromJSDate(date).toFormat("yyyy-MM-dd"),
-                    },
-                })
-            );
-
-            setTrips(res?.trips || []);
-        };
         fetchTrips();
     }, [date]);
 
     const navigateToEditShuttle = () => {
         navigation.navigate("CreateShuttle", {
             shuttle: shuttle,
+        });
+    };
+
+    const navigateToCreateTrip = () => {
+        if (!shuttle)
+            return showMessage({
+                message: "Error trying to access shuttle data, try again later",
+                type: "danger",
+            });
+
+        navigation.navigate("CreateTrip", {
+            shuttleId: shuttleId,
+            date: DateTime.fromJSDate(date).toFormat("yyyy-MM-dd"),
+            availableSeats: shuttle.capacity,
         });
     };
 
@@ -163,6 +180,7 @@ const User: FC = (props: Props) => {
                         <UpcomingTripsList
                             trips={trips}
                             title="Upcoming Trips"
+                            onCreateNew={navigateToCreateTrip}
                         />
                     </>
                 )}

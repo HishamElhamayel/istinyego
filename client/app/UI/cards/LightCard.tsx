@@ -5,12 +5,14 @@ interface Props {
     children?: React.ReactNode;
     onPressHandler?: () => void;
     unPressable?: boolean;
+    style?: StyleProp<ViewStyle>;
 }
 
 const LightCard: FC<Props> = ({
     children,
     onPressHandler,
     unPressable = false,
+    style,
 }) => {
     return (
         <Pressable
@@ -18,6 +20,7 @@ const LightCard: FC<Props> = ({
             style={({ pressed }) => [
                 styles.container,
                 !unPressable && pressed && styles.pressed,
+                style,
             ]}
         >
             {children}

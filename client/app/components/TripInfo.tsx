@@ -1,4 +1,4 @@
-import Info from "@UI/ui/info";
+import Info from "@UI/ui/Info";
 import { getEtc } from "@utils/functions";
 import { GetTripRes } from "@views/User/Trip";
 import { DateTime } from "luxon";

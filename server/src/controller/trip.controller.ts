@@ -39,7 +39,7 @@ export const createTrip: RequestHandler = async (req, res) => {
         const trips = await Trip.create(tripsArray);
 
         res.status(201).json({
-            trips,
+            message: "Trip created successfully",
         });
     } catch (err) {
         console.error(err);

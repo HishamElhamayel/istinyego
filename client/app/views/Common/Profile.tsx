@@ -3,8 +3,9 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
 import Header from "@UI/ui/Header";
-import Info from "@UI/ui/info";
+import Info from "@UI/ui/Info";
 import useAuth from "app/hooks/useAuth";
+import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import { UserStackParamList } from "app/navigator/UserNavigator";
 import { DateTime } from "luxon";
 import React, { FC, useState } from "react";
@@ -16,7 +17,10 @@ type Props = {};
 const Profile: FC = (props: Props) => {
     const { authState } = useAuth();
     const profile = authState.profile;
-    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
+    const navigation =
+        useNavigation<
+            NavigationProp<UserStackParamList & AdminStackParamList>
+        >();
     const [showLogout, setShowLogout] = useState(false);
 
     if (!profile) {
@@ -60,11 +64,19 @@ const Profile: FC = (props: Props) => {
                             Logout
                         </Button>
                     </View>
+
                     <LogoutModal
                         showLogout={showLogout}
                         setShowLogout={setShowLogout}
                     />
                 </Card>
+                {profile.role === "admin" && (
+                    <Card>
+                        <Button onPress={() => navigation.navigate("Users")}>
+                            All Users
+                        </Button>
+                    </Card>
+                )}
             </ScrollView>
         </SafeAreaView>
     );

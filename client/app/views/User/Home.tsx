@@ -91,6 +91,8 @@ const Home: FC<Props> = () => {
             if (res?.routes) {
                 setFavoriteRoutes(res.routes);
             }
+        } else {
+            setFavoriteRoutes([]);
         }
 
         setPending(false);
@@ -106,7 +108,7 @@ const Home: FC<Props> = () => {
     // Initial data fetch on component mount
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [authState]);
 
     return (
         <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>

@@ -7,7 +7,6 @@ type Props = {
     onChange: (value: string) => void;
     placeholder: string;
     label: string;
-    flex?: boolean;
     value?: string | null;
 };
 
@@ -31,7 +30,7 @@ const DropDown = (props: Props) => {
                     styles.dropdown,
                     isFocused ? styles.borderActive : styles.borderInActive,
                 ]}
-                mode="modal"
+                mode="auto"
                 onChange={(item) => {
                     setValue(item.value);
                     props.onChange(item.value);
@@ -69,6 +68,7 @@ const styles = StyleSheet.create({
     label: {
         color: "white",
         marginBottom: 5,
+        fontSize: 18,
     },
     borderActive: {
         borderColor: "#FFFFFF",

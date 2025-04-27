@@ -1,21 +1,19 @@
-/**
- * Trip component displays detailed information about a specific trip and allows users to book it.
- * It shows route locations, trip date, available seats, and booking functionality.
- */
-
 import TripInfo from "@components/TripInfo";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import {
+    NavigationProp,
+    RouteProp,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
-import DarkCard from "@UI/cards/DarkCard";
 import LoadingAnimation from "@UI/loading/LoadingAnimation";
 import RouteLocations from "@UI/ui/RouteLocations";
 import colors from "@utils/colors";
+import { GetTripRes } from "@views/User/Trip";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
-import { UserStackParamList } from "app/navigator/UserNavigator";
-import { addBooking, Booking, getBookingsState } from "app/store/bookings";
-import { addTransaction, getWalletState, Transaction } from "app/store/wallet";
+import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import { DateTime } from "luxon";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import {
@@ -27,38 +25,12 @@ import {
     View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch, useSelector } from "react-redux";
-
-/**
- * Interface for the API response when fetching trip details
- */
-export interface GetTripRes {
-    trip: {
-        _id: string;
-        startTime: string;
-        endTime: string;
-        date: string;
-        startLocation: string;
-        endLocation: string;
-        shuttle: {
-            _id: string;
-            number: number;
-        };
-        availableSeats: number;
-        state: string;
-        fare: number;
-    };
-}
-
-export interface GetBookingRes {
-    booking: Booking;
-    transaction: Transaction;
-}
 
 const Trip: FC = () => {
     // Route parameters and authentication client
-    const { params } = useRoute<RouteProp<UserStackParamList, "Trip">>();
+    const { params } = useRoute<RouteProp<AdminStackParamList, "Trip">>();
     const { authClient } = useClient();
+    const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
 
     // State management
     const [refreshing, setRefreshing] = useState(false);
@@ -68,10 +40,6 @@ const Trip: FC = () => {
 
     // Redux state and dispatch
     const { tripId } = params;
-    const { bookings } = useSelector(getBookingsState);
-    const { balance } = useSelector(getWalletState);
-    const booking = bookings.find((booking) => booking.tripId === tripId);
-    const dispatch = useDispatch();
 
     /**
      * Fetches trip data from the API
@@ -90,30 +58,6 @@ const Trip: FC = () => {
 
         setPending(false);
         setRefreshing(false);
-    };
-
-    /**
-     * Handles the booking process for the trip
-     * Creates a new booking and associated transaction
-     */
-    const handleBook = async () => {
-        if (!tripId) {
-            return;
-        }
-        setBusy(true);
-        const res = await runAxiosAsync<GetBookingRes>(
-            authClient.post(`/booking/book`, {
-                tripId,
-            })
-        );
-
-        if (res?.booking && res?.transaction) {
-            dispatch(addBooking(res.booking));
-            dispatch(addTransaction(res.transaction));
-        }
-
-        fetchData();
-        setBusy(false);
     };
 
     /**
@@ -162,30 +106,20 @@ const Trip: FC = () => {
                                     "ccc dd MMMM"
                                 )}
                             </Text>
-
-                            {!booking && (
-                                <DarkCard title="Balance">
-                                    {balance?.toFixed(2)}₺
-                                </DarkCard>
-                            )}
                             <Card>
                                 <TripInfo trip={trip} />
                                 <View style={styles.buttonsContainer}>
-                                    {!booking && (
-                                        <Button
-                                            onPress={() => {
-                                                handleBook();
-                                            }}
-                                        >
-                                            Book
-                                        </Button>
-                                    )}
                                     <Button
                                         onPress={() => {
-                                            console.log("hi");
+                                            navigation.navigate("Bookings", {
+                                                tripId: trip._id,
+                                                startLocation:
+                                                    trip.startLocation,
+                                                endLocation: trip.endLocation,
+                                            });
                                         }}
                                     >
-                                        Track Shuttle
+                                        View Bookings
                                     </Button>
                                 </View>
                             </Card>
@@ -212,10 +146,6 @@ const styles = StyleSheet.create({
     centerText: {
         textAlign: "center",
         fontSize: 24,
-    },
-    balanceText: {
-        fontSize: 38,
-        color: "white",
     },
     buttonsContainer: {
         marginTop: 25,
