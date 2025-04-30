@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Map from "@views/Admin/AddCoordinates";
+import AddCoordinates from "@views/Admin/AddCoordinates";
 import CreateDriver from "@views/Admin/CreateDriver";
 import CreateShuttle from "@views/Admin/CreateShuttle";
 import CreateTrip from "@views/Admin/CreateTrip";
@@ -12,6 +12,7 @@ import Trip from "@views/Admin/Trip";
 import User from "@views/Admin/User";
 import Bookings from "@views/Common/Bookings";
 import Routes from "@views/Common/Routes";
+import TrackShuttle from "@views/Common/TrackShuttle";
 import { FC } from "react";
 
 export type AdminStackParamList = {
@@ -20,7 +21,7 @@ export type AdminStackParamList = {
     Route: {
         _id?: string;
     };
-    Map: {
+    AddCoordinates: {
         location?: number[];
         setCoordinates?: (location: number[], address: string) => void;
     };
@@ -49,6 +50,9 @@ export type AdminStackParamList = {
         startLocation: string;
         endLocation: string;
     };
+    TrackShuttle: {
+        shuttleId: string;
+    };
 };
 
 const Stack = createNativeStackNavigator<AdminStackParamList>();
@@ -65,6 +69,7 @@ export const AdminHomeNavigator: FC<Props> = () => {
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Trip" component={Trip} />
             <Stack.Screen name="Bookings" component={Bookings} />
+            <Stack.Screen name="TrackShuttle" component={TrackShuttle} />
         </Stack.Navigator>
     );
 };
@@ -75,8 +80,8 @@ export const AdminRoutesNavigator: FC<Props> = () => {
             <Stack.Screen name="Routes" component={Routes} />
             <Stack.Screen name="Route" component={Route} />
             <Stack.Screen
-                name="Map"
-                component={Map}
+                name="AddCoordinates"
+                component={AddCoordinates}
                 options={{
                     headerShown: true,
                 }}
@@ -103,6 +108,13 @@ export const AdminShuttlesNavigator: FC<Props> = () => {
             <Stack.Screen name="CreateTrip" component={CreateTrip} />
             <Stack.Screen name="Trip" component={Trip} />
             <Stack.Screen name="Bookings" component={Bookings} />
+            <Stack.Screen
+                name="TrackShuttle"
+                component={TrackShuttle}
+                options={{
+                    headerShown: true,
+                }}
+            />
         </Stack.Navigator>
     );
 };

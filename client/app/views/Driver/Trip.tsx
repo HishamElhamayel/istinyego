@@ -15,7 +15,7 @@ import useClient from "app/hooks/useClient";
 import { DriverStackParamList } from "app/navigator/DriverNavigator";
 import { getTripsState, setTrip } from "app/store/trips";
 import { DateTime } from "luxon";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
     RefreshControl,
@@ -33,6 +33,7 @@ interface GetTripRes {
         startTime: string;
         endTime: string;
         date: string;
+        routeId: string;
         startLocation: string;
         endLocation: string;
         shuttle: {
@@ -45,9 +46,24 @@ interface GetTripRes {
     };
 }
 
-type Props = {};
-const Trip: FC = (props: Props) => {
-    // Route parameters and authentication client
+interface GetRouteRes {
+    route: {
+        startLocation: {
+            type: "Point";
+            coordinates: number[];
+            address: string;
+            description: string;
+        };
+        endLocation: {
+            type: "Point";
+            coordinates: number[];
+            address: string;
+            description: string;
+        };
+    };
+}
+
+const Trip: FC = () => {
     const { params } = useRoute<RouteProp<DriverStackParamList, "Trip">>();
     const { authClient } = useClient();
     const dispatch = useDispatch();
@@ -55,14 +71,11 @@ const Trip: FC = (props: Props) => {
     const { trips } = useSelector(getTripsState);
     const trip = trips.find((trip) => trip._id === tripId);
     const navigation = useNavigation<NavigationProp<DriverStackParamList>>();
-    // State management
     const [refreshing, setRefreshing] = useState(false);
     const [pending, setPending] = useState(false);
     const [busy, setBusy] = useState(false);
+    const [route, setRoute] = useState<GetRouteRes["route"] | null>(null);
 
-    /**
-     * Fetches trip data from the API
-     */
     const fetchData = async () => {
         if (!tripId) {
             return;
@@ -77,6 +90,16 @@ const Trip: FC = (props: Props) => {
 
         setPending(false);
         setRefreshing(false);
+    };
+
+    const fetchRoute = async () => {
+        const res = await runAxiosAsync(
+            authClient.get<GetRouteRes>(`/route/${trip?.routeId}`)
+        );
+
+        if (res?.route) {
+            setRoute(res.route);
+        }
     };
 
     const handleStartTrip = async () => {
@@ -112,9 +135,14 @@ const Trip: FC = (props: Props) => {
         fetchData();
         setBusy(false);
     };
+
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchData();
+    }, []);
+
+    useEffect(() => {
+        fetchRoute();
     }, []);
 
     return (
@@ -167,14 +195,19 @@ const Trip: FC = (props: Props) => {
                                         Bookings
                                     </Button>
 
-                                    {trip.state === "inProgress" ? (
+                                    {trip.state === "inProgress" && route ? (
                                         <>
                                             <Button
                                                 onPress={() => {
-                                                    console.log("hi");
+                                                    navigation.navigate(
+                                                        "Directions",
+                                                        {
+                                                            fullRoute: route,
+                                                        }
+                                                    );
                                                 }}
                                             >
-                                                Open Map
+                                                Get Directions
                                             </Button>
                                             <Button
                                                 onPress={() => handleEndTrip()}

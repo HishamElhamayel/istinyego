@@ -4,6 +4,7 @@ import {
     getAllShuttles,
     getShuttleByDriverId,
     getShuttleById,
+    getShuttleLocation,
     updateShuttle,
     updateShuttleLocation,
 } from "#/controller/shuttle.controller";
@@ -42,6 +43,7 @@ router.patch(
     updateShuttle
 );
 router.get("/:id", mustAuth, getShuttleById);
+router.get("/shuttle-location/:id", mustAuth, getShuttleLocation);
 router.delete("/:id", mustAuth, deleteShuttle);
 
 export default router;

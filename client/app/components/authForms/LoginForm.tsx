@@ -85,6 +85,41 @@ const LoginForm = () => {
         <Card>
             <View style={{ gap: 15 }}>
                 <Text style={styles.header}>Login</Text>
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                    <Button
+                        size="small"
+                        onPress={() =>
+                            setUserInfo({
+                                email: "elhamayelh@gmail.com",
+                                password: "h!234567",
+                            })
+                        }
+                    >
+                        User
+                    </Button>
+                    <Button
+                        size="small"
+                        onPress={() =>
+                            setUserInfo({
+                                email: "220911888@stu.istinye.edu.tr",
+                                password: "h!234567",
+                            })
+                        }
+                    >
+                        Driver
+                    </Button>
+                    <Button
+                        size="small"
+                        onPress={() =>
+                            setUserInfo({
+                                email: "h.hamayel@hotmail.com",
+                                password: "h!234567",
+                            })
+                        }
+                    >
+                        Admin
+                    </Button>
+                </View>
                 <FormInput
                     label="Email"
                     onChangeText={handleChange("email")}

@@ -46,6 +46,7 @@ export interface GetTripsRes {
         availableSeats: number;
         state: string;
         fare: number;
+        routeId: string;
     }[];
 }
 

@@ -8,6 +8,7 @@ export const getAllProfiles: RequestHandler = async (req, res) => {
     try {
         const { pageNo = "0", limit = "20" } = req.query as paginationQuery;
         const users = await User.find({})
+            .where({ role: { $ne: "admin" } })
             .select(" _id firstName lastName studentId ")
             .limit(parseInt(limit))
             .skip(parseInt(limit) * parseInt(pageNo))
@@ -89,14 +90,6 @@ export const getAllProfileData: RequestHandler = async (req, res) => {
             },
             {
                 $unwind: "$wallet",
-            },
-            {
-                $lookup: {
-                    from: "transactions",
-                    localField: "wallet._id",
-                    foreignField: "wallet",
-                    as: "transactions",
-                },
             },
             {
                 $project: {

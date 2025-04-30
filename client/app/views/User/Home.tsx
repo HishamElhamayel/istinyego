@@ -20,6 +20,7 @@ import {
     RefreshControl, // Pull-to-refresh functionality
     ScrollView, // Scrollable container
     StyleSheet, // Style creation utility
+    Text, // Text component for displaying text
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context"; // Safe area wrapper for iOS
 import { useDispatch, useSelector } from "react-redux"; // Redux hooks for state management
@@ -150,6 +151,11 @@ const Home: FC<Props> = () => {
                         routes={favoriteRoutes}
                         title="Favorite Routes"
                     />
+                )}
+                {!pending && favoriteRoutes.length === 0 && (
+                    <Text style={{ textAlign: "center", marginTop: 20 }}>
+                        Favorite routes to see them here.
+                    </Text>
                 )}
             </ScrollView>
         </SafeAreaView>

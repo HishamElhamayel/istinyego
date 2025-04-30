@@ -120,10 +120,7 @@ const Home: FC<Props> = () => {
                             bookings={bookings}
                             income={income}
                         />
-                        <UpcomingTripsList
-                            trips={trips}
-                            title="Upcoming Trips"
-                        />
+                        <UpcomingTripsList trips={trips} title="All Trips" />
                     </>
                 )}
             </ScrollView>

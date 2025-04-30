@@ -69,11 +69,11 @@ const DateInput: FC<props> = ({ label, setParentDate }) => {
                                 },
                                 button_next: {
                                     borderRadius: 5,
-                                    backgroundColor: colors.primary100,
+                                    backgroundColor: "white",
                                 },
                                 button_prev: {
                                     borderRadius: 5,
-                                    backgroundColor: colors.primary100,
+                                    backgroundColor: "white",
                                 },
                             }}
                         />

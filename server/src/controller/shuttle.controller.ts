@@ -70,6 +70,27 @@ export const getShuttleById: RequestHandler = async (req, res) => {
     }
 };
 
+export const getShuttleLocation: RequestHandler = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const shuttle = await Shuttle.findById(id).select({
+            currentLocation: 1,
+        });
+
+        if (!shuttle) {
+            res.status(404).json({ error: "Shuttle not found" });
+            return;
+        }
+
+        res.json({
+            shuttle,
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
 export const deleteShuttle: RequestHandler = async (req, res) => {
     try {
         const { id } = req.params;

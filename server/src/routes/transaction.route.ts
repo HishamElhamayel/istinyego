@@ -1,10 +1,8 @@
 import {
-    getAllTransactions,
+    getTransactions,
     getTransactionsByWalletId,
 } from "#/controller/transaction.controller";
 import { mustAuth, mustRoles } from "#/middleware/auth.middleware";
-import { validate } from "#/middleware/validator.middleware";
-import { CreateTransactionSchema } from "#/utils/validation";
 import { Router } from "express";
 
 const router = Router();
@@ -15,7 +13,12 @@ const router = Router();
 //     validate(CreateTransactionSchema),
 //     createTransaction
 // );
-router.get("/get-transactions", mustAuth, getTransactionsByWalletId);
-router.get("/", mustAuth, mustRoles("admin"), getAllTransactions);
+router.get("/get-transactions", mustAuth, getTransactions);
+router.get(
+    "/:walletId",
+    mustAuth,
+    mustRoles("admin"),
+    getTransactionsByWalletId
+);
 
 export default router;

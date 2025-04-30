@@ -1,10 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import User from "@views/Admin/User";
 import Users from "@views/Admin/Users";
+import UserWallet from "@views/Admin/UserWallet";
 import ChangePassword from "@views/Auth/ChangePassword";
 import EditAccount from "@views/Common/EditAccount";
 import Profile from "@views/Common/Profile";
 import Routes from "@views/Common/Routes";
+import TrackShuttle from "@views/Common/TrackShuttle";
 import AddBalance from "@views/User/AddBalance";
 import Home from "@views/User/Home";
 import Trip from "@views/User/Trip";
@@ -28,6 +30,13 @@ export type UserStackParamList = {
     User: {
         _id: string;
     };
+    UserWallet: {
+        _id: string;
+        balance: number;
+    };
+    TrackShuttle: {
+        shuttleId: string;
+    };
 };
 
 const Stack = createNativeStackNavigator<UserStackParamList>();
@@ -44,6 +53,13 @@ export const UserHomeNavigator: FC<Props> = () => {
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Trips" component={Trips} />
             <Stack.Screen name="Trip" component={Trip} />
+            <Stack.Screen
+                name="TrackShuttle"
+                component={TrackShuttle}
+                options={{
+                    headerShown: true,
+                }}
+            />
         </Stack.Navigator>
     );
 };
@@ -58,6 +74,13 @@ export const UserRoutesNavigator: FC<Props> = () => {
             <Stack.Screen name="Routes" component={Routes} />
             <Stack.Screen name="Trips" component={Trips} />
             <Stack.Screen name="Trip" component={Trip} />
+            <Stack.Screen
+                name="TrackShuttle"
+                component={TrackShuttle}
+                options={{
+                    headerShown: true,
+                }}
+            />
         </Stack.Navigator>
     );
 };
@@ -75,6 +98,9 @@ export const UserProfileNavigator: FC<Props> = () => {
             <Stack.Screen name="EditAccount" component={EditAccount} />
             {isAdmin && <Stack.Screen name="Users" component={Users} />}
             {isAdmin && <Stack.Screen name="User" component={User} />}
+            {isAdmin && (
+                <Stack.Screen name="UserWallet" component={UserWallet} />
+            )}
         </Stack.Navigator>
     );
 };

@@ -13,7 +13,6 @@ import Header from "@UI/ui/Header";
 import Info from "@UI/ui/Info";
 import colors from "@utils/colors";
 import { GetTripsRes } from "@views/Driver/Home";
-import { GetTripRes } from "@views/User/Trip";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
@@ -107,6 +106,17 @@ const User: FC = (props: Props) => {
             shuttle: shuttle,
         });
     };
+    const navigateToTrackShuttle = () => {
+        if (!shuttle)
+            return showMessage({
+                message: "Error trying to access shuttle data, try again later",
+                type: "danger",
+            });
+
+        navigation.navigate("TrackShuttle", {
+            shuttleId: shuttle?._id,
+        });
+    };
 
     const navigateToCreateTrip = () => {
         if (!shuttle)
@@ -172,6 +182,9 @@ const User: FC = (props: Props) => {
                             <View style={styles.buttonsContainer}>
                                 <Button onPress={navigateToEditShuttle}>
                                     Edit Shuttle
+                                </Button>
+                                <Button onPress={navigateToTrackShuttle}>
+                                    Track Shuttle
                                 </Button>
                             </View>
                         </Card>

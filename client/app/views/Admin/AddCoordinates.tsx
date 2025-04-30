@@ -2,17 +2,15 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import colors from "@utils/colors";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import * as Location from "expo-location";
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import MapView, { Marker } from "react-native-maps";
 
-type Props = {};
-
 const origin = { latitude: 41.102635, longitude: 28.975461 };
 
-const AddCoordinates = (props: Props) => {
-    const route = useRoute<RouteProp<AdminStackParamList, "Map">>();
+const AddCoordinates: FC = () => {
+    const route = useRoute<RouteProp<AdminStackParamList, "AddCoordinates">>();
     const [location, setLocation] = useState<number[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [markerCoordinates, setMarkerCoordinates] = useState<number[] | null>(

@@ -1,16 +1,8 @@
 import UsersList from "@components/lists/UsersList";
-import {
-    NavigationProp,
-    useFocusEffect,
-    useNavigation,
-} from "@react-navigation/native";
-import Button from "@UI/buttons/Button";
-import Card from "@UI/cards/Card";
 import Header from "@UI/ui/Header";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
-import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import { FC, useCallback, useEffect, useState } from "react";
 import {
     ActivityIndicator,
@@ -36,7 +28,6 @@ const Users: FC<Props> = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [pending, setPending] = useState(true);
     const [users, SetUsers] = useState<GetDriversRes["users"]>([]);
-    const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
 
     const fetchData = async () => {
         // Fetch user bookings

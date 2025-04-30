@@ -4,6 +4,7 @@ import {
     useNavigation,
     useRoute,
 } from "@react-navigation/native";
+import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
 import DarkCard from "@UI/cards/DarkCard";
 import Header from "@UI/ui/Header";
@@ -12,6 +13,7 @@ import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
+import { UserStackParamList } from "app/navigator/UserNavigator";
 import { DateTime } from "luxon";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import {
@@ -20,11 +22,8 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-type Props = {};
 
 interface GetUserRes {
     user: {
@@ -54,13 +53,14 @@ interface GetUserRes {
             | [];
     };
 }
-const User: FC = (props: Props) => {
+const User: FC = () => {
     const route = useRoute<RouteProp<AdminStackParamList, "User">>();
     const { _id } = route.params;
     const { authClient } = useClient();
     const [pending, setPending] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [user, setUser] = useState<GetUserRes["user"] | null>(null);
+    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
 
     const fetchData = async () => {
         // Fetch user bookings
@@ -101,6 +101,11 @@ const User: FC = (props: Props) => {
                 {!pending && !user && (
                     <Text style={styles.centerText}>No user found</Text>
                 )}
+                {user?.role === "driver" && user?.shuttle && (
+                    <DarkCard title="Assigned Shuttle">
+                        ISU - {user?.shuttle.number.toString().padStart(2, "0")}
+                    </DarkCard>
+                )}
                 {!pending && user && (
                     <Card>
                         <Info title="Name">
@@ -136,15 +141,20 @@ const User: FC = (props: Props) => {
                     </Card>
                 )}
 
-                {user?.role === "driver" && user?.shuttle ? (
-                    <DarkCard title="Assigned Shuttle">
-                        ISU - {user?.shuttle.number.toString().padStart(2, "0")}
-                    </DarkCard>
-                ) : user?.role === "user" ? (
-                    <DarkCard title="Wallet">
-                        {user?.wallet.balance.toFixed(2)}₺
-                    </DarkCard>
-                ) : null}
+                {user?.role === "user" && (
+                    <Card>
+                        <Button
+                            onPress={() =>
+                                navigation.navigate("UserWallet", {
+                                    _id: user.wallet._id,
+                                    balance: user.wallet.balance,
+                                })
+                            }
+                        >
+                            Open User Wallet
+                        </Button>
+                    </Card>
+                )}
             </ScrollView>
         </SafeAreaView>
     );

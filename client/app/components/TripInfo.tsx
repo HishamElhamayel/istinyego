@@ -16,7 +16,13 @@ const TripInfo = ({ trip }: Props) => {
                 ISU - {trip.shuttle.number.toString().padStart(2, "0")}
             </Info>
             <Info title="State">
-                {trip.state.charAt(0).toUpperCase() + trip.state.slice(1)}
+                {trip.state === "completed"
+                    ? "Completed"
+                    : trip.state === "scheduled"
+                    ? "Scheduled"
+                    : trip.state === "inProgress"
+                    ? "In Progress"
+                    : "Cancelled"}{" "}
             </Info>
 
             <View style={styles.rowContainer}>

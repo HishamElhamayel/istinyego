@@ -38,7 +38,6 @@ const TripForm: FC<Props> = () => {
     const route = useRoute<RouteProp<AdminStackParamList, "CreateTrip">>();
     const [routes, setRoutes] = useState<GetRoutesRes["routes"]>([]);
     const { date, shuttleId, availableSeats } = route.params;
-    const [pending, setPending] = useState(true);
     const [startTimePickerVisible, setStartTimePickerVisible] = useState(false);
     const [endTimePickerVisible, setEndTimePickerVisible] = useState(false);
 
@@ -74,7 +73,6 @@ const TripForm: FC<Props> = () => {
     };
 
     const handleSubmit = async () => {
-        console.log(tripData);
         const { values, error } = await validate(CreateTripSchema, tripData);
         if (error) return showMessage({ message: error, type: "danger" });
 
@@ -97,8 +95,6 @@ const TripForm: FC<Props> = () => {
         if (res?.routes) {
             setRoutes(res.routes);
         }
-
-        setPending(false); // Stop loading indicator
     };
 
     const getTime = (date: Date) => {
@@ -109,7 +105,6 @@ const TripForm: FC<Props> = () => {
     };
 
     useEffect(() => {
-        setPending(true);
         fetchData();
     }, []);
 
@@ -211,7 +206,7 @@ const styles = StyleSheet.create({
     },
     timeContainer: {
         flexDirection: "row",
-        justifyContent: "space-evenly",
+        justifyContent: "space-between",
         alignItems: "center",
     },
 });

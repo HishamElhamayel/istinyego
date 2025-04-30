@@ -6,6 +6,7 @@ export interface Trip {
     startTime: string;
     endTime: string;
     date: string;
+    routeId: string;
     startLocation: string;
     endLocation: string;
     shuttle: {

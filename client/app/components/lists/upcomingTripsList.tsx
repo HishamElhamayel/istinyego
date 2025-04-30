@@ -23,12 +23,7 @@ type Props = {
     onCreateNew?: () => void;
 };
 
-const UpcomingTripsList = ({
-    trips,
-    title,
-
-    onCreateNew,
-}: Props) => {
+const UpcomingTripsList = ({ trips, title, onCreateNew }: Props) => {
     const navigation = useNavigation<NavigationProp<DriverStackParamList>>();
     const { authState } = useAuth();
     const profile = authState.profile;
@@ -58,9 +53,7 @@ const UpcomingTripsList = ({
                         }}
                     >
                         <Text style={styles.text}>
-                            {DateTime.fromISO(trip.startTime).toFormat(
-                                "cccc t"
-                            )}
+                            {DateTime.fromISO(trip.startTime).toFormat("ccc t")}
                         </Text>
                         <Text
                             style={[
