@@ -4,7 +4,12 @@
  */
 
 import TripInfo from "@components/TripInfo";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import {
+    NavigationProp,
+    RouteProp,
+    useNavigation,
+    useRoute,
+} from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import Card from "@UI/cards/Card";
 import DarkCard from "@UI/cards/DarkCard";
@@ -57,6 +62,7 @@ export interface GetBookingRes {
 
 const Trip: FC = () => {
     // Route parameters and authentication client
+    const navigation = useNavigation<NavigationProp<UserStackParamList>>();
     const { params } = useRoute<RouteProp<UserStackParamList, "Trip">>();
     const { authClient } = useClient();
 
@@ -182,7 +188,13 @@ const Trip: FC = () => {
                                     )}
                                     <Button
                                         onPress={() => {
-                                            console.log("hi");
+                                            // Navigate to Track Shuttle screen
+                                            navigation.navigate(
+                                                "TrackShuttle",
+                                                {
+                                                    shuttleId: trip.shuttle._id,
+                                                }
+                                            );
                                         }}
                                     >
                                         Track Shuttle

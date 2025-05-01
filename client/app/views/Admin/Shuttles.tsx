@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     },
     noShuttles: {
         textAlign: "center",
+        marginTop: 20,
         fontSize: 20,
         color: colors.grey,
     },

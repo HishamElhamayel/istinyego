@@ -1,6 +1,7 @@
 // Import UI components
 import BookingsList from "@components/lists/BookingsList"; // Component to display list of bookings
 import RoutesList from "@components/lists/RoutesList"; // Component to display list of favorite routes
+import UpcomingTripsList from "@components/lists/UpcomingTripsList";
 import Header from "@UI/ui/Header"; // Header component for the screen
 
 // Import utilities and hooks
@@ -43,6 +44,17 @@ interface GetFavoriteRes {
         endLocation: string;
     }[];
 }
+interface GetTripsRes {
+    trips: {
+        _id: string;
+        startLocation: string;
+        endLocation: string;
+        startTime: string;
+        endTime: string;
+        state: string;
+    }[];
+}
+
 interface GetWalletRes {
     balance: number;
 }
@@ -61,6 +73,7 @@ const Home: FC<Props> = () => {
     const [favoriteRoutes, setFavoriteRoutes] = useState<
         GetFavoriteRes["routes"]
     >([]);
+    const [next5Trips, setNext5Trips] = useState<GetTripsRes["trips"]>([]); // State to hold the next 5 trips
 
     // Redux state management
     const dispatch = useDispatch();
@@ -82,6 +95,14 @@ const Home: FC<Props> = () => {
         );
         if (walletRes?.balance) {
             dispatch(setBalance(walletRes.balance));
+        }
+
+        const tripsRes = await runAxiosAsync<GetTripsRes>(
+            authClient.get("/trip/next-5-trips")
+        );
+
+        if (tripsRes?.trips) {
+            setNext5Trips(tripsRes.trips);
         }
 
         // Fetch favorite routes if user has any
@@ -142,7 +163,10 @@ const Home: FC<Props> = () => {
 
                 {/* Display bookings list if available */}
                 {!pending && bookings.length > 0 && (
-                    <BookingsList bookings={bookings} title="Your Trips" />
+                    <BookingsList
+                        bookings={bookings}
+                        title="Your Booked Trips"
+                    />
                 )}
 
                 {/* Display favorite routes if available */}
@@ -152,6 +176,14 @@ const Home: FC<Props> = () => {
                         title="Favorite Routes"
                     />
                 )}
+
+                {!pending && next5Trips.length > 0 && (
+                    <UpcomingTripsList
+                        trips={next5Trips}
+                        title="Next 5 Trips"
+                    />
+                )}
+
                 {!pending && favoriteRoutes.length === 0 && (
                     <Text style={{ textAlign: "center", marginTop: 20 }}>
                         Favorite routes to see them here.

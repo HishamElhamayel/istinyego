@@ -14,10 +14,6 @@ export const CreateUserSchema = yup.object({
         .min(3, "Last name is too short")
         .max(30, "Last name is too long"),
     email: yup.string().email("Invalid Email").required("Email is missing"),
-    // role: yup
-    //     .string()
-    //     .required("User role is missing")
-    //     .oneOf(["user", "driver", "admin"], "Invalid user role"),
     password: yup
         .string()
         .required("Password is missing")
@@ -235,6 +231,7 @@ export const CreateTripSchema = yup.object({
         .required("Available seats is missing")
         .min(1, "Available seats cant be 0 or negative")
         .max(30, "Available seats cant be more than 30"),
+    duplicate: yup.number().default(1).min(1, "Duplicate cant be 0 "),
 });
 
 export const CreateBookingSchema = yup.object({
@@ -250,16 +247,6 @@ export const CreateBookingSchema = yup.object({
 });
 
 export const UpdateShuttleLocationSchema = yup.object({
-    shuttleId: yup
-        .string()
-        .transform(function (value) {
-            if (this.isType(value) && isValidObjectId(value)) {
-                return value;
-            }
-            return "";
-        })
-        .required("Invalid shuttle ID"),
-
     location: yup
         .array()
         .of(yup.number().required("Coordinates can only"))

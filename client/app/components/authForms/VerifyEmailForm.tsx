@@ -10,9 +10,8 @@ import FormInput from "@UI/form/FormInput";
 import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 interface verifyEmailRes {
@@ -75,12 +74,7 @@ const LoginForm = () => {
     const handleSubmit = async () => {
         setBusy(true); // Set the form to busy state
         const res = await runAxiosAsync<verifyEmailRes>(
-            axios.post(
-                `http://${
-                    Platform.OS === "ios" ? "localhost" : "10.0.2.2"
-                }:8989/auth/verify-email`,
-                { token, userId }
-            )
+            client.post(`/auth/verify-email`, { token, userId })
         );
 
         if (res?.message) {

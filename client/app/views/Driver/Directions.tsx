@@ -1,4 +1,4 @@
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useRoute } from "@react-navigation/native";
 import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
@@ -9,6 +9,10 @@ import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import MapView, { Marker, Region } from "react-native-maps";
 
+interface UpdateShuttleLocationRes {
+    message: string;
+}
+
 const Directions: FC = () => {
     const route = useRoute<RouteProp<DriverStackParamList, "Directions">>();
     const { fullRoute } = route.params;
@@ -17,6 +21,7 @@ const Directions: FC = () => {
     const [location, setLocation] = useState<number[] | null>(null);
     const [region, setRegion] = useState<Region | null>(null);
 
+    let intervalId: NodeJS.Timeout;
     useEffect(() => {
         async function getCurrentLocation() {
             try {
@@ -25,7 +30,7 @@ const Directions: FC = () => {
                 if (status !== "granted") {
                     showMessage({
                         message:
-                            "For better experience, please allow location permission",
+                            "Please enable location permissions in your settings.",
                         type: "warning",
                     });
                     setLoading(false);
@@ -42,6 +47,21 @@ const Directions: FC = () => {
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
                 });
+
+                const updateLocation = async () => {
+                    const res = await runAxiosAsync<UpdateShuttleLocationRes>(
+                        authClient.patch(`/shuttle/update-shuttle-location/`, {
+                            location: [lat, lng],
+                        })
+                    );
+
+                    if (res?.message) {
+                        setLoading(false);
+                    }
+                };
+
+                updateLocation();
+                intervalId = setInterval(updateLocation, 2000);
             } catch (error) {
                 console.error("Error getting location:", error);
             } finally {
@@ -50,7 +70,18 @@ const Directions: FC = () => {
         }
 
         getCurrentLocation();
+
+        return () => clearInterval(intervalId);
     }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            return () => {
+                // Cleanup interval when the user leaves the page
+                clearInterval(intervalId);
+            };
+        }, [])
+    );
 
     useEffect(() => {
         if (fullRoute.startLocation && fullRoute.endLocation) {
@@ -63,28 +94,6 @@ const Directions: FC = () => {
             });
         }
     }, [fullRoute]);
-
-    // useEffect(() => {
-    //     let intervalId: NodeJS.Timeout;
-
-    //     const fetchLocation = async () => {
-    //         const res = await runAxiosAsync(
-    //             authClient.get<GetShuttleLocationRes>(
-    //                 `/shuttle/shuttle-location/${shuttleId}`
-    //             )
-    //         );
-
-    //         if (res?.shuttle) {
-    //             const coords = res.shuttle.currentLocation.coordinates;
-    //             setMarkerCoordinates([coords[0], coords[1]]);
-    //             setLoading(false);
-    //         }
-    //     };
-
-    //     fetchLocation();
-    //     intervalId = setInterval(fetchLocation, 2000);
-    //     return () => clearInterval(intervalId);
-    // }, [authClient, shuttleId]);
 
     if (loading || !region) {
         // Ensure region is loaded before rendering the map
@@ -107,6 +116,7 @@ const Directions: FC = () => {
                         longitude: fullRoute.endLocation.coordinates[1],
                     }}
                     title={fullRoute.endLocation.description}
+                    image={require("../../../assets/destination_marker.png")}
                 />
 
                 {location && (
@@ -115,16 +125,10 @@ const Directions: FC = () => {
                             latitude: location[0],
                             longitude: location[1],
                         }}
-                    >
-                        <Image
-                            source={require("../../../assets/map_marker.png")}
-                            style={{
-                                width: 40,
-                                height: 50,
-                                backgroundColor: "transparent",
-                            }}
-                        />
-                    </Marker>
+                        title="My location"
+                        description="My current location"
+                        image={require("../../../assets/map_marker.png")}
+                    />
                 )}
             </MapView>
         </>

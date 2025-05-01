@@ -75,6 +75,9 @@ const TrackShuttle: FC = () => {
                     latitude: region.latitude,
                     longitude: region.longitude,
                 }}
+                title="Shuttle Location"
+                description="Current location of the shuttle"
+                image={require("../../../assets/map_marker.png")}
             />
         </MapView>
     );

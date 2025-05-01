@@ -58,6 +58,7 @@ export const UserHomeNavigator: FC<Props> = () => {
                 component={TrackShuttle}
                 options={{
                     headerShown: true,
+                    headerTitle: "Track Shuttle",
                 }}
             />
         </Stack.Navigator>
@@ -79,6 +80,7 @@ export const UserRoutesNavigator: FC<Props> = () => {
                 component={TrackShuttle}
                 options={{
                     headerShown: true,
+                    headerTitle: "Track Shuttle",
                 }}
             />
         </Stack.Navigator>

@@ -85,18 +85,21 @@ const DriverForm: FC<Props> = () => {
                 label="Email"
                 onChangeText={handleChange("email")}
                 value={email}
+                keyboardType="email-address"
                 collapsable
             />
             <FormInput
                 label="Student ID"
                 onChangeText={handleChange("studentId")}
                 value={studentId}
+                keyboardType="number-pad"
                 collapsable
             />
             <FormInput
                 label="License Number"
                 onChangeText={handleChange("licenseNumber")}
                 maxLength={16}
+                keyboardType="number-pad"
                 value={licenseNumber}
                 collapsable
             />

@@ -30,8 +30,7 @@ interface GetRoutesRes {
     }[];
 }
 
-interface Props {}
-const Routes: FC<Props> = () => {
+const Routes: FC = () => {
     const { authClient } = useClient(); // Access authenticated Axios client
     const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
     const [pending, setPending] = useState(true); // State to track loading
@@ -78,15 +77,6 @@ const Routes: FC<Props> = () => {
                 {/* Header with a welcome message */}
                 <Header>Routes</Header>
 
-                {/* Show loading indicator while data is being fetched */}
-                {pending && (
-                    <ActivityIndicator
-                        size="large"
-                        color={colors.primary100}
-                        style={styles.loading}
-                    />
-                )}
-
                 {authState.profile?.role === "admin" && (
                     <Card>
                         <Button
@@ -99,6 +89,14 @@ const Routes: FC<Props> = () => {
                             Add Route
                         </Button>
                     </Card>
+                )}
+                {/* Show loading indicator while data is being fetched */}
+                {pending && (
+                    <ActivityIndicator
+                        size="large"
+                        color={colors.primary100}
+                        style={styles.loading}
+                    />
                 )}
 
                 {/* Show favorite routes if available */}
@@ -127,5 +125,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 20,
         color: colors.grey,
+        marginTop: 20,
     },
 });

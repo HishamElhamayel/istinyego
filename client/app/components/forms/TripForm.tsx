@@ -40,27 +40,14 @@ const TripForm: FC<Props> = () => {
     const { date, shuttleId, availableSeats } = route.params;
     const [startTimePickerVisible, setStartTimePickerVisible] = useState(false);
     const [endTimePickerVisible, setEndTimePickerVisible] = useState(false);
-
-    const toggleStartTimePicker = () => {
-        setStartTimePickerVisible(!startTimePickerVisible);
-    };
-
-    const toggleEndTimePicker = () => {
-        setEndTimePickerVisible(!endTimePickerVisible);
-    };
-
+    const [startTime, setStartTime] = useState(new Date());
+    const [endTime, setEndTime] = useState(new Date());
     const [tripInfo, setTripInfo] = React.useState({
         routeId: "",
         duplicate: "",
     });
-    const [startTime, setStartTime] = useState(new Date());
-    const [endTime, setEndTime] = useState(new Date());
 
     const { routeId, duplicate } = tripInfo;
-
-    const handleChange = (key: string) => (text: string) => {
-        setTripInfo({ ...tripInfo, [key]: text });
-    };
 
     const tripData = {
         shuttleId,
@@ -70,6 +57,18 @@ const TripForm: FC<Props> = () => {
         endTime: endTime.toISOString(),
         duplicate,
         availableSeats,
+    };
+
+    const toggleStartTimePicker = () => {
+        setStartTimePickerVisible(!startTimePickerVisible);
+    };
+
+    const toggleEndTimePicker = () => {
+        setEndTimePickerVisible(!endTimePickerVisible);
+    };
+
+    const handleChange = (key: string) => (text: string) => {
+        setTripInfo({ ...tripInfo, [key]: text });
     };
 
     const handleSubmit = async () => {
@@ -132,6 +131,7 @@ const TripForm: FC<Props> = () => {
                 <DateTimePickerModal
                     isVisible={startTimePickerVisible}
                     mode="time"
+                    date={startTime}
                     onConfirm={(pickedTime) => {
                         const base = new Date(date);
                         base.setHours(
@@ -153,6 +153,7 @@ const TripForm: FC<Props> = () => {
                 <DateTimePickerModal
                     isVisible={endTimePickerVisible}
                     mode="time"
+                    date={endTime}
                     onConfirm={(pickedTime) => {
                         const base = new Date(date);
                         base.setHours(
@@ -171,6 +172,7 @@ const TripForm: FC<Props> = () => {
                 label="Duplicate"
                 onChangeText={handleChange("duplicate")}
                 value={duplicate}
+                keyboardType="number-pad"
                 collapsable
             />
             <View style={styles.buttonsContainer}>

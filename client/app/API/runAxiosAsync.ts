@@ -6,7 +6,7 @@ const runAxiosAsync = async <T>(
 ): Promise<T | null> => {
     try {
         const response = await promise;
-        return response.data;
+        return { ...response.data, status: response.status };
     } catch (error) {
         let message = (error as any).message;
         if (error instanceof AxiosError) {

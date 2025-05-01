@@ -84,6 +84,7 @@ export const AdminRoutesNavigator: FC<Props> = () => {
                 component={AddCoordinates}
                 options={{
                     headerShown: true,
+                    headerTitle: "Add Coordinates",
                 }}
             />
         </Stack.Navigator>
@@ -113,6 +114,7 @@ export const AdminShuttlesNavigator: FC<Props> = () => {
                 component={TrackShuttle}
                 options={{
                     headerShown: true,
+                    headerTitle: "Track Shuttle",
                 }}
             />
         </Stack.Navigator>

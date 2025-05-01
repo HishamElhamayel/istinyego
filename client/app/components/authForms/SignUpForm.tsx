@@ -2,9 +2,9 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
 import FormInput from "@UI/form/FormInput";
 import validate, { CreateUserSchema } from "@utils/validator";
+import client from "app/API/client";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import { AuthStackParamList } from "app/navigator/AuthNavigator";
-import axios from "axios";
 import React, { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
@@ -49,7 +49,7 @@ const SignUpForm: FC<Props> = () => {
 
         setBusy(true);
         const res = await runAxiosAsync<signUpRes>(
-            axios.post("/auth/register", values)
+            client.post("/auth/register", values)
         );
 
         if (res?.message) {

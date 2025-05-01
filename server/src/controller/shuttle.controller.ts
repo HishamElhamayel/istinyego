@@ -114,9 +114,11 @@ export const deleteShuttle: RequestHandler = async (req, res) => {
 
 export const updateShuttleLocation: RequestHandler = async (req, res) => {
     try {
-        const { shuttleId, location } = req.body;
-        const shuttle = await Shuttle.findByIdAndUpdate(
-            shuttleId,
+        const userId = req.user._id;
+
+        const { location } = req.body;
+        const shuttle = await Shuttle.findOneAndUpdate(
+            { driver: userId },
             {
                 $set: { "currentLocation.coordinates": location },
             },
@@ -129,7 +131,7 @@ export const updateShuttleLocation: RequestHandler = async (req, res) => {
         }
 
         res.json({
-            shuttle,
+            message: "Shuttle location updated successfully",
         });
     } catch (err) {
         console.error(err);

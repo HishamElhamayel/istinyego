@@ -20,10 +20,10 @@ export const createTrip: RequestHandler = async (req, res) => {
             return;
         }
 
-        const duplicates = req.body.duplicates ?? 1;
+        const duplicate = req.body.duplicate ?? 1;
         const tripsArray = [];
 
-        for (let i = 0; i < duplicates; i++) {
+        for (let i = 0; i < duplicate; i++) {
             tripsArray.push({
                 shuttle: shuttleId,
                 route: routeId,
@@ -36,7 +36,7 @@ export const createTrip: RequestHandler = async (req, res) => {
             });
         }
 
-        const trips = await Trip.create(tripsArray);
+        await Trip.create(tripsArray);
 
         res.status(201).json({
             message: "Trip created successfully",
@@ -61,7 +61,7 @@ export const deleteTrip: RequestHandler = async (req, res) => {
             return;
         }
 
-        res.json({});
+        res.status(204).json({});
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Something went wrong" });
@@ -301,6 +301,59 @@ export const updateTripStateToCompleted: RequestHandler = async (req, res) => {
 
         res.status(200).json({
             message: "Trip completed",
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+export const getNextFiveTrips: RequestHandler = async (req, res) => {
+    try {
+        const trips = await Trip.aggregate([
+            {
+                $match: {
+                    startTime: { $gte: new Date() },
+                },
+            },
+            {
+                $sort: {
+                    startTime: 1,
+                },
+            },
+            {
+                $limit: 5,
+            },
+            {
+                $lookup: {
+                    from: "routes",
+                    localField: "route",
+                    foreignField: "_id",
+                    as: "route",
+                },
+            },
+            {
+                $unwind: "$route",
+            },
+            {
+                $project: {
+                    _id: 1,
+                    startLocation: "$route.startLocation.description",
+                    endLocation: "$route.endLocation.description",
+                    startTime: 1,
+                    endTime: 1,
+                    state: 1,
+                },
+            },
+        ]);
+
+        if (trips.length === 0) {
+            res.json({ message: "No upcoming trips found" });
+            return;
+        }
+
+        res.json({
+            trips,
         });
     } catch (err) {
         console.error(err);

@@ -5,6 +5,8 @@ import {
     useRoute,
 } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
+import RedButton from "@UI/buttons/RedButton";
+import Card from "@UI/cards/Card";
 import FormInput from "@UI/form/FormInput";
 import Info from "@UI/ui/Info";
 import validate, { CreateRouteSchema } from "@utils/validator";
@@ -12,7 +14,7 @@ import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import React, { FC, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Modal, StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
 interface Props {}
@@ -60,6 +62,7 @@ const RouteForm: FC<Props> = () => {
         description: "",
     });
     const [fare, setFare] = useState<RouteRes["route"]["fare"]>(0);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchRoute = async () => {
@@ -118,6 +121,30 @@ const RouteForm: FC<Props> = () => {
         setBusy(false);
     };
 
+    const handleDeleteRoute = async () => {
+        if (id) {
+            try {
+                const res = await runAxiosAsync(
+                    authClient.delete(`/route/${id}`)
+                );
+
+                if (res.status === 204) {
+                    showMessage({
+                        message: "Route deleted successfully",
+                        type: "success",
+                    });
+                    navigation.goBack();
+                }
+            } catch (error) {
+                showMessage({
+                    message: "Failed to delete route. Try again later.",
+                    type: "danger",
+                });
+            } finally {
+                setShowModal(false);
+            }
+        }
+    };
     return (
         <View style={{ gap: 15, marginBottom: 30 }}>
             <Text style={styles.header}>
@@ -156,7 +183,7 @@ const RouteForm: FC<Props> = () => {
             )}
             <Button
                 onPress={() =>
-                    navigation.navigate("Map", {
+                    navigation.navigate("AddCoordinates", {
                         location: startLocation.coordinates,
                         setCoordinates: (
                             location: number[],
@@ -184,14 +211,6 @@ const RouteForm: FC<Props> = () => {
             <Text style={styles.subtitle}>End Location</Text>
 
             <FormInput
-                label="Address"
-                onChangeText={(text) =>
-                    setEndLocation({ ...endLocation, address: text })
-                }
-                value={endLocation.address}
-                collapsable
-            />
-            <FormInput
                 label="Description"
                 onChangeText={(text) =>
                     setEndLocation({ ...endLocation, description: text })
@@ -199,6 +218,16 @@ const RouteForm: FC<Props> = () => {
                 value={endLocation.description}
                 collapsable
             />
+
+            <FormInput
+                label="Address"
+                onChangeText={(text) =>
+                    setEndLocation({ ...endLocation, address: text })
+                }
+                value={endLocation.address}
+                collapsable
+            />
+
             {endLocation.coordinates.length > 0 && (
                 <View style={styles.infoContainer}>
                     <Info title="Latitude">
@@ -212,7 +241,7 @@ const RouteForm: FC<Props> = () => {
 
             <Button
                 onPress={() =>
-                    navigation.navigate("Map", {
+                    navigation.navigate("AddCoordinates", {
                         location: endLocation.coordinates,
                         setCoordinates: (
                             location: number[],
@@ -254,6 +283,40 @@ const RouteForm: FC<Props> = () => {
             <Button active={!busy} onPress={() => navigation.goBack()}>
                 Cancel
             </Button>
+
+            {id && (
+                <>
+                    <RedButton
+                        onPress={() => {
+                            setShowModal(true);
+                        }}
+                    >
+                        Delete Route
+                    </RedButton>
+                    <Modal
+                        visible={showModal}
+                        transparent={true}
+                        animationType="fade"
+                        onRequestClose={() => setShowModal(false)}
+                    >
+                        <View style={styles.modal}>
+                            <Card>
+                                <Text style={styles.modalText}>
+                                    Are you sure you want to delete this route?
+                                </Text>
+                                <View style={styles.buttonsContainer}>
+                                    <RedButton onPress={handleDeleteRoute}>
+                                        Confirm
+                                    </RedButton>
+                                    <Button onPress={() => setShowModal(false)}>
+                                        Cancel
+                                    </Button>
+                                </View>
+                            </Card>
+                        </View>
+                    </Modal>
+                </>
+            )}
         </View>
     );
 };
@@ -275,5 +338,21 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 40,
         justifyContent: "center",
+    },
+    modal: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        padding: 10,
+    },
+    modalText: {
+        textAlign: "center",
+        fontSize: 24,
+        color: "white",
+    },
+    buttonsContainer: {
+        marginTop: 25,
+        gap: 15,
     },
 });

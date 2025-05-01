@@ -7,11 +7,12 @@ import {
     useRoute,
 } from "@react-navigation/native";
 import Button from "@UI/buttons/Button";
+import RedButton from "@UI/buttons/RedButton";
 import Card from "@UI/cards/Card";
 import DatePicker from "@UI/form/DatePicker";
+import LoadingAnimation from "@UI/loading/LoadingAnimation";
 import Header from "@UI/ui/Header";
 import Info from "@UI/ui/Info";
-import colors from "@utils/colors";
 import { GetTripsRes } from "@views/Driver/Home";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
@@ -19,7 +20,7 @@ import { AdminStackParamList } from "app/navigator/AdminNavigator";
 import { DateTime } from "luxon";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import {
-    ActivityIndicator,
+    Modal,
     RefreshControl,
     ScrollView,
     StyleSheet,
@@ -28,8 +29,6 @@ import {
 } from "react-native";
 import { showMessage } from "react-native-flash-message";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-type Props = {};
 
 export interface GetShuttleRes {
     shuttle: {
@@ -48,7 +47,7 @@ export interface GetShuttleRes {
         };
     };
 }
-const User: FC = (props: Props) => {
+const User: FC = () => {
     const navigation = useNavigation<NavigationProp<AdminStackParamList>>();
     const route = useRoute<RouteProp<AdminStackParamList, "Shuttle">>();
     const { shuttleId } = route.params;
@@ -58,6 +57,7 @@ const User: FC = (props: Props) => {
     const [shuttle, setShuttle] = useState<GetShuttleRes["shuttle"]>();
     const [date, setDate] = useState<Date>(new Date());
     const [trips, setTrips] = useState<GetTripsRes["trips"]>([]);
+    const [showModal, setShowModal] = useState(false);
 
     const fetchData = async () => {
         // Fetch user bookings
@@ -84,22 +84,6 @@ const User: FC = (props: Props) => {
 
         setTrips(res?.trips || []);
     };
-
-    const onRefresh = useCallback(() => {
-        setRefreshing(true); // Start pull-to-refresh indicator
-        fetchTrips();
-        fetchData(); // Fetch data
-    }, []);
-
-    useFocusEffect(
-        useCallback(() => {
-            fetchData();
-        }, [])
-    );
-
-    useEffect(() => {
-        fetchTrips();
-    }, [date]);
 
     const navigateToEditShuttle = () => {
         navigation.navigate("CreateShuttle", {
@@ -132,6 +116,45 @@ const User: FC = (props: Props) => {
         });
     };
 
+    const handleDeleteShuttle = async () => {
+        try {
+            const res = await runAxiosAsync(
+                authClient.delete(`/shuttle/${shuttleId}`)
+            );
+
+            if (res.status === 204) {
+                showMessage({
+                    message: "Shuttle deleted successfully",
+                    type: "success",
+                });
+                navigation.goBack();
+            }
+        } catch (error) {
+            showMessage({
+                message: "Failed to delete shuttle. Try again later.",
+                type: "danger",
+            });
+        } finally {
+            setShowModal(false);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchTrips();
+        }, [date])
+    );
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true); // Start pull-to-refresh indicator
+        fetchData(); // Fetch data
+        fetchTrips();
+    }, []);
+
     return (
         <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
             <ScrollView
@@ -143,23 +166,18 @@ const User: FC = (props: Props) => {
                     />
                 }
             >
-                {shuttle ? (
-                    <Header>
-                        ISU - {shuttle.number.toString().padStart(2, "0")}
-                    </Header>
-                ) : (
-                    <Header>Shuttle</Header>
-                )}
-                {pending && (
-                    <ActivityIndicator
-                        size="large"
-                        color={colors.primary100}
-                        style={styles.loading}
-                    />
-                )}
+                <Header>
+                    {shuttle
+                        ? `ISU - ${shuttle.number.toString().padStart(2, "0")}`
+                        : "Shuttle"}
+                </Header>
+
+                <LoadingAnimation visible={pending} />
+
                 {!pending && !shuttle && (
                     <Text style={styles.centerText}>No shuttle found</Text>
                 )}
+
                 {!pending && shuttle && (
                     <>
                         <Card>
@@ -186,18 +204,49 @@ const User: FC = (props: Props) => {
                                 <Button onPress={navigateToTrackShuttle}>
                                     Track Shuttle
                                 </Button>
+                                <RedButton
+                                    onPress={() => {
+                                        setShowModal(true);
+                                    }}
+                                >
+                                    Delete Shuttle
+                                </RedButton>
                             </View>
                         </Card>
                         <DatePicker date={date} setParentDate={setDate} />
-
-                        <UpcomingTripsList
-                            trips={trips}
-                            title="Upcoming Trips"
-                            onCreateNew={navigateToCreateTrip}
-                        />
                     </>
                 )}
+                {!pending && (
+                    <UpcomingTripsList
+                        trips={trips}
+                        title="Upcoming Trips"
+                        onCreateNew={navigateToCreateTrip}
+                    />
+                )}
             </ScrollView>
+
+            <Modal
+                visible={showModal}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setShowModal(false)}
+            >
+                <View style={styles.modal}>
+                    <Card>
+                        <Text style={styles.modalText}>
+                            Are you sure you want to delete this shuttle?
+                        </Text>
+                        <View style={styles.buttonsContainer}>
+                            <RedButton onPress={handleDeleteShuttle}>
+                                Confirm
+                            </RedButton>
+                            <Button onPress={() => setShowModal(false)}>
+                                Cancel
+                            </Button>
+                        </View>
+                    </Card>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -209,9 +258,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         margin: 10,
-    },
-    loading: {
-        marginTop: 200,
     },
     shuttleInfo: {
         flexDirection: "row",
@@ -225,5 +271,17 @@ const styles = StyleSheet.create({
     buttonsContainer: {
         marginTop: 20,
         gap: 10,
+    },
+    modal: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        padding: 10,
+    },
+    modalText: {
+        textAlign: "center",
+        fontSize: 24,
+        color: "white",
     },
 });

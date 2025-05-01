@@ -44,6 +44,8 @@ const DropDown = (props: Props) => {
                 placeholderStyle={styles.placeholderStyle}
                 selectedTextStyle={styles.selectedTextStyle}
                 inputSearchStyle={styles.inputSearchStyle}
+                containerStyle={styles.containerStyle}
+                itemContainerStyle={styles.itemContainerStyle}
                 value={value}
             />
         </View>
@@ -80,6 +82,19 @@ const styles = StyleSheet.create({
     },
     inputSearchStyle: {
         borderRadius: 8,
+        backgroundColor: "white",
         borderColor: "grey",
+    },
+    containerStyle: {
+        backgroundColor: "#edeef0",
+        borderRadius: 8,
+        padding: 10,
+    },
+    itemContainerStyle: {
+        backgroundColor: "white",
+        borderRadius: 8,
+        borderColor: "grey",
+        borderWidth: 1,
+        marginVertical: 4,
     },
 });

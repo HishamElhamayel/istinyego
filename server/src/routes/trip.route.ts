@@ -1,6 +1,7 @@
 import {
     createTrip,
     deleteTrip,
+    getNextFiveTrips,
     getTripById,
     getTripsByRouteId,
     getTripsByShuttleId,
@@ -21,11 +22,22 @@ router.post(
     validate(CreateTripSchema),
     createTrip
 );
-router.get("/trips-by-route", getTripsByRouteId);
-router.get("/trips-by-shuttle", getTripsByShuttleId);
+router.get("/trips-by-shuttle", mustAuth, getTripsByShuttleId);
+router.get("/trips-by-route", mustAuth, getTripsByRouteId);
+router.get("/next-5-trips", mustAuth, getNextFiveTrips);
 router.get("/:id", mustAuth, getTripById);
-router.delete("/:id", mustAuth, deleteTrip);
-router.patch("/:tripId/inProgress", mustAuth, updateTripStateToInProgress);
-router.patch("/:tripId/completed", mustAuth, updateTripStateToCompleted);
+router.delete("/:id", mustAuth, mustRoles("admin"), deleteTrip);
+router.patch(
+    "/:tripId/inProgress",
+    mustAuth,
+    mustRoles("driver"),
+    updateTripStateToInProgress
+);
+router.patch(
+    "/:tripId/completed",
+    mustAuth,
+    mustRoles("driver"),
+    updateTripStateToCompleted
+);
 
 export default router;

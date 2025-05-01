@@ -1,6 +1,7 @@
 // Import UI components
 import Dashboard from "@components/Dashboard";
 import UpcomingTripsList from "@components/lists/UpcomingTripsList";
+import { useFocusEffect } from "@react-navigation/native";
 import DatePicker from "@UI/form/DatePicker";
 import Header from "@UI/ui/Header"; // Header component for the screen
 
@@ -13,13 +14,12 @@ import { DateTime } from "luxon";
 import React from "react";
 
 // Import React and React Native components
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useState } from "react";
 import {
     ActivityIndicator, // Loading spinner component
     RefreshControl, // Pull-to-refresh functionality
     ScrollView, // Scrollable container
     StyleSheet,
-    Text, // Style creation utility
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context"; // Safe area wrapper for iOS
 
@@ -82,11 +82,12 @@ const Home: FC<Props> = () => {
     }, []);
 
     // Initial data fetch on component mount
-    useEffect(() => {
-        setPending(true);
-        fetchData();
-    }, [date]);
-
+    useFocusEffect(
+        useCallback(() => {
+            setPending(true);
+            fetchData();
+        }, [date])
+    );
     return (
         <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
             <ScrollView

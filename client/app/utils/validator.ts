@@ -245,4 +245,5 @@ export const CreateTripSchema = yup.object({
         .required("Available seats is missing")
         .min(1, "Available seats cant be 0 or negative")
         .max(30, "Available seats cant be more than 30"),
+    duplicate: yup.number().min(0, "Invalid duplicate"),
 });
