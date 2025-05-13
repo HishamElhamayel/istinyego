@@ -29,7 +29,7 @@ export default function App() {
     }, []);
     return (
         <>
-            <StatusBar style="auto" />
+            <StatusBar style="dark" />
             <Provider store={store}>
                 <SafeAreaProvider style={styles.container}>
                     <Navigator />

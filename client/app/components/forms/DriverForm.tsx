@@ -89,7 +89,7 @@ const DriverForm: FC<Props> = () => {
                 collapsable
             />
             <FormInput
-                label="Student ID"
+                label="Driver ID"
                 onChangeText={handleChange("studentId")}
                 value={studentId}
                 keyboardType="number-pad"
