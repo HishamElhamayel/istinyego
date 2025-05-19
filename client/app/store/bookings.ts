@@ -33,10 +33,15 @@ const bookingsSlice = createSlice({
         setPending(state, { payload }: PayloadAction<boolean>) {
             state.pending = payload;
         },
+        resetBookings(state) {
+            state.bookings = [];
+            state.pending = false;
+        },
     },
 });
 
-export const { setBookings, addBooking, setPending } = bookingsSlice.actions;
+export const { setBookings, addBooking, setPending, resetBookings } =
+    bookingsSlice.actions;
 
 export const getBookingsState = createSelector(
     (state: RootState) => state,

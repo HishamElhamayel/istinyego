@@ -123,7 +123,12 @@ export const getBookingsByUserId: RequestHandler = async (req, res) => {
                     as: "trip",
                 },
             },
-            { $match: { "trip.endTime": { $gte: new Date() } } },
+            {
+                $match: {
+                    "trip.endTime": { $gte: new Date() },
+                    "trip.state": { $ne: "completed" },
+                },
+            },
             { $unwind: "$trip" },
             {
                 $lookup: {

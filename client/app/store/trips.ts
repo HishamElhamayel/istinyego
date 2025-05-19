@@ -43,10 +43,14 @@ const tripsSlice = createSlice({
                 trip._id === payload._id ? payload : trip
             );
         },
+        resetTrips(state) {
+            state.trips = [];
+            state.pending = false;
+        },
     },
 });
 
-export const { setTrips, setPending, setTrip } = tripsSlice.actions;
+export const { setTrips, setPending, setTrip, resetTrips } = tripsSlice.actions;
 
 export const getTripsState = createSelector(
     (state: RootState) => state,

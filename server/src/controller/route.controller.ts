@@ -93,7 +93,7 @@ export const getAllRoutes: RequestHandler = async (req, res) => {
             },
         ]);
 
-        res.status(201).json({
+        res.status(200).json({
             routes: routes,
         });
     } catch (err) {

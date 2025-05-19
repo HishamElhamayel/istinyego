@@ -4,6 +4,9 @@ import Card from "@UI/cards/Card";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { updateAuthState } from "app/store/auth";
+import { resetBookings } from "app/store/bookings";
+import { resetTrips } from "app/store/trips";
+import { resetWallet } from "app/store/wallet";
 import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import { Modal, StyleSheet, Text, View } from "react-native";
 import { showMessage } from "react-native-flash-message";
@@ -34,6 +37,9 @@ const LogoutModal: FC<Props> = ({ showLogout, setShowLogout }) => {
             setBusy(false);
             await AsyncStorage.removeItem("access-token");
             dispatch(updateAuthState({ profile: null, pending: false }));
+            dispatch(resetBookings());
+            dispatch(resetTrips());
+            dispatch(resetWallet());
             showMessage({
                 message: res.message,
                 type: "success",

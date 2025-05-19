@@ -49,6 +49,12 @@ const walletSlice = createSlice({
         setPending(state, { payload }: PayloadAction<boolean>) {
             state.pending = payload;
         },
+        resetWallet(state) {
+            state._id = "";
+            state.balance = 0;
+            state.transactions = [];
+            state.pending = false;
+        },
     },
 });
 
