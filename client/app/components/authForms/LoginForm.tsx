@@ -35,7 +35,7 @@ const LoginForm = () => {
     const dispatch = useDispatch();
     const [userInfo, setUserInfo] = React.useState({
         email: "elhamayelh@gmail.com",
-        password: "h!234567",
+        password: "h!2345678",
     });
     const { email, password } = userInfo;
     const [busy, setBusy] = useState(false);
@@ -91,7 +91,7 @@ const LoginForm = () => {
                         onPress={() =>
                             setUserInfo({
                                 email: "elhamayelh@gmail.com",
-                                password: "h!234567",
+                                password: "h!2345678",
                             })
                         }
                     >

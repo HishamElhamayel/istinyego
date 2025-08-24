@@ -63,7 +63,7 @@ const Home: FC<Props> = () => {
     const onRefresh = useCallback(() => {
         setRefreshing(true); // Start pull-to-refresh indicator
         fetchData(); // Fetch data
-    }, []);
+    }, [date]);
 
     // Fetch data when the component mounts
     useEffect(() => {

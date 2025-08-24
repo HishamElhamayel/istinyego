@@ -19,8 +19,8 @@ const SignUpForm: FC<Props> = () => {
     const [userInfo, setUserInfo] = React.useState({
         firstName: "hisham",
         lastName: "Elhamayel",
-        email: "elhamayelh@gmail.com",
-        studentId: "220911888",
+        email: "hisham@ob-coach.com",
+        studentId: "220911899",
         password: "h!234567",
         confirmPassword: "h!234567",
     });

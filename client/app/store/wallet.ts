@@ -64,6 +64,7 @@ export const {
     addTransaction,
     setPending,
     setId,
+    resetWallet,
 } = walletSlice.actions;
 
 export const getWalletState = createSelector(

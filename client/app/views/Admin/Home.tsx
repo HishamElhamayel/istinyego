@@ -58,6 +58,9 @@ const Home: FC<Props> = () => {
     // Function to fetch all necessary data (bookings, wallet balance, and favorite routes)
     const fetchData = async () => {
         // Fetch user bookings
+        // const selectedDate = date;
+        // console.log(selectedDate);
+        console.log("broken date:", date);
         const res = await runAxiosAsync<GetDashboardRes>(
             authClient.get("/admin/dashboard", {
                 params: {
@@ -75,11 +78,13 @@ const Home: FC<Props> = () => {
         setRefreshing(false);
     };
 
+    console.log("working date:", date);
+
     // Pull-to-refresh handler
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchData();
-    }, []);
+    }, [fetchData]);
 
     // Initial data fetch on component mount
     useFocusEffect(

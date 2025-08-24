@@ -11,7 +11,7 @@ import colors from "@utils/colors";
 import runAxiosAsync from "app/API/runAxiosAsync";
 import useClient from "app/hooks/useClient";
 import { AdminStackParamList } from "app/navigator/AdminNavigator";
-import { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 import {
     ActivityIndicator,
     RefreshControl,
@@ -100,9 +100,7 @@ const Drivers: FC<Props> = () => {
 
                 {/* Show favorite routes if available */}
                 {!pending && shuttles.length > 0 && (
-                    <>
-                        <ShuttlesList shuttles={shuttles} />
-                    </>
+                    <ShuttlesList shuttles={shuttles} />
                 )}
             </ScrollView>
         </SafeAreaView>

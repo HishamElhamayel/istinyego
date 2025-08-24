@@ -85,13 +85,21 @@ export const getTripsByRouteId: RequestHandler = async (req, res) => {
             return;
         }
 
-        const trips = await Trip.find({ route: routeId, date }).select({
-            _id: 1,
-            startTime: 1,
-            endTime: 1,
-            availableSeats: 1,
-            status: 1,
-        });
+        const trips = await Trip.find({
+            route: routeId,
+            date,
+            state: { $ne: "completed" },
+        })
+            .select({
+                _id: 1,
+                startTime: 1,
+                endTime: 1,
+                availableSeats: 1,
+                status: 1,
+            })
+            .sort({
+                startTime: 1,
+            });
 
         if (trips.length === 0) {
             res.json({ message: "No trips found" });

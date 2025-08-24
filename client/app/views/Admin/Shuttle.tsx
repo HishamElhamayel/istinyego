@@ -153,7 +153,7 @@ const User: FC = () => {
         setRefreshing(true); // Start pull-to-refresh indicator
         fetchData(); // Fetch data
         fetchTrips();
-    }, []);
+    }, [date]);
 
     return (
         <SafeAreaView style={styles.container} edges={["right", "left", "top"]}>
